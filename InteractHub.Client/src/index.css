@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  /* Định nghĩa các biến màu của bạn ở đây */
+  --color-background: #ffff;
+  --color-logocolor: #376dc5;
+  --color-textcolor: #38363b;
+  --color-whitecolor: #ffffff;
+  --color-greencolor: #42b72a;
+  --color-blackcolor: #000000;
+  --color-texttitlecolor: #ffffff;
+  --color-greenboldcolor: #00a400;
+  --color-backgroundPostColor: #252728;
+  --color-backgroundCommentDark: #333334;
+  --color-backgroundCommentLight: #f0f2f5;
+  --color-hovercolor: #d0d7dd;
+
+  /* Định nghĩa shadow */
+  --shadow-modal: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* IE */
+* {
+  -ms-overflow-style: none;
+}
+/* Custom Scrollbar cho các Sidebar và Main Content */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3e4042;
+  border-radius: 10px;
+  visibility: hidden; /* Mặc định ẩn */
+}
+
+/* Chỉ hiện thanh cuộn khi di chuột vào vùng đó */
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+/* Áp dụng style cho body */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-textcolor);
+    margin: 0;
+    font-family: sans-serif;
+  }
+}

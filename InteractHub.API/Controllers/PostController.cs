@@ -1,0 +1,116 @@
+using System.Security.Claims;
+using InteractHub.API.Common.Extensions;
+using InteractHub.API.DTOs.Posts;
+using InteractHub.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InteractHub.API.Controllers;
+
+[ApiController]
+[Route("api/post")]
+public class PostsController : ControllerBase
+{
+    private readonly IPostService _postService;
+
+    public PostsController(IPostService postService)
+    {
+        _postService = postService;
+    }
+
+    private string? GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    [HttpPost("create")]
+    [Authorize]
+    public async Task<IActionResult> CreatePost([FromForm] PostCreateDto dto)
+    {
+        var userId = GetUserId();
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _postService.CreatePostAsync(userId, dto);
+        return result.ToActionResult(this);
+    }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetTimeline()
+    {
+        var result = await _postService.GetTimelineAsync();
+        return result.ToActionResult(this);
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetUserPosts(string userId)
+    {
+        var result = await _postService.GetPostsByUserIdAsync(userId);
+        return result.ToActionResult(this);
+    }
+
+    [HttpGet("{postId}")]
+    public async Task<IActionResult> GetPostById(int postId)
+    {
+        var result = await _postService.GetPostByIdAsync(postId);
+        return result.ToActionResult(this);
+    }
+
+    [HttpDelete("delete/{postId}")]
+    [Authorize]
+    public async Task<IActionResult> DeletePost(int postId)
+    {
+        var userId = GetUserId();
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _postService.DeletePostAsync(postId, userId);
+        return result.ToActionResult(this);
+    }
+
+    [HttpPut("update/{postId}")]
+    [Authorize]
+    public async Task<IActionResult> UpdatePost(int postId, [FromForm] PostUpdateDto dto)
+    {
+        var userId = GetUserId();
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _postService.UpdatePostAsync(postId, userId, dto);
+        return result.ToActionResult(this);
+    }
+
+    [HttpGet("feed")]
+    [Authorize]
+    public async Task<IActionResult> GetHomeFeed([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        var userId = GetUserId();
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _postService.GetHomeFeedAsync(userId, page, pageSize);
+        return result.ToActionResult(this);
+    }
+
+    //----------ADMIN METHODS----------
+    [HttpGet("admin/all")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAllPostsForAdmin()
+    {
+        var result = await _postService.GetAllPostsForAdminAsync();
+        return result.ToActionResult(this);
+    }
+
+    [HttpPut("{postId}/status")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStatus(int postId, [FromBody] UpdatePostStatusRequest request)
+    {
+        var result = await _postService.UpdateStatusPostForAdminAsync(postId, request.Status);
+        return result.ToActionResult(this);
+    }
+
+    // đếm số lượng bài viết
+    [HttpGet("admin/dashboard")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetPostsCountAsync()
+    {
+        var result = await _postService.GetPostsCountAsync();
+        return result.ToActionResult(this);
+    }
+
+
+
+}
