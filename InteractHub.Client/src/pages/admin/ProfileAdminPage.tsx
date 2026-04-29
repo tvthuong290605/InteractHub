@@ -400,27 +400,33 @@
 // export default ProfileAdminPage;
 
 import React, { useState } from 'react';
-
 import Header from '../../components/layout/Header';
 import Sidebar from '../../components/layout/Sidebar';
 import ProfileHeader from '../../components/admin/ProfileHeader';
 import ProfileTabs from '../../components/admin/ProfileTabs';
 import ProfileTabContent from '../../components/admin/ProfileTabContent';
+import { mockAdmin } from '../../components/admin/adminMockData';
+import type { AdminUser } from '../../components/admin/adminMockData';
 
 const ProfileAdminPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications' | 'preferences'>('profile');
+    const [admin, setAdmin] = useState<AdminUser>(mockAdmin);
+
+    const handleAdminChange = (updated: Partial<AdminUser>) => {
+        setAdmin((prev) => ({ ...prev, ...updated }));
+    };
 
     return (
         <div className="space-y-6 mx-1 my-4">
             <Header />
-            <div className="flex-1 ml-64" >
+            <div className="flex-1 ml-64">
                 <Sidebar />
-                <div className="p-16 p-6">
-                    <ProfileHeader />
+                <div className="p-6">
+                    <ProfileHeader admin={admin} onChange={handleAdminChange} />
 
-                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 mt-6">
                         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-                        <ProfileTabContent activeTab={activeTab} />
+                        <ProfileTabContent activeTab={activeTab} admin={admin} onAdminChange={handleAdminChange} />
                     </div>
                 </div>
             </div>
