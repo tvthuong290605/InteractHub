@@ -227,7 +227,7 @@ public class PostRepository : IPostRepository
             .Include(p => p.User)
             .Include(p => p.PostMedias)
             .Where(p =>
-                (p.Status == 1 && p.UserId != currentUserId) ||
+                (p.Status == 1) ||
                 (p.Status == 2 && friendIdSet.Contains(p.UserId!))
             )
             .OrderByDescending(p => p.CreatedAt);

@@ -163,7 +163,8 @@ public class CommentService : ICommentService
             IsLikedByCurrentUser = !string.IsNullOrEmpty(currentUserId)
                 && c.CommentLikes != null
                 && c.CommentLikes.Any(l => l.UserId == currentUserId),
-            Replies = new List<CommentResponseDTO>()
+            Replies = new List<CommentResponseDTO>(),
+            Status = c.Status
         };
     }
 

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { commentService, type CommentResponse } from "../services/commetService";
-import {getTimeAgo} from "../utils/timeUtils"; // ✅ Tái sử dụng hàm định dạng thời gian chuẩn
-import {resolveUrl} from "../utils/urlUtils"; // ✅ Tái sử dụng hàm định dạng thời gian chuẩn
+import { getTimeAgo } from "../utils/timeUtils"; // ✅ Tái sử dụng hàm định dạng thời gian chuẩn
+import { resolveUrl } from "../utils/urlUtils"; // ✅ Tái sử dụng hàm định dạng thời gian chuẩn
+import { useAuth } from "../context/useAuth";   // ✅ THÊM IMPORT NÀY
+import { toast } from "react-toastify";
 
 interface CommentProps {
   comment: CommentResponse;
@@ -11,6 +13,7 @@ interface CommentProps {
   depth?: number;
   parentUserName?: string;
   highlighted?: boolean; // ✅ để highlight comment được navigate đến
+  postAuthorId?: string | undefined;
 }
 const Comment: React.FC<CommentProps> = ({
   comment,
@@ -19,6 +22,7 @@ const Comment: React.FC<CommentProps> = ({
   depth = 0,
   parentUserName,
   highlighted = false,
+  postAuthorId,
 }) => {
   const [isLiked, setIsLiked] = useState(comment.IsLikedByCurrentUser);
   const [likeCount, setLikeCount] = useState(comment.LikeCount);
@@ -28,8 +32,12 @@ const Comment: React.FC<CommentProps> = ({
   const [replies, setReplies] = useState<CommentResponse[]>(comment.Replies || []);
   const [showReplies, setShowReplies] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(highlighted);
+  const [currentStatus, setCurrentStatus] = useState(comment.Status);
+  const { user } = useAuth();                    // ✅ Lấy user đang đăng nhập
+  const currentUserId = user?.Id;
   const navigate = useNavigate();
   const commentRef = useRef<HTMLDivElement>(null);
+  const isPostAuthor = currentUserId && postAuthorId && currentUserId === postAuthorId;
 
   // 1. Tự động bung replies nếu URL chứa ID của comment con
   useEffect(() => {
@@ -75,6 +83,15 @@ const Comment: React.FC<CommentProps> = ({
       console.error("Lỗi khi Like:", err);
     }
   };
+  const handleHideComment = async (status: number) => {
+    try {
+      const data = await commentService.updateStatus(comment.Id, status); // 0 là trạng thái ẩn
+      toast.success(data)
+      setCurrentStatus(status);
+    } catch (err) {
+      console.error("Lỗi khi ẩn bình luận:", err);
+    }
+  };
 
   const handleReplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,7 +127,8 @@ const Comment: React.FC<CommentProps> = ({
       id={`comment-${comment.Id}`}
       ref={commentRef}
       className={`flex gap-3 ${isTopLevel ? "mt-5" : "mt-3"} rounded-xl transition-all duration-1000
-        ${isHighlighted
+  ${currentStatus === 0 ? "opacity-40" : "opacity-100"} /* ✅ Sửa comment.Status thành currentStatus */
+  ${isHighlighted
           ? "bg-[#2d3f57] ring-2 ring-[#1877f2] p-3 shadow-[0_0_20px_rgba(24,119,242,0.4)]"
           : "p-1"}`}
     >
@@ -150,6 +168,27 @@ const Comment: React.FC<CommentProps> = ({
           <button onClick={() => setShowReplyInput(!showReplyInput)} className="hover:underline">
             Phản hồi
           </button>
+          {/* ✅ NÚT ẨN BÌNH LUẬN - Chỉ hiện khi là chủ bài viết và có status là 1 */}
+          {/* ✅ Sửa comment.Status thành currentStatus */}
+          {isPostAuthor && currentStatus === 1 && (
+            <button
+              onClick={() => handleHideComment(0)}
+              className="hover:underline text-red-400 hover:text-red-500 transition"
+            >
+              Ẩn bình luận
+            </button>
+          )}
+          {/* ✅ NÚT HIỆN LẠI BÌNH LUẬN - Chỉ hiện khi là chủ bài viết và có status là 0 */}
+
+          {isPostAuthor && currentStatus === 0 && (
+            <button
+              onClick={() => handleHideComment(1)}
+              className="hover:underline text-green-400 hover:text-green-500 transition"
+            >
+              Hiện lại bình luận
+            </button>
+          )}
+
           <span className="font-normal opacity-70 cursor-default">
             {getTimeAgo(comment.CreatedAt)}
           </span>
@@ -187,6 +226,7 @@ const Comment: React.FC<CommentProps> = ({
                 comment={reply}
                 postId={postId}
                 depth={1}
+                postAuthorId={postAuthorId} // ✅ truyền authorId xuống Comment con để hiển thị nút ẩn nếu cần
                 parentUserName={reply.ParentUserName}
                 // Quan trọng: Truyền highlighted cho con nếu hash URL khớp với ID của nó
                 highlighted={window.location.hash === `#comment-${reply.Id}`}

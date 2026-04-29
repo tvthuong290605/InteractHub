@@ -15,6 +15,7 @@ export interface CommentResponse {
     LikeCount: number;
     IsLikedByCurrentUser: boolean;
     Replies: CommentResponse[];
+    Status: number; // 1: Hiển thị, 0: Ẩn
 }
 
 export interface CommentLikeResponse {

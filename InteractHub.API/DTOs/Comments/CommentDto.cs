@@ -10,6 +10,7 @@ public class CommentResponseDTO
     public string? UserAvatar { get; set; }
     public int PostId { get; set; }
     public int? ParentId { get; set; }
+    public int? Status { get; set; }  //1 = active, 0 = deleted, -1 = hidden
 
     // === THÊM FIELD NÀY ===
     // Dùng để hiển thị: @ParentUserName nội dung bình luận...
