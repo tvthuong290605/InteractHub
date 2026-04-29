@@ -10,28 +10,29 @@ public class CommentRepository : Repository<Comment>, ICommentRepository
     public CommentRepository(AppDbContext context) : base(context) { }
 
     public async Task<IEnumerable<Comment>> GetByPostIdAsync(int postId)
-    {
-        // 1. Lấy TẤT CẢ bình luận thuộc Post này (không phân biệt cha con)
-        var allComments = await _context.Comments
+{
+    // 1. Lấy TẤT CẢ bình luận thuộc Post này (cả ẩn và hiện)
+    var allComments = await _context.Comments
         .Include(c => c.User)
-        .Include(c => c.CommentLikes) // ✅ Đảm bảo nạp Like cho mọi level
-        .Where(c => c.PostId == postId && c.Status == 1)
+        .Include(c => c.CommentLikes)
+        // Dùng dấu ngoặc tròn để gom nhóm điều kiện Status chuẩn xác
+        .Where(c => c.PostId == postId && (c.Status == 1 || c.Status == 0)) 
         .ToListAsync();
 
-        // 2. Lọc ra các bình luận gốc (ParentId == null)
-        var rootComments = allComments
-            .Where(c => c.ParentId == null)
-            .OrderByDescending(c => c.CreatedAt)
-            .ToList();
+    // 2. Lọc ra các bình luận gốc (ParentId == null)
+    var rootComments = allComments
+        .Where(c => c.ParentId == null)
+        .OrderByDescending(c => c.CreatedAt)
+        .ToList();
 
-        // 3. Với mỗi bình luận gốc, đi tìm TẤT CẢ các con, cháu, chắt của nó
-        foreach (var root in rootComments)
-        {
-            root.Replies = GetFlatReplies(root.Id, allComments);
-        }
-
-        return rootComments;
+    // 3. Với mỗi bình luận gốc, đi tìm TẤT CẢ các con, cháu, chắt của nó
+    foreach (var root in rootComments)
+    {
+        root.Replies = GetFlatReplies(root.Id, allComments);
     }
+
+    return rootComments;
+}
 
     // Hàm phụ trợ để gom tất cả con cháu về 1 danh sách phẳng
     private List<Comment> GetFlatReplies(int parentId, List<Comment> allComments)

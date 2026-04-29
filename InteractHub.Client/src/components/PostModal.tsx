@@ -6,6 +6,7 @@ import {
 } from "react-icons/fa";
 import { postService } from "../services/postService";
 import { hashtagService } from "../services/hashtagService";
+import { toast } from "react-toastify";
 
 interface PostModalProps {
   user?: any;
@@ -187,7 +188,10 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
       formData.append("Status", status.toString());
       selectedMedia.forEach(item => formData.append("Files", item.file));
 
-      await postService.createPost(formData);
+      const data = await postService.createPost(formData);
+      if(data.status === 200) {
+        toast.success("Bài viết đã được đăng thành công!");
+      }
       onPostCreated?.(); 
       onClose();
     } catch (error: any) {
