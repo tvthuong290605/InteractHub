@@ -203,12 +203,12 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 text-[#e4e6eb]">
-      <div className="bg-[#242526] w-full max-w-[600px] rounded-2xl shadow-2xl flex flex-col border border-[#3e4042] animate-in fade-in zoom-in duration-300">
+      <div className="bg-bg w-full max-w-[600px] rounded-2xl shadow-2xl flex flex-col border border-border animate-in fade-in zoom-in duration-300">
         
         {/* Header */}
-        <div className="relative flex items-center justify-center border-b border-[#3e4042] px-4 py-4">
+        <div className="relative flex items-center justify-center border-b border-border px-4 py-4">
           <h3 className="text-xl font-bold text-white">Tạo bài viết</h3>
-          <button onClick={onClose} className="absolute right-4 w-9 h-9 flex items-center justify-center rounded-full bg-[#3a3b3c] hover:bg-[#4e4f50] text-gray-300 transition-colors">
+          <button onClick={onClose} className="absolute right-4 w-9 h-9 flex items-center justify-center rounded-full bg-bg hover:bg-bg text-gray-300 transition-colors">
             <FaTimes size={18} />
           </button>
         </div>
@@ -219,22 +219,22 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
             <img 
               src={currentUser?.AvatarUrl ? (currentUser.AvatarUrl.startsWith('http') ? currentUser.AvatarUrl : `${SERVER_BASE_URL}${currentUser.AvatarUrl}`) : "/images/default-avatar.png"} 
               alt="avatar" 
-              className="w-12 h-12 rounded-full object-cover border border-[#4e4f50] shadow-md" 
+              className="w-12 h-12 rounded-full object-cover border border-border shadow-md" 
             />
             <div className="flex flex-col">
               <p className="font-bold text-white leading-tight">{currentUser?.FullName || currentUser?.Username || "Thành viên"}</p>
               <div className="relative" ref={statusMenuRef}>
-                <button onClick={() => setShowStatusMenu(!showStatusMenu)} className="bg-[#3a3b3c] px-2.5 py-1 rounded-lg flex items-center gap-2 hover:bg-[#4e4f50] transition-all mt-1 border border-[#4e4f50]">
+                <button onClick={() => setShowStatusMenu(!showStatusMenu)} className="bg-bg px-2.5 py-1 rounded-lg flex items-center gap-2 hover:bg-bg transition-all mt-1 border border-border">
                   <span className="text-[#b0b3b8]">{statusOptions.find(opt => opt.id === status)?.icon}</span>
                   <span className="text-[#e4e6eb] text-[12px] font-semibold">{statusOptions.find(opt => opt.id === status)?.label}</span>
                   <FaCaretDown size={10} className="text-[#b0b3b8]" />
                 </button>
                 {showStatusMenu && (
-                  <div className="absolute top-full left-0 mt-2 bg-[#242526] border border-[#3e4042] rounded-xl shadow-2xl z-[110] w-[280px] p-2 animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute top-full left-0 mt-2 bg-bg border border-border rounded-xl shadow-2xl z-[110] w-[280px] p-2 animate-in fade-in slide-in-from-top-2">
                     {statusOptions.map((opt) => (
-                      <div key={opt.id} onClick={() => { setStatus(opt.id); setShowStatusMenu(false); }} className="flex items-center justify-between p-2 hover:bg-[#3a3b3c] rounded-xl cursor-pointer transition-colors">
+                      <div key={opt.id} onClick={() => { setStatus(opt.id); setShowStatusMenu(false); }} className="flex items-center justify-between p-2 hover:bg-bg rounded-xl cursor-pointer transition-colors">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 bg-[#4e4f50] rounded-full flex items-center justify-center text-white">{opt.icon}</div>
+                          <div className="w-9 h-9 bg-bg rounded-full flex items-center justify-center text-white">{opt.icon}</div>
                           <div>
                             <p className="text-[#e4e6eb] text-sm font-bold">{opt.label}</p>
                             <p className="text-[#b0b3b8] text-[11px]">{opt.desc}</p>
@@ -281,8 +281,8 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
             
             {/* Hashtag Suggestions UI */}
             {filteredSuggestions.length > 0 && (
-              <div className="absolute z-[160] left-0 bottom-full mb-2 w-64 bg-[#3a3b3c] rounded-xl shadow-2xl border border-[#4e4f50] overflow-hidden">
-                <div className="p-2 border-b border-[#4e4f50] flex items-center gap-2 text-xs text-[#b0b3b8] font-bold uppercase tracking-wider">
+              <div className="absolute z-[160] left-0 bottom-full mb-2 w-64 bg-bg rounded-xl shadow-2xl border border-border overflow-hidden">
+                <div className="p-2 border-b border-border flex items-center gap-2 text-xs text-[#b0b3b8] font-bold uppercase tracking-wider">
                   <FaHashtag /> Gợi ý Hashtag
                 </div>
                 <div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-[#4e4f50]">
@@ -290,7 +290,7 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
                     <div
                       key={tag}
                       onMouseDown={(e) => { e.preventDefault(); selectHashtag(tag); }}
-                      className={`px-4 py-2 cursor-pointer flex items-center justify-between transition-colors ${index === suggestionIndex ? 'bg-[#1877f2] text-white' : 'hover:bg-[#4e4f50] text-[#e4e6eb]'}`}
+                      className={`px-4 py-2 cursor-pointer flex items-center justify-between transition-colors ${index === suggestionIndex ? 'bg-bg text-white' : 'hover:bg-bg text-[#e4e6eb]'}`}
                     >
                       <span className="font-medium">{tag}</span>
                       {index === suggestionIndex && <span className="text-[10px] bg-white/20 px-1 rounded">Enter</span>}
@@ -315,31 +315,31 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
           </div>
 
           {showImageUpload && selectedMedia.length > 0 && (
-            <div className="relative mt-4 border border-[#3e4042] rounded-xl p-2 bg-[#1c1d1e] group/upload">
+            <div className="relative mt-4 border border-border rounded-xl p-2 bg-bg group/upload">
               <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
                 {selectedMedia.slice(0, 4).map((item, idx) => (
-                  <div key={idx} className="relative h-40 border border-[#3e4042] overflow-hidden group">
+                  <div key={idx} className="relative h-40 border border-border overflow-hidden group">
                     {item.type === 'video' ? <video src={item.preview} className="w-full h-full object-cover" /> : <img src={item.preview} className="w-full h-full object-cover" />}
                     <button onClick={() => removeMedia(idx)} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg"><FaTimes size={10} /></button>
                   </div>
                 ))}
               </div>
-              <div onClick={() => fileInputRef.current?.click()} className="absolute top-4 right-4 w-10 h-10 bg-[#1877f2] hover:bg-[#166fe5] rounded-full flex items-center justify-center cursor-pointer border-2 border-[#242526] z-30 shadow-xl text-white transition-all">
+              <div onClick={() => fileInputRef.current?.click()} className="absolute top-4 right-4 w-10 h-10 bg-bg hover:bg-bg rounded-full flex items-center justify-center cursor-pointer border-2 border-[#242526] z-30 shadow-xl text-white transition-all">
                  <FaPlus size={16} />
               </div>
             </div>
           )}
 
-          <div className="mt-6 border border-[#3e4042] rounded-xl p-4 flex items-center justify-between bg-[#3a3b3c]/20">
+          <div className="mt-6 border border-border rounded-xl p-4 flex items-center justify-between bg-bg/20">
             <span className="text-sm font-bold text-[#e4e6eb]">Thêm vào bài viết</span>
             <div className="flex gap-1">
-              <button type="button" onClick={() => { setShowImageUpload(true); fileInputRef.current?.click(); }} className="p-2.5 hover:bg-[#3a3b3c] rounded-full transition-all group" title="Ảnh/Video">
+              <button type="button" onClick={() => { setShowImageUpload(true); fileInputRef.current?.click(); }} className="p-2.5 hover:bg-bg rounded-full transition-all group" title="Ảnh/Video">
                 <FaImage size={22} className="text-[#45bd62] group-hover:scale-110 transition-transform" />
               </button>
-              <button type="button" className="p-2.5 hover:bg-[#3a3b3c] rounded-full transition-all group" title="Gắn thẻ bạn bè">
+              <button type="button" className="p-2.5 hover:bg-bg rounded-full transition-all group" title="Gắn thẻ bạn bè">
                 <FaUserFriends size={22} className="text-[#1877f2] group-hover:scale-110 transition-transform" />
               </button>
-              <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="p-2.5 hover:bg-[#3a3b3c] rounded-full transition-all text-[#f7b928] group" title="Cảm xúc">
+              <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="p-2.5 hover:bg-bg rounded-full transition-all text-[#f7b928] group" title="Cảm xúc">
                 <FaSmile size={22} className="group-hover:scale-110 transition-transform" />
               </button>
             </div>
@@ -351,7 +351,7 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
           <button
             onClick={handlePostSubmit}
             disabled={(!postContent.trim() && !postTitle.trim() && selectedMedia.length === 0) || isLoading}
-            className="w-full bg-[#1877f2] hover:bg-[#166fe5] disabled:bg-[#505151] disabled:text-[#8a8d91] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center text-base shadow-lg active:scale-[0.98]"
+            className="w-full bg-bg hover:bg-bg disabled:bg-bg disabled:text-[#8a8d91] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center text-base shadow-lg active:scale-[0.98]"
           >
             {isLoading ? (
               <div className="h-5 w-5 border-2 border-white/30 border-t-white animate-spin rounded-full"></div>

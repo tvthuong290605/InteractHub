@@ -88,15 +88,15 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
   // ── Danh sách ─────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-[#242526] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
-                      border border-[#3e4042] shadow-2xl overflow-hidden">
+      <div className="bg-bg rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
+                      border border-border shadow-2xl overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#3e4042] shrink-0">
+        <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
           <h2 className="text-xl font-bold text-white">Quản lý bài viết</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-[#3a3b3c] text-gray-400 transition-colors"
+            className="p-2 rounded-full hover:bg-bg text-gray-400 transition-colors"
           >
             <FaTimes size={18} />
           </button>
@@ -104,7 +104,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
 
         {/* Search */}
         <div className="px-4 pt-4 shrink-0">
-          <div className="flex items-center gap-2 bg-[#3a3b3c] rounded-xl px-3 py-2">
+          <div className="flex items-center gap-2 bg-bg rounded-xl px-3 py-2">
             <FaSearch size={14} className="text-gray-400 shrink-0" />
             <input
               type="text"
@@ -126,7 +126,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
           {loading ? (
             <>
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-20 bg-[#3a3b3c] rounded-xl animate-pulse" />
+                <div key={i} className="h-20 bg-bg rounded-xl animate-pulse" />
               ))}
             </>
           ) : filtered.length === 0 ? (
@@ -141,11 +141,11 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
               return (
                 <div
                   key={post.id}
-                  className="flex items-center gap-3 bg-[#3a3b3c] rounded-2xl p-3
-                             border border-[#4e4f50] hover:border-[#6e6f70] transition-colors"
+                  className="flex items-center gap-3 bg-bg rounded-2xl p-3
+                             border border-border hover:border-[#6e6f70] transition-colors"
                 >
                   {/* Thumbnail */}
-                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-[#4e4f50]">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-bg">
                     {thumb ? (
                       thumb.match(/\.(mp4|webm|ogg)$/i) ? (
                         <video src={resolveUrl(thumb)} className="w-full h-full object-cover" />
@@ -195,7 +195,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
                         </button>
                         <button
                           onClick={() => setConfirmDeleteId(null)}
-                          className="px-2 py-1 bg-[#4e4f50] hover:bg-[#6e6f70]
+                          className="px-2 py-1 bg-bg hover:bg-[#6e6f70]
                                      text-white text-xs rounded-lg transition-colors"
                         >
                           Hủy
@@ -205,7 +205,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
                       <>
                         <button
                           onClick={() => setEditingPost(post)}
-                          className="p-2 rounded-xl bg-[#4e4f50] hover:bg-blue-600/20
+                          className="p-2 rounded-xl bg-bg hover:bg-blue-600/20
                                      text-gray-400 hover:text-blue-400 transition-colors"
                           title="Chỉnh sửa"
                         >
@@ -213,7 +213,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
                         </button>
                         <button
                           onClick={() => setConfirmDeleteId(post.id)}
-                          className="p-2 rounded-xl bg-[#4e4f50] hover:bg-red-600/20
+                          className="p-2 rounded-xl bg-bg hover:bg-red-600/20
                                      text-gray-400 hover:text-red-400 transition-colors"
                           title="Xóa"
                         >
@@ -229,7 +229,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#3e4042] shrink-0 text-center">
+        <div className="p-4 border-t border-border shrink-0 text-center">
           <p className="text-gray-500 text-sm">{posts.length} bài viết</p>
         </div>
       </div>
@@ -298,14 +298,14 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-[#242526] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
-                      border border-[#3e4042] shadow-2xl overflow-hidden">
+      <div className="bg-bg rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
+                      border border-border shadow-2xl overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center gap-3 p-5 border-b border-[#3e4042] shrink-0">
+        <div className="flex items-center gap-3 p-5 border-b border-border shrink-0">
           <button
             onClick={onBack}
-            className="p-2 rounded-full hover:bg-[#3a3b3c] text-gray-400 transition-colors"
+            className="p-2 rounded-full hover:bg-bg text-gray-400 transition-colors"
           >
             <FaTimes size={18} />
           </button>
@@ -313,7 +313,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-[#1877f2] hover:bg-[#166fe5]
+            className="flex items-center gap-2 px-4 py-2 bg-bg hover:bg-bg
                        text-white text-sm font-semibold rounded-xl transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -344,7 +344,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
                                transition-colors flex-1 justify-center
                                ${status === opt.value
                       ? `${opt.color} ${opt.bg} border-current`
-                      : "text-gray-400 bg-[#3a3b3c] border-transparent hover:border-[#6e6f70]"
+                      : "text-gray-400 bg-bg border-transparent hover:border-[#6e6f70]"
                     }`}
                 >
                   {opt.icon} {opt.label}
@@ -359,8 +359,8 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               value={title}
               onChange={(e) => setTiTle(e.target.value)}
               placeholder="Tiêu đề bài viết..."
-              className="w-full bg-[#3a3b3c] text-white text-sm rounded-xl px-4 py-3
-                         outline-none border border-[#4e4f50] focus:border-[#1877f2]
+              className="w-full bg-bg text-white text-sm rounded-xl px-4 py-3
+                         outline-none border border-border focus:border-border
                          resize-none placeholder-gray-500 transition-colors"
             />
           </div>
@@ -373,8 +373,8 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               onChange={(e) => setContent(e.target.value)}
               rows={5}
               placeholder="Nội dung bài viết..."
-              className="w-full bg-[#3a3b3c] text-white text-sm rounded-xl px-4 py-3
-                         outline-none border border-[#4e4f50] focus:border-[#1877f2]
+              className="w-full bg-bg text-white text-sm rounded-xl px-4 py-3
+                         outline-none border border-border focus:border-border
                          resize-none placeholder-gray-500 transition-colors"
             />
           </div>
@@ -386,7 +386,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               <div className="grid grid-cols-3 gap-2">
                 {existingMedias.map((url) => (
                   <div key={url} className="relative group rounded-xl overflow-hidden
-                                             aspect-square bg-[#3a3b3c]">
+                                             aspect-square bg-bg">
                     {url.match(/\.(mp4|webm|ogg)$/i) ? (
                       <video src={resolveUrl(url)} className="w-full h-full object-cover" />
                     ) : (
@@ -413,7 +413,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               <div className="grid grid-cols-3 gap-2">
                 {newPreviews.map((preview, i) => (
                   <div key={i} className="relative group rounded-xl overflow-hidden
-                                           aspect-square bg-[#3a3b3c]">
+                                           aspect-square bg-bg">
                     {newFiles[i]?.type.includes("video") ? (
                       <video src={preview} className="w-full h-full object-cover" />
                     ) : (
@@ -437,7 +437,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
           <button
             onClick={() => fileInputRef.current?.click()}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl
-                       border-2 border-dashed border-[#4e4f50] hover:border-[#1877f2]
+                       border-2 border-dashed border-border hover:border-border
                        text-gray-400 hover:text-[#1877f2] transition-colors text-sm"
           >
             <FaPlus size={13} /> Thêm ảnh / video

@@ -13,7 +13,7 @@ const FriendPage: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#18191a]">
+    <div className="min-h-screen bg-bg">
 
       <main className="max-w-[1200px] mx-auto pt-20 px-4">
         <div className="flex gap-4 items-start">
@@ -27,7 +27,7 @@ const FriendPage: React.FC = () => {
           </div>
 
           {/* Divider */}
-          <div className="w-px self-stretch bg-[#3e4042]" />
+          <div className="w-px self-stretch bg-bg" />
 
           {/* ── CỘT PHẢI: Danh sách bạn bè ── */}
           <div className="flex-1">

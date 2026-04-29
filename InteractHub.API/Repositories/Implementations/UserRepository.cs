@@ -3,6 +3,7 @@ using InteractHub.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.DTOs.User;
+using static InteractHub.API.DTOs.User.UserDto;
 
 
 namespace InteractHub.API.Repositories.Implementations;
@@ -84,6 +85,45 @@ public class UserRepository : IUserRepository
             TotalUsers = totalUsers,
             Growth = growth
         };
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IEnumerable<UserSearchDto>> SearchUsersAsync(string keyword, string? currentUserId)
+    {
+        var lower = keyword.ToLower();
+
+        return await _db.Users
+            .Where(u =>
+                (currentUserId == null || u.Id != currentUserId) &&
+                u.Status == 1 &&
+                (
+                    (u.FullName != null && EF.Functions.Like(u.FullName.ToLower(), $"%{lower}%")) ||
+                    (u.UserName != null && EF.Functions.Like(u.UserName.ToLower(), $"%{lower}%"))
+                )
+            )
+            .Select(u => new UserSearchDto
+            {
+                Id = u.Id,
+                Username = u.UserName ?? "",
+                FullName = u.FullName,
+                AvatarUrl = u.ProfilePicture,
+                MutualFriends = 0,
+                FriendshipStatus = "None"
+            })
+            .Take(20)
+            .ToListAsync();
     }
 }
 

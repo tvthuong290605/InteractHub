@@ -100,14 +100,14 @@ const ShareModal = ({ post, onClose }: ShareModalProps) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#242526] border border-[#3e4042] w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+      <div className="bg-bg border border-border w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
-        <div className="p-4 border-b border-[#3e4042] flex justify-between items-center">
+        <div className="p-4 border-b border-border flex justify-between items-center">
           <h3 className="text-lg font-bold text-white text-center flex-1">Chia sẻ bài viết</h3>
           <button 
             onClick={onClose} 
-            className="w-8 h-8 rounded-full bg-[#3a3b3c] flex items-center justify-center hover:bg-[#4e4f50] transition text-white"
+            className="w-8 h-8 rounded-full bg-bg flex items-center justify-center hover:bg-bg transition text-white"
           >
             ✕
           </button>
@@ -121,7 +121,7 @@ const ShareModal = ({ post, onClose }: ShareModalProps) => {
               <input 
                 readOnly 
                 value={shareUrl} 
-                className="flex-1 bg-[#3a3b3c] border border-[#4e4f50] rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500"
+                className="flex-1 bg-bg border border-border rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500"
               />
               <button 
                 onClick={handleCopyLink}
@@ -144,7 +144,7 @@ const ShareModal = ({ post, onClose }: ShareModalProps) => {
                 placeholder="Tìm kiếm bạn bè..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="w-full bg-[#3a3b3c] border border-[#4e4f50] py-2 pl-9 pr-4 rounded-xl text-sm text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                className="w-full bg-bg border border-border py-2 pl-9 pr-4 rounded-xl text-sm text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               />
               <span className="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
             </div>
@@ -155,15 +155,15 @@ const ShareModal = ({ post, onClose }: ShareModalProps) => {
                 // Loading Skeletons
                 [1, 2, 3].map(i => (
                   <div key={i} className="flex items-center gap-3 p-2 animate-pulse">
-                    <div className="w-10 h-10 bg-[#3a3b3c] rounded-full" />
-                    <div className="h-4 bg-[#3a3b3c] rounded w-32" />
+                    <div className="w-10 h-10 bg-bg rounded-full" />
+                    <div className="h-4 bg-bg rounded w-32" />
                   </div>
                 ))
               ) : filteredFriends.length > 0 ? (
                 filteredFriends.map((friend) => {
                   const isSent = sendingIds.includes(friend.id);
                   return (
-                    <div key={friend.id} className="flex items-center justify-between p-2 hover:bg-[#3a3b3c] rounded-xl transition group">
+                    <div key={friend.id} className="flex items-center justify-between p-2 hover:bg-bg rounded-xl transition group">
                       <div className="flex items-center gap-3">
                         <img 
                           src={friend.avatarUrl ? resolveUrl(friend.avatarUrl) : "/assets/img/icons8-user-default-64.png"} 

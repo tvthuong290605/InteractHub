@@ -22,7 +22,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({ user }) => {
 
 
   return (
-    <div className="bg-[#242526] border border-gray-700 rounded-3xl p-8 shadow-xl">
+    <div className="bg-bg border border-gray-700 rounded-3xl p-8 shadow-xl">
       <h4 className="text-2xl font-bold text-white mb-6 pb-4 border-b border-gray-700">
         Thông tin cá nhân
       </h4>

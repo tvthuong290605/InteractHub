@@ -187,7 +187,7 @@ const MediaGrid = ({ mediaUrls }: MediaGridProps) => {
 
     if (!mediaUrls?.length) return null;
     if (!orientations)
-        return <div className="w-full h-48 bg-[#3a3b3c] rounded-xl animate-pulse" />;
+        return <div className="w-full h-48 bg-bg rounded-xl animate-pulse" />;
 
     const total = mediaUrls.length;
     const firstIsPortrait = orientations[0] === "portrait";

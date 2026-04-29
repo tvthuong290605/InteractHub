@@ -103,9 +103,9 @@ const markAsRead = async (id: number, link?: string) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#18191a]">
+    <div className="flex flex-col h-full bg-bg">
       {/* HEADER */}
-      <div className="sticky top-0 z-10 flex-shrink-0 bg-[#18191a]
+      <div className="sticky top-0 z-10 flex-shrink-0 bg-bg
                       flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-800">
         <div className="flex items-center gap-2">
           <h2 className="text-[17px] font-bold text-gray-200 uppercase tracking-wider">
@@ -158,7 +158,7 @@ const markAsRead = async (id: number, link?: string) => {
                 className={`flex items-start gap-3 px-3 py-3 rounded-xl cursor-pointer
                             transition-all group relative
                             ${notif.isRead
-                              ? "hover:bg-[#3a3b3c]"
+                              ? "hover:bg-bg"
                               : "bg-[#263248] hover:bg-[#2d3a52] border-l-4 border-blue-500 rounded-l-none"
                             }`}
               >
@@ -170,12 +170,12 @@ const markAsRead = async (id: number, link?: string) => {
                       className="w-12 h-12 rounded-full object-cover border border-gray-700"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-[#3a3b3c] 
+                    <div className="w-12 h-12 rounded-full bg-bg 
                                     flex items-center justify-center text-xl border border-gray-700">
                       {getTypeIcon(notif.type)}
                     </div>
                   )}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#242526] 
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-bg 
                                   flex items-center justify-center text-[12px] border border-gray-800">
                     {getTypeIcon(notif.type)}
                   </div>

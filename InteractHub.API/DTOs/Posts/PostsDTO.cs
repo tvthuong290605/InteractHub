@@ -61,3 +61,17 @@ public class PagedPostResponseDto
     public int TotalCount { get; set; }
     public bool HasMore { get; set; }
 }
+
+// ✅ DTO riêng cho kết quả tìm kiếm — có LikeCount, CommentCount, MediaUrls
+public class PostSearchResponseDto
+{
+    public int Id { get; set; }
+    public string? Content { get; set; }
+    public string AuthorName { get; set; } = "";
+    public string AuthorAvatar { get; set; } = "";
+    public string AuthorId { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public int LikeCount { get; set; }
+    public int CommentCount { get; set; }
+    public List<string> MediaUrls { get; set; } = new();
+}

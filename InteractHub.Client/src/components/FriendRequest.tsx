@@ -43,14 +43,14 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
   return (
     <div 
       onClick={handleGoToProfile} // 5. Lắng nghe sự kiện click trên toàn bộ item
-      className="group flex items-center gap-3 p-2 rounded-xl hover:bg-[#3a3b3c] transition-all duration-200 ease-in-out cursor-pointer"
+      className="group flex items-center gap-3 p-2 rounded-xl hover:bg-bg transition-all duration-200 ease-in-out cursor-pointer"
     >
       {/* Avatar Section */}
       <div className="relative flex-shrink-0">
         <img
           src={resolveUrl(request.avatarUrl)}
           alt={request.fullName}
-          className="w-20 h-20 rounded-full object-cover shadow-sm border border-[#3e4042] group-hover:border-[#4e4f50] transition-colors"
+          className="w-20 h-20 rounded-full object-cover shadow-sm border border-border group-hover:border-border transition-colors"
           onError={(e) => {
             (e.target as HTMLImageElement).src = "/images/default-avatar.png";
           }}
@@ -74,7 +74,7 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
           <button
             disabled={isProcessing}
             onClick={(e) => handleAction(e, "accept")}
-            className="flex-1 py-1.5 bg-[#1877f2] hover:bg-[#166fe5] disabled:bg-[#254f85] 
+            className="flex-1 py-1.5 bg-bg hover:bg-bg disabled:bg-bg
                        text-white text-[13px] font-bold rounded-lg transition-all
                        flex items-center justify-center min-h-[32px] active:scale-95"
           >
@@ -86,7 +86,7 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
           <button
             disabled={isProcessing}
             onClick={(e) => handleAction(e, "reject")}
-            className="flex-1 py-1.5 bg-[#3a3b3c] hover:bg-[#4e4f50] disabled:opacity-50
+            className="flex-1 py-1.5 bg-bg hover:bg-bg disabled:opacity-50
                        text-[#e4e6eb] text-[13px] font-bold rounded-lg transition-all
                        flex items-center justify-center min-h-[32px] active:scale-95"
           >

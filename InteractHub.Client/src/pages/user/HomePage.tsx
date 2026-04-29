@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
     <div className="flex h-full overflow-hidden">
 
       {/* --- CỘT 1 (TRÁI) --- */}
-      <aside className="hidden lg:flex flex-col h-full overflow-y-auto no-scrollbar bg-[#18191a] w-[390px] flex-shrink-0">
+      <aside className="hidden lg:flex flex-col h-full overflow-y-auto no-scrollbar bg-bg w-[390px] flex-shrink-0">
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-white px-4 mt-2 tracking-tight">
             Trang chủ
@@ -37,7 +37,7 @@ const HomePage: React.FC = () => {
       </aside>
 
       {/* --- CỘT 2 (GIỮA) --- */}
-      <main className="flex-1 h-full overflow-y-auto custom-scrollbar bg-[#18191a] transition-all duration-300 ease-in-out">
+      <main className="flex-1 h-full overflow-y-auto custom-scrollbar bg-bg transition-all duration-300 ease-in-out">
         <div className="max-w-[850px] lg:max-w-[1000px] mx-auto py-5 space-y-6">
           <StoryList user={userForComponents} />
           <PostList />

@@ -241,4 +241,32 @@ public class PostRepository : IPostRepository
 
         return (posts, totalCount);
     }
+
+
+
+
+
+
+
+
+
+        // ✅ Tìm kiếm bài viết theo keyword trong Title hoặc Content
+    // Chỉ trả về bài viết công khai (Status = 1)
+    public async Task<IEnumerable<Post>> SearchPostsAsync(string keyword)
+    {
+        var lower = keyword.ToLower();
+        return await _context.Posts
+        .Where(p => p.Status == 1 &&
+           (
+               (p.Content != null && EF.Functions.Like(p.Content, $"%{keyword}%"))
+               || (p.Title != null && EF.Functions.Like(p.Title, $"%{keyword}%"))
+           ))
+            .Include(p => p.User)
+            .Include(p => p.PostMedias)
+            // .Include(p => p.Likes)
+            // .Include(p => p.Comments)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(50) // giới hạn 50 kết quả
+            .ToListAsync();
+    }
 }

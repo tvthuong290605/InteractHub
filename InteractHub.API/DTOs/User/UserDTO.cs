@@ -19,4 +19,29 @@ public class UserDto
 
     public string? Gender { get; set; }   // ✅ thêm mới
     public List<string> Roles { get; set; } = new();
+
+
+
+
+
+
+
+
 }
+
+
+
+
+// ✅ DTO riêng cho kết quả tìm kiếm user
+public class UserSearchDto
+{
+    public string Id { get; set; } = "";
+    public string Username { get; set; } = "";
+    public string? FullName { get; set; }
+    public string? AvatarUrl { get; set; }
+    public int MutualFriends { get; set; } = 0;
+    public string FriendshipStatus { get; set; } = "None"; // 👈 thêm
+}
+
+
+

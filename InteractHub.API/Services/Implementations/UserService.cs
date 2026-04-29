@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.Data;
 using Microsoft.EntityFrameworkCore;
+using static InteractHub.API.DTOs.User.UserDto;
 
 namespace InteractHub.API.Services.Implementations;
 
@@ -226,4 +227,60 @@ public class UserService : IUserService
             return Result<UserDashboardDTO>.ServerError($"Lỗi khi lấy dữ liệu cho dashboard admin {ex.Message}");
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       // ✅ Tìm kiếm user theo FullName hoặc UserName, loại bỏ chính mình
+public async Task<Result<IEnumerable<UserSearchDto>>> SearchUsersAsync(
+    string keyword,
+    string? currentUserId)
+{
+    if (string.IsNullOrWhiteSpace(keyword))
+        return Result<IEnumerable<UserSearchDto>>.Ok(new List<UserSearchDto>());
+
+    var lower = keyword.ToLower();
+
+    var users = await _userManager.Users
+        .Where(u =>
+            u.Status == 1 &&
+            (currentUserId == null || u.Id != currentUserId) &&
+
+            (
+                EF.Functions.Like(u.FullName, $"%{keyword}%") ||
+                EF.Functions.Like(u.UserName, $"%{keyword}%")
+            )
+        )
+        .Take(20)
+        .ToListAsync();
+
+    var result = users.Select(u => new UserSearchDto
+    {
+        Id = u.Id,
+        Username = u.UserName ?? "",
+        FullName = u.FullName,
+        AvatarUrl = u.ProfilePicture,
+        MutualFriends = 0,
+        FriendshipStatus = "None"
+    });
+
+    return Result<IEnumerable<UserSearchDto>>.Ok(result);
+}
+
+
+
+
 }

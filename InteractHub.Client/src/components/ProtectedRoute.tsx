@@ -6,8 +6,8 @@
 
 //   if (isLoading) {
 //     return (
-//       <div className="flex h-screen items-center justify-center bg-[#18191a]">
-//         <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1877f2] border-t-transparent"></div>
+//       <div className="flex h-screen items-center justify-center bg-[bg-bg#18191a]">
+//         <div className="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-transparent"></div>
 //       </div>
 //     );
 //   }

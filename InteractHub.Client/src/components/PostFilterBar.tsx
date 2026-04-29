@@ -51,13 +51,13 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
   })();
 
   return (
-    <div className="bg-[#242526] p-4 rounded-xl border border-[#3e4042] shadow-sm">
+    <div className="bg-bg p-4 rounded-xl border border-border shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-bold text-white">Bài viết</h3>
         {isOwnProfile && (
           <button
             onClick={onManageClick}
-            className="flex items-center gap-2 px-3 py-1.5 bg-[#3a3b3c] hover:bg-[#4e4f50]
+            className="flex items-center gap-2 px-3 py-1.5 bg-bg hover:bg-bg
                        text-white text-sm rounded-lg transition-colors"
           >
             <FaTh size={13} />
@@ -67,7 +67,7 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <div className="flex items-center gap-1 bg-[#3a3b3c] rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-bg rounded-lg p-1">
           <FaFilter size={12} className="text-gray-400 ml-1" />
           {statusOptions.map((opt) => (
             <button
@@ -75,8 +75,8 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
               onClick={() => onStatusChange(opt.value as StatusFilter)}
               className={`px-3 py-1 rounded-md text-sm transition-colors
                 ${status === opt.value
-                  ? "bg-[#1877f2] text-white"
-                  : "text-gray-300 hover:bg-[#4e4f50]"
+                  ? "bg-bg text-white"
+                  : "text-gray-300 hover:bg-bg"
                 }`}
             >
               {opt.emoji} {opt.label}
@@ -84,7 +84,7 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
           ))}
         </div>
 
-        <div className="flex items-center gap-1 bg-[#3a3b3c] rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-bg rounded-lg p-1">
           <FaSort size={12} className="text-gray-400 ml-1" />
           {(["newest", "oldest"] as SortOrder[]).map((s) => (
             <button
@@ -92,8 +92,8 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
               onClick={() => onSortChange(s)}
               className={`px-3 py-1 rounded-md text-sm transition-colors
                 ${sort === s
-                  ? "bg-[#1877f2] text-white"
-                  : "text-gray-300 hover:bg-[#4e4f50]"
+                  ? "bg-bg text-white"
+                  : "text-gray-300 hover:bg-bg"
                 }`}
             >
               {s === "newest" ? "🕐 Mới nhất" : "🕰️ Cũ nhất"}

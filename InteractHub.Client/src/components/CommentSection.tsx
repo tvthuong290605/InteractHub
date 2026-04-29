@@ -120,12 +120,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
       }}
     >
       {/* ── Modal container ─────────────────────────────────────── */}
-      <div className="relative w-full max-w-5xl h-[90vh] bg-[#242526] rounded-2xl shadow-2xl border border-[#3e4042] flex overflow-hidden">
+      <div className="relative w-full max-w-5xl h-[90vh] bg-bg rounded-2xl shadow-2xl border border-border flex overflow-hidden">
 
         {/* ── Nút đóng ── */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-8 h-8 bg-[#3a3b3c] hover:bg-[#4e4f50] rounded-full flex items-center justify-center text-gray-300 hover:text-white transition"
+          className="absolute top-3 right-3 z-10 w-8 h-8 bg-bg hover:bg-bg rounded-full flex items-center justify-center text-gray-300 hover:text-white transition"
         >
           ✕
         </button>
@@ -133,10 +133,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
         {/* ════════════════════════════════════════════════════════
             CỘT TRÁI — Nội dung bài viết (scroll độc lập)
         ════════════════════════════════════════════════════════ */}
-        <div className="w-[55%] border-r border-[#3e4042] flex flex-col overflow-y-auto no-scrollbar">
+        <div className="w-[55%] border-r border-border flex flex-col overflow-y-auto no-scrollbar">
 
           {/* Header bài viết */}
-          <div className="flex items-center gap-3 p-4 sticky top-0 bg-[#242526] z-10 border-b border-[#3e4042]">
+          <div className="flex items-center gap-3 p-4 sticky top-0 bg-bg z-10 border-b border-border">
             <img
               src={
                 post.authorAvatar
@@ -189,7 +189,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
         <div className="flex-1 flex flex-col min-h-0">
 
           {/* Header cột phải */}
-          <div className="px-4 py-3 border-b border-[#3e4042] flex-shrink-0">
+          <div className="px-4 py-3 border-b border-border flex-shrink-0">
             <h3 className="text-white font-bold text-[15px]">
               Bình luận
               {comments.length > 0 && (
@@ -204,7 +204,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 no-scrollbar">
             {loading ? (
               <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-[#1877f2]" />
+                <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-border" />
               </div>
             ) : error ? (
               <p className="text-center text-red-500 py-6">{error}</p>
@@ -231,12 +231,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
           </div>
 
           {/* Input gửi comment — cố định dưới cùng */}
-          <div className="flex-shrink-0 p-4 border-t border-[#3e4042] flex gap-2 items-center bg-[#242526]">
+          <div className="flex-shrink-0 p-4 border-t border-border flex gap-2 items-center bg-bg">
             <input
               type="text"
               placeholder="Viết bình luận..."
-              className="flex-1 px-4 py-2.5 bg-[#3a3b3c] border border-[#4e4f50] rounded-2xl
-                         text-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-[#1877f2] transition"
+              className="flex-1 px-4 py-2.5 bg-bg border border-border rounded-2xl
+                         text-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-border transition"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={(e) => {
@@ -250,7 +250,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
             <button
               onClick={handleAddComment}
               disabled={!newComment.trim() || loading}
-              className="bg-[#1877f2] hover:bg-[#166fe5] disabled:opacity-40 disabled:cursor-not-allowed
+              className="bg-bg hover:bg-bg disabled:opacity-40 disabled:cursor-not-allowed
                          text-white px-4 py-2.5 rounded-2xl text-sm font-medium transition"
             >
               Gửi

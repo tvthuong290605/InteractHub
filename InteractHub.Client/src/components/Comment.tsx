@@ -129,7 +129,7 @@ const Comment: React.FC<CommentProps> = ({
       className={`flex gap-3 ${isTopLevel ? "mt-5" : "mt-3"} rounded-xl transition-all duration-1000
   ${currentStatus === 0 ? "opacity-40" : "opacity-100"} /* ✅ Sửa comment.Status thành currentStatus */
   ${isHighlighted
-          ? "bg-[#2d3f57] ring-2 ring-[#1877f2] p-3 shadow-[0_0_20px_rgba(24,119,242,0.4)]"
+          ? "bg-bg ring-2 ring-[#1877f2] p-3 shadow-[0_0_20px_rgba(24,119,242,0.4)]"
           : "p-1"}`}
     >
       <div className="flex-shrink-0">
@@ -141,7 +141,7 @@ const Comment: React.FC<CommentProps> = ({
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="bg-[#3a3b3c] rounded-2xl px-4 py-2.5 w-fit max-w-[95%] shadow-md">
+        <div className="bg-bg rounded-2xl px-4 py-2.5 w-fit max-w-[95%] shadow-md">
           <p
             onClick={() => navigate(`/profile/${comment.UserId}`)}
             className="text-white text-[14px] font-semibold hover:underline cursor-pointer mb-0.5"
@@ -201,7 +201,7 @@ const Comment: React.FC<CommentProps> = ({
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder={`Trả lời ${comment.UserName}...`}
-              className="flex-1 bg-[#3a3b3c] text-white text-[14px] px-4 py-2 rounded-full outline-none focus:ring-2 ring-[#1877f2] transition-all"
+              className="flex-1 bg-bg text-white text-[14px] px-4 py-2 rounded-full outline-none focus:ring-2 ring-[#1877f2] transition-all"
             />
           </form>
         )}
@@ -219,7 +219,7 @@ const Comment: React.FC<CommentProps> = ({
         )}
 
         {isTopLevel && showReplies && replies.length > 0 && (
-          <div className="mt-3 space-y-3 border-l-[3px] border-[#4e4f50] ml-1 pl-4">
+          <div className="mt-3 space-y-3 border-l-[3px] border-border ml-1 pl-4">
             {replies.map((reply) => (
               <Comment
                 key={reply.Id}

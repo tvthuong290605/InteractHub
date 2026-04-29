@@ -18,7 +18,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
   return (
     <div
-      className={`bg-[#242526] border border-[#3e4042] rounded-3xl p-5 shadow-xl
+      className={`bg-bg border border-border rounded-3xl p-5 shadow-xl
         ${variant === "profile" ? "w-full" : "max-w-2xl mx-auto"}`}
     >
       <div className="flex items-center gap-4">
@@ -39,7 +39,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
         <button
           onClick={() => setShowForm(true)}
-          className="flex-1 bg-[#3a3b3c] hover:bg-[#4a4b4d] text-left text-gray-300 
+          className="flex-1 bg-bg hover:bg-[#4a4b4d] text-left text-gray-300 
              text-[17px] py-3.5 px-5 rounded-full transition-all duration-200
              focus:outline-none focus:ring-2 focus:ring-[#1877f2] active:scale-[0.985]"
         >
@@ -52,7 +52,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
         </button>
       </div>
 
-      <div className="border-t border-[#3e4042] my-4" />
+      <div className="border-t border-border my-4" />
 
       <div className="grid grid-cols-3 gap-2">
         <ActionButton icon={<FaVideo className="text-red-500" />} label="Video trực tiếp" />
@@ -72,7 +72,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
 const ActionButton = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
   <button
-    className="flex items-center justify-center gap-3 py-3.5 hover:bg-[#3a3b3c] 
+    className="flex items-center justify-center gap-3 py-3.5 hover:bg-bg 
                rounded-2xl transition-all duration-200 text-gray-300 hover:text-white group"
   >
     <div className="group-hover:scale-110 transition-transform duration-200">

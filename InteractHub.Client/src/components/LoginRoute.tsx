@@ -6,8 +6,8 @@ const LoginRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#18191a] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#1877f2] border-t-transparent"></div>
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-border border-t-transparent"></div>
       </div>
     );
   }

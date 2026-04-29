@@ -113,4 +113,17 @@ public class PostsController : ControllerBase
 
 
 
+
+
+
+    // ✅ Endpoint tìm kiếm bài viết
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchPosts([FromQuery] string keyword)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+            return Ok(new List<PostResponseDto>());
+
+        var result = await _postService.SearchPostsAsync(keyword);
+         return result.ToActionResult(this);
+    }
 }

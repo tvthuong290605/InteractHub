@@ -201,7 +201,7 @@
 //   const renderMediaGrid = () => {
 //     const urls = post.mediaUrls;
 //     if (!urls?.length) return null;
-//     if (!orientations) return <div className="w-full h-48 bg-[#3a3b3c] rounded-xl animate-pulse" />;
+//     if (!orientations) return <div className="w-full h-48 bg-bg rounded-xl animate-pulse" />;
 
 //     const total = urls.length;
 //     const firstIsPortrait = orientations[0] === "portrait";
@@ -330,7 +330,7 @@
 //     );
 //   };
 //   return (
-//     <div className="bg-[#242526] border border-[#3e4042] rounded-3xl shadow-xl mb-6 overflow-hidden text-white">
+//     <div className="bg-bg border border-border rounded-3xl shadow-xl mb-6 overflow-hidden text-white">
 //       {/* HEADER */}
 //       <div className="flex items-center gap-3 p-4">
 //         <img
@@ -377,7 +377,7 @@
 //       {/* REACTION & COMMENT COUNT */}
 //       {/* REACTION & COMMENT COUNT */}
 //       {(reactionCount > 0 || commentCount > 0) && ( // Dùng state commentCount ở đây
-//         <div className="px-4 py-2 border-t border-[#3e4042] text-gray-400 text-sm flex justify-between items-center">
+//         <div className="px-4 py-2 border-t border-border text-gray-400 text-sm flex justify-between items-center">
 //           <div
 //             onClick={openReactionModal}
 //             className="cursor-pointer hover:underline flex items-center gap-2"
@@ -397,13 +397,13 @@
 //       )}
 
 //       {/* ACTIONS */}
-//       <div className="flex border-t border-[#3e4042] divide-x divide-[#3e4042]">
+//       <div className="flex border-t border-border divide-x divide-[#3e4042]">
 //         <div className="flex-1 relative">
 //           {showPicker && (
 //             <div
 //               onMouseEnter={handleMouseEnterPicker}
 //               onMouseLeave={handleMouseLeavePicker}
-//               className="absolute bottom-[110%] left-2 z-50 bg-[#3a3b3c] border border-[#4e4f50] rounded-full px-3 py-2 flex gap-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2"
+//               className="absolute bottom-[110%] left-2 z-50 bg-bg border border-border rounded-full px-3 py-2 flex gap-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2"
 //             >
 //               {REACTIONS.map((r) => (
 //                 <button
@@ -424,24 +424,24 @@
 //             onMouseEnter={handleMouseEnterBtn}
 //             onMouseLeave={handleMouseLeaveBtn}
 //             className={`w-full py-4 flex items-center justify-center gap-2 transition-colors
-//               ${currentReaction ? currentReaction.color : "text-gray-300 hover:bg-[#3a3b3c]"}`}
+//               ${currentReaction ? currentReaction.color : "text-gray-300 hover:bg-bg"}`}
 //           >
 //             <span className="text-xl">{currentReaction ? currentReaction.emoji : "👍"}</span>
 //             <span className="font-medium">{currentReaction ? currentReaction.label : "Thích"}</span>
 //           </button>
 //         </div>
 
-//         <button onClick={() => setShowComments(!showComments)} className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]">
+//         <button onClick={() => setShowComments(!showComments)} className="flex-1 py-4 text-gray-300 hover:bg-bg">
 //           💬 Bình luận
 //         </button>
 
 //         <button
 //           onClick={() => setIsShareOpen(true)} // Mở modal khi bấm
-//           className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]"
+//           className="flex-1 py-4 text-gray-300 hover:bg-bg"
 //         >
 //           🔗 Chia sẻ
 //         </button>
-//         <button onClick={handleReport} className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]">🚩 Báo cáo</button>
+//         <button onClick={handleReport} className="flex-1 py-4 text-gray-300 hover:bg-bg">🚩 Báo cáo</button>
 //       </div>
 //       {/* Nút report trong menu 3 chấm */}
 
@@ -456,7 +456,7 @@
 
 //       {/* COMMENTS */}
 //       {showComments && (
-//         <div className="border-t border-[#3e4042]">
+//         <div className="border-t border-border">
 //           <CommentSection
 //             postId={Number(post.id)}
 //             authorId={post.userId} // ✅ thêm dòng này
@@ -630,7 +630,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div className="bg-[#242526] border border-[#3e4042] rounded-3xl shadow-xl mb-6 overflow-hidden text-white">
+    <div className="bg-bg border border-border rounded-3xl shadow-xl mb-6 overflow-hidden text-white">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 p-4">
@@ -689,7 +689,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
       {/* REACTION & COMMENT COUNT */}
       {(reactionCount > 0 || commentCount > 0) && (
-        <div className="px-4 py-2 border-t border-[#3e4042] text-gray-400 text-sm flex justify-between items-center">
+        <div className="px-4 py-2 border-t border-border text-gray-400 text-sm flex justify-between items-center">
           <div
             onClick={openReactionModal}
             className="cursor-pointer hover:underline flex items-center gap-2"
@@ -710,7 +710,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
       )}
 
       {/* ACTION BUTTONS */}
-      <div className="flex border-t border-[#3e4042] divide-x divide-[#3e4042]">
+      <div className="flex border-t border-border divide-x divide-[#3e4042]">
 
         {/* Nút Thích + Emoji Picker */}
         <div className="flex-1 relative">
@@ -718,7 +718,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
             <div
               onMouseEnter={handleMouseEnterPicker}
               onMouseLeave={handleMouseLeavePicker}
-              className="absolute bottom-[110%] left-2 z-50 bg-[#3a3b3c] border border-[#4e4f50] rounded-full px-3 py-2 flex gap-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2"
+              className="absolute bottom-[110%] left-2 z-50 bg-bg border border-border rounded-full px-3 py-2 flex gap-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2"
             >
               {REACTIONS.map((r) => (
                 <button
@@ -743,7 +743,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
             className={`w-full py-4 flex items-center justify-center gap-2 transition-colors
               ${currentReaction
                 ? currentReaction.color
-                : "text-gray-300 hover:bg-[#3a3b3c]"
+                : "text-gray-300 hover:bg-bg"
               }`}
           >
             <span className="text-xl">
@@ -758,7 +758,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* Nút Bình luận */}
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]"
+          className="flex-1 py-4 text-gray-300 hover:bg-bg"
         >
           💬 Bình luận
         </button>
@@ -766,7 +766,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* Nút Chia sẻ */}
         <button
           onClick={() => setIsShareOpen(true)}
-          className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]"
+          className="flex-1 py-4 text-gray-300 hover:bg-bg"
         >
           🔗 Chia sẻ
         </button>
@@ -774,7 +774,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* Nút Báo cáo */}
         <button
           onClick={() => setIsReportOpen(true)}
-          className="flex-1 py-4 text-gray-300 hover:bg-[#3a3b3c]"
+          className="flex-1 py-4 text-gray-300 hover:bg-bg"
         >
           🚩 Báo cáo
         </button>
@@ -808,7 +808,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
       {/* COMMENT SECTION */}
       {showComments && (
-        <div className="border-t border-[#3e4042]">
+        <div className="border-t border-border">
           <CommentSection
             postId={Number(post.id)}
             authorId={post.userId}

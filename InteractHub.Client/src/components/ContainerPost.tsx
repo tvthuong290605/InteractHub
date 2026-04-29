@@ -132,7 +132,7 @@ const PostList: React.FC<PostListProps> = ({
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-80 w-full bg-[#242526] rounded-xl border border-gray-800 animate-pulse"
+            className="h-80 w-full bg-bg rounded-xl border border-gray-800 animate-pulse"
           />
         ))}
       </div>
@@ -141,7 +141,7 @@ const PostList: React.FC<PostListProps> = ({
 
   if (error && posts.length === 0) {
     return (
-      <div className="text-center py-10 bg-[#242526] rounded-xl border border-gray-800">
+      <div className="text-center py-10 bg-bg rounded-xl border border-gray-800">
         <p className="text-red-400 font-medium">{error}</p>
         <button
           onClick={() => fetchPosts(true)}
@@ -159,7 +159,7 @@ const PostList: React.FC<PostListProps> = ({
         posts.map((post) => <Post key={post.id} post={post} />)
       ) : (
         !loading && (
-          <div className="text-center py-20 bg-[#242526] rounded-xl border border-gray-800">
+          <div className="text-center py-20 bg-bg rounded-xl border border-gray-800">
             <p className="text-gray-500 text-lg">Chưa có bài viết nào để hiển thị.</p>
             <p className="text-gray-600 text-sm mt-1">
               Hãy đăng bài hoặc kết bạn để xem thêm nội dung.
@@ -174,7 +174,7 @@ const PostList: React.FC<PostListProps> = ({
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="h-80 w-full bg-[#242526] rounded-xl border border-gray-800 animate-pulse"
+              className="h-80 w-full bg-bg rounded-xl border border-gray-800 animate-pulse"
             />
           ))}
         </div>
