@@ -1,0 +1,48 @@
+name: InteractHub CI/CD
+
+on:
+  push:
+    branches: [ "main", "dev", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ================= BACKEND =================
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Backend
+        run: dotnet restore InteractHub.API
+
+      - name: Build Backend
+        run: dotnet build InteractHub.API --no-restore
+
+      - name: Test Backend
+        run: dotnet test InteractHub.Test --no-build
+
+      # ================= FRONTEND =================
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Frontend
+        run: |
+          cd InteractHub.Client
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd InteractHub.Client
+          npm run build
+
+      # ================= DEPLOY (FAKE hoặc REAL) =================
+      - name: Deploy Simulation
+        run: echo "Deploy success 🚀"
