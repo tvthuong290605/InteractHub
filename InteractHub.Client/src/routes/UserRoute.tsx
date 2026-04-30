@@ -31,6 +31,7 @@ import HomePage from "../pages/user/HomePage";
 import FriendPage from "../pages/user/FriendPage";
 import ProfilePage from "../pages/user/ProfilePage";
 import PostDetailPage from "../pages/user/PostDetailPage";
+import SearchPage from "../pages/user/SearchPage";
 
 export const UserRoutes = (
     <>
@@ -41,5 +42,9 @@ export const UserRoutes = (
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/post/:id" element={<PostDetailPage />} />
         </Route>
+        {/* SearchPage tự có Navbar riêng */}
+        <Route path="/search" element={
+            <ProtectedRoute><SearchPage /></ProtectedRoute>
+        } />
     </>
 );
