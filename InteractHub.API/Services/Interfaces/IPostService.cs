@@ -18,8 +18,5 @@ public interface IPostService
     Task<Result<string>> UpdateStatusPostForAdminAsync(int postId, int status); // Lấy tất cả bài viết cho admin
     Task<Result<PostDashboardDTO>> GetPostsCountAsync(); // lấy tổng bài viết và tổng bài viết, tổng like, comment theo từng tháng( vẽ biểu đồ)
 
-
-
-
      Task<Result<IEnumerable<PostSearchResponseDto>>> SearchPostsAsync(string keyword);
 }

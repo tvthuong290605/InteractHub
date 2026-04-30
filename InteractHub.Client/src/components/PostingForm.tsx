@@ -44,7 +44,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
              focus:outline-none focus:ring-2 focus:ring-[#1877f2] active:scale-[0.985]"
         >
           {(() => {
-            const name = displayUser?.Username;
+            const name = displayUser?.FullName || displayUser?.Username;
             if (!name) return "Bạn đang nghĩ gì?";
             const lastName = name.trim().split(" ").pop();
             return `${lastName} ơi, bạn đang nghĩ gì?`;

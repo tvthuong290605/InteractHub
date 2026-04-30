@@ -111,11 +111,6 @@ public class PostsController : ControllerBase
         return result.ToActionResult(this);
     }
 
-
-
-
-
-
     // ✅ Endpoint tìm kiếm bài viết
     [HttpGet("search")]
     public async Task<IActionResult> SearchPosts([FromQuery] string keyword)

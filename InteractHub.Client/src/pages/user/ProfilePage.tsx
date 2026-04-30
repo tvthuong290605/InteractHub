@@ -113,7 +113,7 @@ const ProfilePage: React.FC = () => {
               </div>
 
               <div className="bg-bg p-4 rounded-xl border border-border shadow-sm">
-                {/* <FriendList userId={user.Id} /> */}
+                <FriendList  />
               </div>
             </div>
           </aside>

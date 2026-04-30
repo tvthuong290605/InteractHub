@@ -12,7 +12,14 @@ interface UserDashboard {
   TotalUsers: number;
   Growth: UserGrowth[];
 }
-
+export interface UserSearchResult {
+  Id: string;
+  Username: string;
+  FullName?: string;
+  AvatarUrl?: string;
+  MutualFriends: number;
+  FriendshipStatus: "None" | "Pending" | "Received" | "Friend" | "Blocked";
+}
 export const userService = {
   getProfileMe: () =>
     axiosInstance
@@ -52,6 +59,16 @@ export const userService = {
       .then((res) => ({ ...res, data: res.data.Data }));
   },
 
+   searchUsers: (keyword: string, currentUserId?: string) =>
+    axiosInstance
+      .get<ApiRes<UserSearchResult[]>>("/api/users/search", {
+        params: { keyword, currentUserId },
+      })
+      .then((res) => {
+        const data = res.data;
+        // Hỗ trợ cả 2 dạng response: wrapped { Data: [...] } và raw array
+        return Array.isArray(data) ? data : (data.Data ?? []);
+      }),
   // ── QUẢN LÝ NGƯỜI DÙNG (ADMIN) ───────────────────────────────
   getAllUsers: () => {
     // return axiosInstance.get<User[]>("/api/users");

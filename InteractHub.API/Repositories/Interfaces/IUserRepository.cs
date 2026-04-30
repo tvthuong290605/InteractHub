@@ -15,7 +15,5 @@ public interface IUserRepository
     Task<bool> UpdateStatusAsync(string userId, int newStatus);
     Task<UserDashboardDTO> GetUsersCountAsync();
 
-
-
-        Task<IEnumerable<UserSearchDto>> SearchUsersAsync(string keyword, string? currentUserId);
+Task<IEnumerable<UserSearchDto>> SearchUsersAsync(string keyword, string? currentUserId);
 }

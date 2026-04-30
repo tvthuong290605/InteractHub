@@ -522,9 +522,9 @@ const ChatWindow: React.FC<{
 
   return (
     <div
-      className="fixed z-50 flex flex-col bg-bg rounded-2xl shadow-2xl border border-border overflow-hidden select-none"
-      style={{ left: pos.x, top: pos.y, width: size.w, height: size.h }}
-    >
+  className="fixed z-50 flex flex-col bg-gray-900 rounded-2xl shadow-2xl border border-border overflow-hidden select-none"
+  style={{ left: pos.x, top: pos.y, width: size.w, height: size.h }}
+>
       {/* ── Resize handles ── */}
       <div onMouseDown={(e) => onResizeMouseDown(e, "n")} className="absolute top-0 left-2 right-2 h-1 cursor-n-resize z-20" />
       <div onMouseDown={(e) => onResizeMouseDown(e, "s")} className="absolute bottom-0 left-2 right-2 h-1 cursor-s-resize z-20" />

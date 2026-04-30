@@ -1,9 +1,7 @@
-import { get } from "react-hook-form";
 import axiosInstance from "./axiosInstance";
 
-// ── 1. Interface BE (PascalCase - Khớp với C# PostResponseDto) ──
+// ── Types BE (PascalCase) ────────────────────────────────────────────────────
 
-// dùng generic để format dữ liệu API trả về, tái sử dụng cho nhiều kiểu trả về T
 type ApiRes<T> = { Success: boolean; Message: string; Data: T };
 
 interface PostResponseDto {
@@ -17,6 +15,18 @@ interface PostResponseDto {
   CreatedAt?: string;
   MediaUrls: string[];
 }
+
+interface PostSearchResponseDto {
+  Id: number;
+  Content?: string;
+  Title?: string;
+  AuthorName: string;
+  AuthorAvatar: string;
+  AuthorId: string;
+  CreatedAt: string;
+  MediaUrls: string[];
+}
+
 interface CommentDTO {
   Id: number;
   Content: string;
@@ -39,38 +49,30 @@ interface PostAdminDto {
   Content?: string;
   UserId?: string;
   Status?: number;
-
   AuthorName?: string;
   AuthorAvatar?: string;
   CreatedAt?: string;
-
   LikeCount: number;
-  UserLike: {
-    UserId: string;
-    UserName: string;
-    Avatar: string;
-    Type?: string;
-  }[];
-
+  UserLike: { UserId: string; UserName: string; Avatar: string; Type?: string }[];
   CommentCount: number;
   Comments: CommentDTO[];
-
   MediaUrls: string[];
 }
 
 interface PostActivityStatDTO {
   Month: string;
-  Posts: number
-  Comments: number
-  Likes: number
+  Posts: number;
+  Comments: number;
+  Likes: number;
 }
 
 interface PostDashboardDTO {
-  TotalPosts: number
+  TotalPosts: number;
   Activity: PostActivityStatDTO[];
-
 }
-// ── 3. Interface FE (camelCase) ──────────────────────────────────
+
+// ── Types FE (camelCase) ─────────────────────────────────────────────────────
+
 export interface PostItem {
   id: number;
   title?: string;
@@ -80,6 +82,18 @@ export interface PostItem {
   authorName?: string;
   authorAvatar?: string;
   createdAt?: string;
+  mediaUrls: string[];
+}
+
+/** Kết quả tìm kiếm bài viết — dùng trong SearchPage */
+export interface PostSearchItem {
+  id: number;
+  title?: string;
+  content?: string;
+  authorName: string;
+  authorAvatar: string;
+  authorId: string;
+  createdAt: string;
   mediaUrls: string[];
 }
 
@@ -97,30 +111,30 @@ export interface PostReportRequest {
   postId: number;
   reason: string;
 }
+
 export interface PostAdminItem {
   id: number;
   author: string;
   authorAvatar?: string;
   title?: string;
   content?: string;
-
   countLike: number;
   likes: { userId: string; userName: string }[];
-
   countComment: number;
-  comments: {
-    id: number;
-    author: string;
-    content: string;
-    createdAt: string;
-  }[];
-
-  status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
+  comments: { id: number; author: string; content: string; createdAt: string }[];
+  status: "public" | "friend" | "private" | "hidden" | "delete";
   createdAt?: string;
   mediaUrls: string[];
 }
 
-// ── 4. Map BE → FE ──────────────────────────────────────────────
+export interface PagedPostResponse {
+  posts: PostItem[];
+  totalCount: number;
+  hasMore: boolean;
+}
+
+// ── Mappers ──────────────────────────────────────────────────────────────────
+
 const mapPost = (p: PostResponseDto): PostItem => ({
   id: p.Id,
   title: p.Title,
@@ -133,131 +147,123 @@ const mapPost = (p: PostResponseDto): PostItem => ({
   mediaUrls: p.MediaUrls || [],
 });
 
-const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
+const mapPostSearch = (p: PostSearchResponseDto): PostSearchItem => ({
   id: p.Id,
-  author: p.AuthorName || "",
-  authorAvatar: p.AuthorAvatar,
-  title: p.Title,
   content: p.Content,
-
-  countLike: p.LikeCount,
-  likes: p.UserLike.map(u => ({
-    userId: u.UserId,
-    userName: u.UserName
-  })),
-
-  countComment: p.CommentCount,
-  comments: p.Comments.map(c => ({
-    id: c.Id,
-    author: c.UserName,
-    content: c.Content,
-    createdAt: c.CreatedAt || ""
-  })),
-
-  status:
-    p.Status === 1 ? 'public' :
-      p.Status === 2 ? 'friend' :
-        p.Status === 3 ? 'private' :
-          p.Status === 0 ? 'hidden' : 'delete',
-
+  title: p.Title,
+  authorName: p.AuthorName,
+  authorAvatar: p.AuthorAvatar,
+  authorId: p.AuthorId,
   createdAt: p.CreatedAt,
   mediaUrls: p.MediaUrls || [],
 });
 
-export interface PagedPostResponse {
-  posts: PostItem[];
-  totalCount: number;
-  hasMore: boolean;
-}
+// const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
+//   id: p.Id,
+//   author: p.AuthorName || "",
+//   authorAvatar: p.AuthorAvatar,
+//   title: p.Title,
+//   content: p.Content,
+//   countLike: p.LikeCount,
+//   likes: p.UserLike.map((u) => ({ userId: u.UserId, userName: u.UserName })),
+//   countComment: p.CommentCount,
+//   comments: p.Comments.map((c) => ({
+//     id: c.Id,
+//     author: c.UserName,
+//     content: c.Content,
+//     createdAt: c.CreatedAt || "",
+//   })),
+//   status:
+//     p.Status === 1 ? "public"
+//     : p.Status === 2 ? "friend"
+//     : p.Status === 3 ? "private"
+//     : p.Status === 0 ? "hidden"
+//     : "delete",
+//   createdAt: p.CreatedAt,
+//   mediaUrls: p.MediaUrls || [],
+// });
 
+// ── Service ──────────────────────────────────────────────────────────────────
 
-// ── 5. Export Service ───────────────────────────────────────────
 export const postService = {
   createPost: (formData: FormData) =>
     axiosInstance
-      .post<{ Success: boolean; Message: string; Data: PostResponseDto }>("/api/post/create", formData, {
+      .post<ApiRes<PostResponseDto>>("/api/post/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
 
   getAllPosts: () =>
     axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto[] }>("/api/post/all")
+      .get<ApiRes<PostResponseDto[]>>("/api/post/all")
       .then((res) => ({ ...res, data: res.data.Data.map(mapPost) })),
-
 
   getPostsByUserId: (userId: string) =>
     axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto[] }>(`/api/post/user/${userId}`)
+      .get<ApiRes<PostResponseDto[]>>(`/api/post/user/${userId}`)
       .then((res) => ({ ...res, data: res.data.Data.map(mapPost) })),
 
   getPostById: (postId: number) =>
     axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto }>(
-        `/api/post/${postId}`
-      )
+      .get<ApiRes<PostResponseDto>>(`/api/post/${postId}`)
       .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
 
   deletePost: (postId: number) =>
     axiosInstance
-      .delete<{ Success: boolean; Message: string }>(
-        `/api/post/delete/${postId}`
-      )
-      .then((res) => ({
-        success: res.data.Success,
-        message: res.data.Message,
-      })),
+      .delete<ApiRes<null>>(`/api/post/delete/${postId}`)
+      .then((res) => ({ success: res.data.Success, message: res.data.Message })),
 
   updatePost: (postId: number, formData: FormData) =>
     axiosInstance
-      .put<{ Success: boolean; Message: string; Data: PostResponseDto }>(`/api/post/update/${postId}`, formData, {
+      .put<ApiRes<PostResponseDto>>(`/api/post/update/${postId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
 
-
   reportPost: (request: PostReportRequest) =>
-    axiosInstance
-      .post<{ Success: boolean; Message: string }>("/api/post-reports", request),
+    axiosInstance.post<ApiRes<null>>("/api/post-reports", request),
 
-
-  // Admin API
+  // ── ADMIN ──────────────────────────────────────────────────────
   getAllPostsAdmin: () =>
     axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostAdminDto[] }>(
-        "/api/post/admin/all")
-      .then((res) => ({
-        ...res,
-        data: res.data.Data
-      })),
-
+      .get<ApiRes<PostAdminDto[]>>("/api/post/admin/all")
+      .then((res) => ({ ...res, data: res.data.Data })),
 
   updateStatusPost: async (postId: number, status: number) => {
-    const res = await axiosInstance.put<ApiRes<string>>(
-      `/api/post/${postId}/status`,
-      { status }
-    );
+    const res = await axiosInstance.put<ApiRes<string>>(`/api/post/${postId}/status`, { status });
     return res.data.Message;
   },
 
   getPostCount: async () => {
-    const res = await axiosInstance.get<ApiRes<PostDashboardDTO>>(
-      '/api/post/admin/dashboard',
-    )
+    const res = await axiosInstance.get<ApiRes<PostDashboardDTO>>("/api/post/admin/dashboard");
     return res.data.Data;
   },
 
-  getHomeFeed: (page: number = 1, pageSize: number = 10) =>
-  axiosInstance
-    .get<{ Success: boolean; Data: { Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean } }>(
-      `/api/post/feed?page=${page}&pageSize=${pageSize}`
-    )
-    .then((res) => ({
-      ...res,
-      data: {
-        posts: res.data.Data.Posts.map(mapPost),
-        totalCount: res.data.Data.TotalCount,
-        hasMore: res.data.Data.HasMore,
-      } as PagedPostResponse,
-    })),
+  // ── FEED ───────────────────────────────────────────────────────
+  getHomeFeed: (page = 1, pageSize = 10) =>
+    axiosInstance
+      .get<ApiRes<{ Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean }>>(
+        `/api/post/feed?page=${page}&pageSize=${pageSize}`
+      )
+      .then((res) => ({
+        ...res,
+        data: {
+          posts: res.data.Data.Posts.map(mapPost),
+          totalCount: res.data.Data.TotalCount,
+          hasMore: res.data.Data.HasMore,
+        } as PagedPostResponse,
+      })),
+
+  // ── TÌM KIẾM BÀI VIẾT ─────────────────────────────────────────
+  searchPosts: (keyword: string): Promise<PostSearchItem[]> =>
+    axiosInstance
+      .get<ApiRes<PostSearchResponseDto[]>>("/api/post/search", {
+        params: { keyword },
+      })
+      .then((res) => {
+        const data = res.data;
+        // hỗ trợ cả wrapped { Data: [...] } lẫn raw array
+        const list = Array.isArray(data) ? data : (data.Data ?? []);
+        return list.map(mapPostSearch);
+      }),
 };

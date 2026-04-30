@@ -252,29 +252,25 @@ public class PostService : IPostService
         }
     }
 
+  public async Task<Result<IEnumerable<PostSearchResponseDto>>> SearchPostsAsync(string keyword)
+{
+    if (string.IsNullOrWhiteSpace(keyword))
+        return Result<IEnumerable<PostSearchResponseDto>>.Ok(Enumerable.Empty<PostSearchResponseDto>());
 
+    var posts = await _postRepo.SearchPostsAsync(keyword);
 
-
-
-
-
-
-
-    public async Task<Result<IEnumerable<PostSearchResponseDto>>> SearchPostsAsync(string keyword)
+    var dtos = posts.Select(p => new PostSearchResponseDto
     {
-        var posts = await _postRepo.SearchPostsAsync(keyword);
-        var dtos = posts.Select(p => new PostSearchResponseDto
-        {
-            Id = p.Id,
-            Content = p.Content,
-            AuthorName = p.User?.FullName ?? p.User?.UserName ?? "User",
-            AuthorAvatar = p.User?.ProfilePicture ?? "",
-            AuthorId = p.UserId ?? "",
-            CreatedAt = p.CreatedAt ?? DateTime.UtcNow,
-            // LikeCount   = p.Likes?.Count ?? 0,
-            // CommentCount = p.Comments?.Count ?? 0,
-            MediaUrls = p.PostMedias?.Select(m => m.Url).ToList() ?? new()
-        });
-        return Result<IEnumerable<PostSearchResponseDto>>.Ok(dtos);
-    }
+        Id           = p.Id,
+        Content      = p.Content,
+        Title        = p.Title,
+        AuthorName   = p.User?.FullName ?? p.User?.UserName ?? "User",
+        AuthorAvatar = p.User?.ProfilePicture ?? "",
+        AuthorId     = p.UserId ?? "",
+        CreatedAt    = p.CreatedAt ?? DateTime.UtcNow,
+        MediaUrls    = p.PostMedias?.Select(m => m.Url).ToList() ?? new()
+    });
+
+    return Result<IEnumerable<PostSearchResponseDto>>.Ok(dtos);
+}
 }

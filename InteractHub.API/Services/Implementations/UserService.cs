@@ -228,57 +228,16 @@ public class UserService : IUserService
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       // ✅ Tìm kiếm user theo FullName hoặc UserName, loại bỏ chính mình
-public async Task<Result<IEnumerable<UserSearchDto>>> SearchUsersAsync(
-    string keyword,
-    string? currentUserId)
-{
-    if (string.IsNullOrWhiteSpace(keyword))
-        return Result<IEnumerable<UserSearchDto>>.Ok(new List<UserSearchDto>());
-
-    var lower = keyword.ToLower();
-
-    var users = await _userManager.Users
-        .Where(u =>
-            u.Status == 1 &&
-            (currentUserId == null || u.Id != currentUserId) &&
-
-            (
-                EF.Functions.Like(u.FullName, $"%{keyword}%") ||
-                EF.Functions.Like(u.UserName, $"%{keyword}%")
-            )
-        )
-        .Take(20)
-        .ToListAsync();
-
-    var result = users.Select(u => new UserSearchDto
+    public async Task<Result<IEnumerable<UserSearchDto>>> SearchUsersAsync(
+        string keyword,
+        string? currentUserId)
     {
-        Id = u.Id,
-        Username = u.UserName ?? "",
-        FullName = u.FullName,
-        AvatarUrl = u.ProfilePicture,
-        MutualFriends = 0,
-        FriendshipStatus = "None"
-    });
+        if (string.IsNullOrWhiteSpace(keyword))
+            return Result<IEnumerable<UserSearchDto>>.Ok(Enumerable.Empty<UserSearchDto>());
 
-    return Result<IEnumerable<UserSearchDto>>.Ok(result);
-}
+        var result = await _userRepository.SearchUsersAsync(keyword, currentUserId);
+        return Result<IEnumerable<UserSearchDto>>.Ok(result);
+    }
 
 
 

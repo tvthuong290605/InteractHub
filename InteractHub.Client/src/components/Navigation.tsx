@@ -287,7 +287,7 @@ useEffect(() => {
             {showDropdown && (
               <div
                 ref={dropdownRef}
-                className="absolute top-[115%] left-0 w-full bg-card border border-border rounded-xl shadow-2xl max-h-[420px] overflow-y-auto py-2"
+                className="absolute top-[115%] left-0 w-full bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl shadow-2xl max-h-[420px] overflow-y-auto py-2"
               >
                 {/* Loading */}
                 {loadingSearch && (
@@ -353,7 +353,7 @@ useEffect(() => {
                 {/* Search history */}
                 {showingHistory && filteredHistory.length > 0 && (
                   <>
-                    <div className="flex items-center justify-between px-4 py-1.5">
+                    <div className="flex items-center justify-between px-4 py-1.5 bg-black/10">
                       <span className="text-text text-sm font-semibold">Tìm kiếm gần đây</span>
                       <button
                         onClick={handleClearHistory}

@@ -241,16 +241,7 @@ public class PostRepository : IPostRepository
 
         return (posts, totalCount);
     }
-
-
-
-
-
-
-
-
-
-        // ✅ Tìm kiếm bài viết theo keyword trong Title hoặc Content
+    // ✅ Tìm kiếm bài viết theo keyword trong Title hoặc Content
     // Chỉ trả về bài viết công khai (Status = 1)
     public async Task<IEnumerable<Post>> SearchPostsAsync(string keyword)
     {

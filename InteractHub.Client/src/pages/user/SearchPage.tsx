@@ -1,32 +1,19 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaUserFriends, FaNewspaper, FaUserPlus, FaSearch, FaImage } from "react-icons/fa";
-import Navbar from "../../components/Navigation";
+import {
+  FaUserFriends, FaNewspaper, FaSearch,
+  FaUserPlus, FaCheck, FaUserClock,
+} from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi2";
+import { userService, type UserSearchResult } from "../../services/userService";
+import { postService, type PostSearchItem } from "../../services/postService";
+import Post from "../../components/Post"; // ✅ tái sử dụng component Post có sẵn
 
 const API = "https://localhost:7069/api";
 
-interface User {
-  Id: string;
-  Username: string;
-  FullName?: string;
-  AvatarUrl?: string;
-  MutualFriends?: number;
-}
-
-interface Post {
-  Id: number;
-  Content?: string;
-  AuthorName: string;
-  AuthorAvatar?: string;
-  AuthorId: string;
-  CreatedAt: string;
-  LikeCount: number;
-  CommentCount: number;
-  MediaUrls: string[];
-}
-
-type FilterType = "all" | "people" | "posts";
+type FriendStatus = "none" | "pending" | "received" | "friend" | "blocked" | "accepting";
+type FilterType   = "all" | "people" | "posts";
 
 const HISTORY_KEY = "interact_hub_search_history";
 
@@ -35,280 +22,273 @@ const saveHistory = (keyword: string) => {
     const prev: string[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
     const next = [keyword, ...prev.filter((k) => k !== keyword)].slice(0, 8);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
-  } catch {}
+  } catch {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify([keyword]));
+  }
 };
+
+const mapApiStatus = (s?: string): FriendStatus => {
+  switch (s) {
+    case "Pending":  return "pending";
+    case "Received": return "received";
+    case "Friend":   return "friend";
+    case "Blocked":  return "blocked";
+    default:         return "none";
+  }
+};
+
+/** Map PostSearchItem → format mà component Post nhận */
+const mapToPostProps = (p: PostSearchItem) => ({
+  id:           p.id,
+  userId:       p.authorId,
+  fullName:     p.authorName,
+  authorAvatar: p.authorAvatar,
+  title:        p.title ?? "", // search API chưa trả về title, tạm để trống
+  content:      p.content ?? "",
+  mediaUrls:    p.mediaUrls,
+  createdAt:    p.createdAt,
+  status:       1, // search chỉ trả về bài công khai
+});
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 const SearchPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-  const keyword = params.get("q") || "";
+  const keyword  = new URLSearchParams(location.search).get("q") || "";
 
-  const [filter, setFilter] = useState<FilterType>("all");
-  const [people, setPeople] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [activeTab,      setActiveTab]      = useState<FilterType>("all");
+  const [people,         setPeople]         = useState<UserSearchResult[]>([]);
+  const [posts,          setPosts]          = useState<PostSearchItem[]>([]);
+  const [loadingPeople,  setLoadingPeople]  = useState(false);
+  const [loadingPosts,   setLoadingPosts]   = useState(false);
+  const [friendStatuses, setFriendStatuses] = useState<Record<string, FriendStatus>>({});
 
   const currentUser = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("interact_hub_user") || "null");
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(localStorage.getItem("interact_hub_user") || "null"); }
+    catch { return null; }
   })();
 
   useEffect(() => {
     if (!keyword.trim()) return;
     saveHistory(keyword);
-    fetchAll(keyword);
+    setActiveTab("all");
+    fetchPeople(keyword);
+    fetchPosts(keyword);
   }, [keyword]);
 
-  const fetchAll = async (q: string) => {
-    setLoading(true);
+  const fetchPeople = async (q: string) => {
+    setLoadingPeople(true);
+    setPeople([]);
+    setFriendStatuses({});
     try {
-      const [peopleRes, postsRes] = await Promise.allSettled([
-        axios.get(`${API}/users/search`, {
-          params: { keyword: q, currentUserId: currentUser?.Id },
-        }),
-        axios.get(`${API}/post/search`, {
-          params: { keyword: q },
-        }),
-      ]);
-
-      if (peopleRes.status === "fulfilled") {
-        const data = peopleRes.value.data;
-        setPeople(Array.isArray(data) ? data : data?.Data ?? []);
-      }
-      if (postsRes.status === "fulfilled") {
-        const data = postsRes.value.data;
-        setPosts(Array.isArray(data) ? data : data?.Data ?? []);
-      }
-    } finally {
-      setLoading(false);
+      const data = await userService.searchUsers(q, currentUser?.Id);
+      setPeople(data);
+      const initial: Record<string, FriendStatus> = {};
+      data.forEach((u) => { initial[u.Id] = mapApiStatus(u.FriendshipStatus); });
+      setFriendStatuses(initial);
+    } catch {
+      setPeople([]);
+      setFriendStatuses({});
     }
+    finally { setLoadingPeople(false); }
+  };
+
+  const fetchPosts = async (q: string) => {
+    setLoadingPosts(true);
+    setPosts([]);
+    try {
+      const data = await postService.searchPosts(q);
+      console.log("Search results:", data);
+      setPosts(data);
+    } catch {
+      setPosts([]);
+    }
+    finally { setLoadingPosts(false); }
   };
 
   const handleAddFriend = async (userId: string) => {
+    setFriendStatuses((prev) => ({ ...prev, [userId]: "pending" }));
     try {
       await axios.post(`${API}/friends/request`, {
-        senderId: currentUser?.Id,
-        receiverId: userId,
+        senderId: currentUser?.Id, receiverId: userId,
       });
-    } catch {}
+    } catch {
+      setFriendStatuses((prev) => ({ ...prev, [userId]: "none" }));
+    }
   };
 
-  const filterButtons: { key: FilterType; label: string; icon: React.ReactNode }[] = [
-    { key: "all",    label: "Tất cả",    icon: <FaSearch size={16} /> },
-    { key: "people", label: "Mọi người", icon: <FaUserFriends size={16} /> },
-    { key: "posts",  label: "Bài viết",  icon: <FaNewspaper size={16} /> },
+  const handleAcceptFriend = async (userId: string) => {
+    setFriendStatuses((prev) => ({ ...prev, [userId]: "accepting" }));
+    try {
+      await axios.put(`${API}/friends/accept`, {
+        requesterId: userId, receiverId: currentUser?.Id,
+      });
+      setFriendStatuses((prev) => ({ ...prev, [userId]: "friend" }));
+    } catch {
+      setFriendStatuses((prev) => ({ ...prev, [userId]: "received" }));
+    }
+  };
+
+  const tabs: { key: FilterType; label: string; icon: React.ReactNode }[] = [
+    { key: "all",    label: "Tất cả",    icon: <HiSparkles size={15} /> },
+    { key: "people", label: "Mọi người", icon: <FaUserFriends size={15} /> },
+    { key: "posts",  label: "Bài viết",  icon: <FaNewspaper size={15} /> },
   ];
 
-  const showPeople = filter === "all" || filter === "people";
-  const showPosts  = filter === "all" || filter === "posts";
-  const isEmpty    = !loading && people.length === 0 && posts.length === 0 && !!keyword;
+  const showPeople = activeTab === "all" || activeTab === "people";
+  const showPosts  = activeTab === "all" || activeTab === "posts";
 
   return (
-    <div className="min-h-screen bg-bg text-white">
-      <Navbar />
+    <div className="min-h-screen bg-[#0f1117] text-white">
+      {/* Breadcrumb */}
+      <div className="border-b border-white/5 bg-[#0f1117]/80 backdrop-blur-xl sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-sm">
+          <FaSearch size={12} className="text-gray-500" />
+          <span className="text-gray-500">Tìm kiếm</span>
+          {keyword && (
+            <>
+              <span className="text-gray-700">/</span>
+              <span className="text-white font-semibold truncate max-w-xs">"{keyword}"</span>
+            </>
+          )}
+        </div>
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 pt-6 flex gap-6">
+      <div className="max-w-5xl mx-auto px-4 py-6 flex gap-6">
 
-        {/* ── LEFT SIDEBAR ── */}
-        <aside className="w-[300px] flex-shrink-0">
-          <div className="bg-bg rounded-2xl p-4 sticky top-24 shadow-lg">
-            <h2 className="text-lg font-bold text-white mb-3">Bộ lọc kết quả</h2>
-            <div className="flex flex-col gap-1">
-              {filterButtons.map(({ key, label, icon }) => (
+        {/* Sidebar desktop */}
+        <aside className="w-[210px] flex-shrink-0 hidden md:block">
+          <div className="sticky top-[52px]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-3 px-1">
+              Bộ lọc
+            </p>
+            <nav className="flex flex-col gap-0.5">
+              {tabs.map(({ key, label, icon }) => (
                 <button
                   key={key}
-                  onClick={() => setFilter(key)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
-                    filter === key
-                      ? "bg-bg/20 text-[#1877f2]"
-                      : "text-gray-300 hover:bg-bg"
+                  onClick={() => setActiveTab(key)}
+                  className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+                    activeTab === key
+                      ? "bg-[#1877f2]/10 text-[#4d9fff]"
+                      : "text-gray-400 hover:bg-white/5 hover:text-white"
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    filter === key ? "bg-bg" : "bg-bg"
-                  }`}>
-                    <span className={filter === key ? "text-white" : "text-gray-400"}>
-                      {icon}
-                    </span>
-                  </div>
+                  {activeTab === key && (
+                    <span className="absolute left-0 top-2.5 bottom-2.5 w-0.5 bg-[#1877f2] rounded-full" />
+                  )}
+                  <span className={activeTab === key ? "text-[#4d9fff]" : "text-gray-600 group-hover:text-gray-300"}>
+                    {icon}
+                  </span>
                   {label}
+                  {key === "people" && !loadingPeople && people.length > 0 && (
+                    <span className="ml-auto text-[10px] bg-[#1877f2]/20 text-[#4d9fff] px-1.5 py-0.5 rounded-full">
+                      {people.length}
+                    </span>
+                  )}
+                  {key === "posts" && !loadingPosts && posts.length > 0 && (
+                    <span className="ml-auto text-[10px] bg-[#1877f2]/20 text-[#4d9fff] px-1.5 py-0.5 rounded-full">
+                      {posts.length}
+                    </span>
+                  )}
                 </button>
               ))}
-            </div>
+            </nav>
           </div>
         </aside>
 
-        {/* ── MAIN CONTENT ── */}
-        <main className="flex-1 min-w-0 pb-10">
-
-          <div className="mb-5">
-            <p className="text-gray-400 text-sm">Kết quả tìm kiếm cho</p>
-            <h1 className="text-2xl font-bold">"{keyword}"</h1>
+        {/* Main */}
+        <main className="flex-1 min-w-0">
+          {/* Mobile tabs */}
+          <div className="flex gap-1 mb-5 md:hidden bg-[#1a1d27] p-1 rounded-xl">
+            {tabs.map(({ key, label, icon }) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  activeTab === key
+                    ? "bg-[#1877f2] text-white shadow-lg shadow-blue-900/40"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {icon} {label}
+              </button>
+            ))}
           </div>
 
-          {/* Skeleton */}
-          {loading && (
-            <div className="flex flex-col gap-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-bg rounded-2xl p-5 animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-full bg-bg" />
-                    <div className="flex-1">
-                      <div className="h-4 bg-bg rounded w-1/3 mb-2" />
-                      <div className="h-3 bg-bg rounded w-1/4" />
-                    </div>
-                  </div>
-                </div>
-              ))}
+          {/* Heading */}
+          {keyword ? (
+            <div className="mb-6">
+              <h1 className="text-xl font-bold text-white">
+                Kết quả cho{" "}
+                <span className="text-[#4d9fff] bg-[#1877f2]/10 px-2 py-0.5 rounded-lg">
+                  {keyword}
+                </span>
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                {loadingPeople || loadingPosts
+                  ? "Đang tìm kiếm…"
+                  : `${people.length} người · ${posts.length} bài viết`}
+              </p>
             </div>
+          ) : (
+            <EmptySearch />
           )}
 
-          {!loading && (
+          {keyword && (
             <>
               {/* PEOPLE */}
-              {showPeople && people.length > 0 && (
-                <section className="mb-6">
-                  <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-                    <FaUserFriends className="text-[#1877f2]" />
-                    Mọi người
-                    <span className="text-gray-400 font-normal text-sm">({people.length})</span>
-                  </h2>
-                  <div className="flex flex-col gap-3">
-                    {people.map((u) => (
-                      <div key={u.Id} className="bg-bg rounded-2xl p-4 flex items-center gap-4 hover:bg-[#2d2e2f] transition-colors">
-                        <img
-                          src={u.AvatarUrl ? `https://localhost:7069${u.AvatarUrl}` : "/images/default-avatar.png"}
-                          alt=""
-                          className="w-14 h-14 rounded-full object-cover border-2 border-border flex-shrink-0 cursor-pointer"
-                          onClick={() => navigate(`/profile/${u.Id}`)}
+              {showPeople && (
+                <section className="mb-8">
+                  <SectionHeader
+                    icon={<FaUserFriends size={14} />}
+                    title="Mọi người"
+                    count={people.length}
+                    loading={loadingPeople}
+                  />
+                  {loadingPeople ? (
+                    <PeopleSkeleton />
+                  ) : people.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {people.map((u) => (
+                        <UserCard
+                          key={u.Id}
+                          user={u}
+                          currentUserId={currentUser?.Id}
+                          status={friendStatuses[u.Id] ?? "none"}
+                          onViewProfile={() => navigate(`/profile/${u.Id}`)}
+                          onAddFriend={() => handleAddFriend(u.Id)}
+                          onAccept={() => handleAcceptFriend(u.Id)}
                         />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-white cursor-pointer hover:underline truncate" onClick={() => navigate(`/profile/${u.Id}`)}>
-                            {u.FullName || u.Username}
-                          </p>
-                          <p className="text-sm text-gray-400">@{u.Username}</p>
-                          {!!u.MutualFriends && u.MutualFriends > 0 && (
-                            <p className="text-xs text-gray-500 mt-0.5">{u.MutualFriends} bạn chung</p>
-                          )}
-                        </div>
-                        <div className="flex gap-2 flex-shrink-0">
-                          <button
-                            onClick={() => navigate(`/profile/${u.Id}`)}
-                            className="px-3 py-1.5 bg-bg hover:bg-[#4a4b4c] text-white text-xs font-medium rounded-lg transition-colors"
-                          >
-                            Xem trang cá nhân
-                          </button>
-                          {u.Id !== currentUser?.Id && (
-                            <button
-                              onClick={() => handleAddFriend(u.Id)}
-                              className="px-3 py-1.5 bg-bg/20 hover:bg-bg text-[#1877f2] hover:text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1.5"
-                            >
-                              <FaUserPlus size={11} /> Thêm bạn
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : activeTab === "people" ? (
+                    <EmptySection label="người dùng" />
+                  ) : null}
                 </section>
               )}
 
-              {/* POSTS */}
-              {showPosts && posts.length > 0 && (
-                <section className="mb-6">
-                  <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-                    <FaNewspaper className="text-[#1877f2]" />
-                    Bài viết
-                    <span className="text-gray-400 font-normal text-sm">({posts.length})</span>
-                  </h2>
-                  <div className="flex flex-col gap-3">
-                    {posts.map((p) => (
-                      <div key={p.Id} className="bg-bg rounded-2xl p-4 hover:bg-[#2d2e2f] transition-colors">
-                        <div className="flex items-center gap-3 mb-3">
-                          <img
-                            src={p.AuthorAvatar ? `https://localhost:7069${p.AuthorAvatar}` : "/images/default-avatar.png"}
-                            alt=""
-                            className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
-                            onClick={() => navigate(`/profile/${p.AuthorId}`)}
-                          />
-                          <div>
-                            <p className="font-semibold text-sm text-white hover:underline cursor-pointer" onClick={() => navigate(`/profile/${p.AuthorId}`)}>
-                              {p.AuthorName}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {new Date(p.CreatedAt).toLocaleDateString("vi-VN", {
-                                day: "2-digit", month: "2-digit", year: "numeric",
-                                hour: "2-digit", minute: "2-digit",
-                              })}
-                            </p>
-                          </div>
-                        </div>
-
-                        {p.Content && (
-                          <p className="text-sm text-gray-200 leading-relaxed line-clamp-4 mb-3">{p.Content}</p>
-                        )}
-
-                        {/* Media grid */}
-                        {p.MediaUrls?.length > 0 && (
-                          <div className={`grid gap-1 mb-3 rounded-xl overflow-hidden ${
-                            p.MediaUrls.length === 1 ? "grid-cols-1" :
-                            p.MediaUrls.length === 2 ? "grid-cols-2" : "grid-cols-3"
-                          }`}>
-                            {p.MediaUrls.slice(0, 3).map((url, idx) => (
-                              <div key={idx} className="relative">
-                                {url.match(/\.(mp4|webm|ogg)$/i) ? (
-                                  <video src={`https://localhost:7069${url}`} className="w-full object-cover max-h-52" controls />
-                                ) : (
-                                  <img src={`https://localhost:7069${url}`} alt="" className="w-full object-cover max-h-52" />
-                                )}
-                                {idx === 2 && p.MediaUrls.length > 3 && (
-                                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded">
-                                    <span className="text-white text-xl font-bold">+{p.MediaUrls.length - 3}</span>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        <div className="flex items-center gap-4 text-xs text-gray-400 border-t border-border pt-2">
-                          <span>👍 {p.LikeCount} lượt thích</span>
-                          <span>💬 {p.CommentCount} bình luận</span>
-                          {p.MediaUrls?.length > 0 && (
-                            <span className="flex items-center gap-1"><FaImage size={11} /> {p.MediaUrls.length}</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              {/* POSTS — dùng lại component Post */}
+              {showPosts && (
+                <section>
+                  <SectionHeader
+                    icon={<FaNewspaper size={14} />}
+                    title="Bài viết"
+                    count={posts.length}
+                    loading={loadingPosts}
+                  />
+                  {loadingPosts ? (
+                    <PostsSkeleton />
+                  ) : posts.length > 0 ? (
+                    <div>
+                      {posts.map((p) => (
+                        <Post key={p.id} post={mapToPostProps(p)} />
+                      ))}
+                    </div>
+                  ) : activeTab === "posts" ? (
+                    <EmptySection label="bài viết" />
+                  ) : null}
                 </section>
-              )}
-
-              {/* Empty */}
-              {isEmpty && (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-20 h-20 rounded-full bg-bg flex items-center justify-center mb-4">
-                    <FaSearch size={32} className="text-gray-500" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Không tìm thấy kết quả</h3>
-                  <p className="text-gray-400 text-sm max-w-xs">
-                    Không có kết quả nào cho "{keyword}". Hãy thử từ khóa khác.
-                  </p>
-                </div>
-              )}
-
-              {!keyword && (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-20 h-20 rounded-full bg-bg flex items-center justify-center mb-4">
-                    <FaSearch size={32} className="text-gray-500" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Tìm kiếm gì đó</h3>
-                  <p className="text-gray-400 text-sm">Nhập từ khóa vào ô tìm kiếm bên trên.</p>
-                </div>
               )}
             </>
           )}
@@ -317,5 +297,153 @@ const SearchPage = () => {
     </div>
   );
 };
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+const SectionHeader = ({ icon, title, count, loading }: {
+  icon: React.ReactNode; title: string; count?: number; loading?: boolean;
+}) => (
+  <div className="flex items-center gap-2 mb-3">
+    <span className="text-[#4d9fff]">{icon}</span>
+    <h2 className="text-sm font-semibold text-white">{title}</h2>
+    {loading ? (
+      <span className="ml-1 h-3 w-10 bg-white/10 rounded-full animate-pulse inline-block" />
+    ) : count !== undefined && count > 0 ? (
+      <span className="ml-1 text-xs bg-[#1877f2]/15 text-[#4d9fff] px-2 py-0.5 rounded-full font-medium">
+        {count}
+      </span>
+    ) : null}
+  </div>
+);
+
+const UserCard = ({ user, currentUserId, status, onViewProfile, onAddFriend, onAccept }: {
+  user: UserSearchResult;
+  currentUserId?: string;
+  status: FriendStatus;
+  onViewProfile: () => void;
+  onAddFriend: () => void;
+  onAccept: () => void;
+}) => {
+  const avatarSrc = user.AvatarUrl
+    ? `https://localhost:7069${user.AvatarUrl}`
+    : "/images/default-avatar.png";
+
+  const renderAction = () => {
+    if (user.Id === currentUserId) return null;
+    switch (status) {
+      case "friend":
+        return (
+          <span className="flex items-center gap-1.5 text-xs text-[#4d9fff] bg-[#1877f2]/10 px-2.5 py-1.5 rounded-lg font-medium">
+            <FaCheck size={9} /> Bạn bè
+          </span>
+        );
+      case "pending":
+        return (
+          <span className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-400/10 px-2.5 py-1.5 rounded-lg font-medium">
+            <FaUserClock size={11} /> Đã gửi
+          </span>
+        );
+      case "received":
+        return (
+          <button
+            onClick={onAccept}
+            className="flex items-center gap-1.5 text-xs bg-green-500 hover:bg-green-400 active:scale-95 text-white px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-green-900/30"
+          >
+            <FaCheck size={10} /> Chấp nhận
+          </button>
+        );
+      case "accepting":
+        return <span className="text-xs text-gray-500 px-2.5 py-1.5 animate-pulse">Đang xử lý…</span>;
+      case "blocked":
+        return null;
+      default:
+        return (
+          <button
+            onClick={onAddFriend}
+            className="flex items-center gap-1.5 text-xs bg-[#1877f2] hover:bg-[#166fe5] active:scale-95 text-white px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-blue-900/30"
+          >
+            <FaUserPlus size={11} /> Kết bạn
+          </button>
+        );
+    }
+  };
+
+  return (
+    <div className="group flex items-center gap-3 bg-[#1a1d27] hover:bg-[#1e2233] border border-white/5 hover:border-white/10 rounded-2xl p-3.5 transition-all duration-200">
+      <div className="flex-shrink-0 cursor-pointer" onClick={onViewProfile}>
+        <img
+          src={avatarSrc} alt=""
+          className="w-12 h-12 rounded-full object-cover ring-2 ring-white/5 group-hover:ring-[#1877f2]/40 transition-all"
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p
+          className="font-semibold text-sm text-white truncate cursor-pointer hover:text-[#4d9fff] transition-colors"
+          onClick={onViewProfile}
+        >
+          {user.FullName || user.Username}
+        </p>
+        <p className="text-xs text-gray-500 truncate">@{user.Username}</p>
+        {user.MutualFriends > 0 && (
+          <p className="text-xs text-gray-600 mt-0.5">{user.MutualFriends} bạn chung</p>
+        )}
+      </div>
+      <div className="flex-shrink-0">{renderAction()}</div>
+    </div>
+  );
+};
+
+const PeopleSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {[1, 2, 3, 4].map((i) => (
+      <div key={i} className="flex items-center gap-3 bg-[#1a1d27] rounded-2xl p-3.5 animate-pulse">
+        <div className="w-12 h-12 rounded-full bg-white/5 flex-shrink-0" />
+        <div className="flex-1">
+          <div className="h-3 bg-white/5 rounded w-2/3 mb-2" />
+          <div className="h-2.5 bg-white/5 rounded w-1/3" />
+        </div>
+        <div className="w-16 h-7 bg-white/5 rounded-lg flex-shrink-0" />
+      </div>
+    ))}
+  </div>
+);
+
+const PostsSkeleton = () => (
+  <div className="flex flex-col gap-4">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="bg-[#1a1d27] rounded-3xl p-4 animate-pulse">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-11 h-11 rounded-full bg-white/5 flex-shrink-0" />
+          <div>
+            <div className="h-3 bg-white/5 rounded w-28 mb-1.5" />
+            <div className="h-2.5 bg-white/5 rounded w-20" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 bg-white/5 rounded w-full" />
+          <div className="h-3 bg-white/5 rounded w-4/5" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const EmptySection = ({ label }: { label: string }) => (
+  <div className="py-10 text-center bg-[#1a1d27] rounded-2xl border border-white/5">
+    <p className="text-gray-500 text-sm">Không tìm thấy {label} nào.</p>
+  </div>
+);
+
+const EmptySearch = () => (
+  <div className="flex flex-col items-center justify-center py-24 text-center">
+    <div className="w-16 h-16 rounded-2xl bg-[#1a1d27] border border-white/5 flex items-center justify-center mb-4">
+      <FaSearch size={24} className="text-gray-600" />
+    </div>
+    <h3 className="text-lg font-semibold text-white mb-1">Tìm kiếm gì đó</h3>
+    <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+      Nhập từ khóa vào ô tìm kiếm bên trên để tìm người dùng và bài viết.
+    </p>
+  </div>
+);
 
 export default SearchPage;
