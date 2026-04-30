@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Settings, CheckCircle } from "lucide-react";
 import type { Preferences } from "./adminMockData";
-import { mockPreferences } from "./adminMockData";
+import { defaultPreferences } from "./adminMockData";
 
 const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked, onChange }) => (
     <button
@@ -13,7 +13,7 @@ const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked,
 );
 
 const PreferencesTab: React.FC = () => {
-    const [prefs, setPrefs] = useState<Preferences>(mockPreferences);
+    const [prefs, setPrefs] = useState<Preferences>(defaultPreferences);
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState(false);
 

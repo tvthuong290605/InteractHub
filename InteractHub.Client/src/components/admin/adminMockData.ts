@@ -1,13 +1,17 @@
+// Khớp với UserAdminDTO từ backend
 export interface AdminUser {
     id: string;
     fullName: string;
     email: string;
-    phone: string;
+    phone: string | null;
     role: string;
     avatarUrl: string | null;
     coverUrl: string | null;
     joinedAt: string;
-    bio: string;
+    bio: string | null;
+    gender: string | null;
+    dateOfBirth: string | null;
+    status: number;
 }
 
 export interface NotificationSettings {
@@ -26,19 +30,7 @@ export interface Preferences {
     compactMode: boolean;
 }
 
-export const mockAdmin: AdminUser = {
-    id: "admin-001",
-    fullName: "Admin User",
-    email: "admin@example.com",
-    phone: "0901234567",
-    role: "Super Administrator",
-    avatarUrl: null,
-    coverUrl: null,
-    joinedAt: "2024-01-01",
-    bio: "Quản trị viên hệ thống InteractHub",
-};
-
-export const mockNotifications: NotificationSettings = {
+export const defaultNotifications: NotificationSettings = {
     emailNewUser: true,
     emailNewReport: true,
     emailSystemAlert: false,
@@ -46,7 +38,7 @@ export const mockNotifications: NotificationSettings = {
     reportDigest: "daily",
 };
 
-export const mockPreferences: Preferences = {
+export const defaultPreferences: Preferences = {
     language: "vi",
     theme: "light",
     timezone: "Asia/Ho_Chi_Minh",

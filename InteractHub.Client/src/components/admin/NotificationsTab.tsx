@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Bell, Mail, Monitor, CheckCircle } from "lucide-react";
 import type { NotificationSettings } from "./adminMockData";
-import { mockNotifications } from "./adminMockData";
+import { defaultNotifications } from "./adminMockData";
 
 const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked, onChange }) => (
     <button
@@ -13,7 +13,7 @@ const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked,
 );
 
 const NotificationsTab: React.FC = () => {
-    const [settings, setSettings] = useState<NotificationSettings>(mockNotifications);
+    const [settings, setSettings] = useState<NotificationSettings>(defaultNotifications);
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState(false);
 

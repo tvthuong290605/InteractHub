@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProfileInfoTab from "./ProfileInfoTab";
 import SecurityTab from "./SecurityTab";
 import NotificationsTab from "./NotificationsTab";
@@ -16,7 +16,7 @@ const ProfileTabContent: React.FC<Props> = ({ activeTab, admin, onAdminChange })
         case "profile":
             return <ProfileInfoTab admin={admin} onChange={onAdminChange} />;
         case "security":
-            return <SecurityTab />;
+            return <SecurityTab admin={admin} />;
         case "notifications":
             return <NotificationsTab />;
         case "preferences":
