@@ -105,10 +105,10 @@ const markAsRead = async (id: number, link?: string) => {
   return (
     <div className="flex flex-col h-full bg-bg">
       {/* HEADER */}
-      <div className="sticky top-0 z-10 flex-shrink-0 bg-bg
+      <div className="sticky top-0 z-10 flex-shrink-0 bg-gray-900
                       flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-800">
         <div className="flex items-center gap-2">
-          <h2 className="text-[17px] font-bold text-gray-200 uppercase tracking-wider">
+          <h2 className="text-[17px] font-bold text-gray-200 uppercase tracking-wider ">
             Thông báo
           </h2>
           {unreadCount > 0 && !loading && (

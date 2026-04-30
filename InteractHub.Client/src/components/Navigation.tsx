@@ -225,21 +225,21 @@ const Navbar: React.FC<NavbarProps> = ({ user: propUser, onChatClick, onNotifyCl
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const handleToggleTheme = () => {
-    setIsDarkMode((prev) => {
-      const newMode = !prev;
+  // const handleToggleTheme = () => {
+  //   setIsDarkMode((prev) => {
+  //     const newMode = !prev;
 
-      if (newMode) {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
+  //     if (newMode) {
+  //       document.documentElement.classList.add("dark");
+  //       localStorage.setItem("theme", "dark");
+  //     } else {
+  //       document.documentElement.classList.remove("dark");
+  //       localStorage.setItem("theme", "light");
+  //     }
 
-      return newMode;
-    });
-  };
+  //     return newMode;
+  //   });
+  // };
 
 
 useEffect(() => {
@@ -417,7 +417,7 @@ useEffect(() => {
 
 
           <button
-            onClick={handleToggleTheme}
+            // onClick={handleToggleTheme}
             className="px-3 py-1.5 bg-bg hover:bg-[#4a4b4c] text-text text-[13px] rounded-xl transition-all"
           >
             {isDarkMode ? "🌙" : "☀️"}
