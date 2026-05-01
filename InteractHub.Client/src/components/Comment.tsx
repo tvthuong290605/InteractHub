@@ -144,13 +144,13 @@ const Comment: React.FC<CommentProps> = ({
         <div className="bg-bg rounded-2xl px-4 py-2.5 w-fit max-w-[95%] shadow-md">
           <p
             onClick={() => navigate(`/profile/${comment.UserId}`)}
-            className="text-white text-[14px] font-semibold hover:underline cursor-pointer mb-0.5"
+            className="text-[var(--color-text)] text-[14px] font-semibold hover:underline cursor-pointer mb-0.5"
           >
             {comment.UserName}
           </p>
-          <p className="text-gray-100 text-[15px] leading-relaxed break-words">
+          <p className="text-[var(--color-text)] text-[15px] leading-relaxed break-words">
             {!isTopLevel && parentUserName && (
-              <span className="text-blue-400 font-bold mr-1.5 cursor-pointer hover:underline">
+              <span className="text-[var(--color-text)] font-bold mr-1.5 cursor-pointer hover:underline">
                 @{parentUserName}
               </span>
             )}
@@ -201,7 +201,7 @@ const Comment: React.FC<CommentProps> = ({
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder={`Trả lời ${comment.UserName}...`}
-              className="flex-1 bg-bg text-white text-[14px] px-4 py-2 rounded-full outline-none focus:ring-2 ring-[#1877f2] transition-all"
+              className="flex-1 bg-bg text-[var(--color-text)] text-[14px] px-4 py-2 rounded-full outline-none focus:ring-2 ring-[#1877f2] transition-all"
             />
           </form>
         )}

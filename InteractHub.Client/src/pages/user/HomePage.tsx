@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
       {/* --- CỘT 1 (TRÁI) --- */}
       <aside className="hidden lg:flex flex-col h-full overflow-y-auto no-scrollbar bg-bg w-[390px] flex-shrink-0">
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-white px-4 mt-2 tracking-tight">
+          <h2 className="text-xl font-bold text-[var(--color-text)] px-4 mt-2 tracking-tight">
             Trang chủ
           </h2>
           <div className="px-2">

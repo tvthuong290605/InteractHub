@@ -225,35 +225,75 @@ const Navbar: React.FC<NavbarProps> = ({ user: propUser, onChatClick, onNotifyCl
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // const handleToggleTheme = () => {
-  //   setIsDarkMode((prev) => {
-  //     const newMode = !prev;
+  const handleToggleTheme = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
 
-  //     if (newMode) {
-  //       document.documentElement.classList.add("dark");
-  //       localStorage.setItem("theme", "dark");
-  //     } else {
-  //       document.documentElement.classList.remove("dark");
-  //       localStorage.setItem("theme", "light");
-  //     }
+      if (newMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
 
-  //     return newMode;
-  //   });
-  // };
+      return newMode;
+    });
+  };
+
+  // Sáng tối 
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+    } else if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+      setIsDarkMode(false);
+    } else {
+      // detect system
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+        setIsDarkMode(true);
+      }
+    }
+  }, []);
 
 
-useEffect(() => {
-  const saved = localStorage.getItem("theme");
+  // GIữ màu khi click
+  const NavIcon = ({
+    icon,
+    to,
+    onClick,
+  }: {
+    icon: React.ReactNode;
+    to?: string;
+    onClick?: () => void;
+  }) => {
+    const location = useLocation();
 
-  if (saved === "dark") {
-    document.documentElement.classList.add("dark");
-    setIsDarkMode(true);
-  }
-}, []);
+    const isActive = to && location.pathname === to;
+
+    const content = (
+      <div
+        className={`p-2.5 md:p-3 rounded-xl cursor-pointer transition-all text-3xl
+        ${isActive ? "text-[#1877f2]" : "text-gray-400 hover:text-[#1877f2] hover:bg-card"}
+      `}
+      >
+        {icon}
+      </div>
+    );
+
+    if (to) return <Link to={to}>{content}</Link>;
+    return <div onClick={onClick}>{content}</div>;
+  };
 
 
   return (
-    <nav className="bg-card border-b border-border sticky top-0 z-50">
+    <nav className="bg-card shadow-[0_4px_12px_rgba(0,0,0,0.08)] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-2 h-20 flex items-center justify-between">
 
         {/* LEFT */}
@@ -280,7 +320,7 @@ useEffect(() => {
               onChange={handleSearch}
               onKeyDown={handleKeyDown}
               onFocus={handleFocus}
-              className="w-full bg-card text-text pl-11 pr-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#1877f2] text-sm"
+              className="w-full bg-[#eae6e6] text-[#000000] pl-11 pr-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#ffffff] text-sm"
             />
 
             {/* Dropdown */}
@@ -339,8 +379,7 @@ useEffect(() => {
                 {!loadingSearch && !showingHistory && results.length === 0 && debouncedSearch && (
                   <div
                     onClick={() => commitSearch(search)}
-                    className="px-4 py-2.5 hover:bg-card flex items-center gap-3 cursor-pointer transition-colors"
-                  >
+                    className="w-full px-4 py-2.5 flex items-center gap-3 cursor-pointer transition-all duration-150 hover:bg-[var(--color-hover)] hover:text-[#1877f2]">
                     <div className="w-9 h-9 rounded-full bg-bg flex items-center justify-center flex-shrink-0">
                       <FaSearch size={13} className="text-gray-300" />
                     </div>
@@ -353,11 +392,11 @@ useEffect(() => {
                 {/* Search history */}
                 {showingHistory && filteredHistory.length > 0 && (
                   <>
-                    <div className="flex items-center justify-between px-4 py-1.5 bg-black/10">
+                    <div className="flex items-center justify-between px-4 py-1.5 bg-black/10 hover:bg-[var(--color-hover)] hover:bg-[var(--color-hover)] transition-colors">
                       <span className="text-text text-sm font-semibold">Tìm kiếm gần đây</span>
                       <button
                         onClick={handleClearHistory}
-                        className="text-[#1877f2] text-xs hover:underline"
+                        className="text-[#1877f2] text-xs hover:text-[#0d5ecf]  hover:underline"
                       >
                         Xóa tất cả
                       </button>
@@ -366,8 +405,7 @@ useEffect(() => {
                       <div
                         key={keyword}
                         onClick={() => handleHistoryClick(keyword)}
-                        className="px-4 py-2.5 hover:bg-card flex items-center gap-3 cursor-pointer transition-colors group"
-                      >
+                        className="w-full px-4 py-2.5 hover:bg-[var(--color-hover)] hover:text-[var(--color-bg)] flex items-center gap-3 cursor-pointer transition-colors"                      >
                         <div className="w-9 h-9 rounded-full bg-bg flex items-center justify-center flex-shrink-0">
                           <FaHistory size={13} className="text-gray-400" />
                         </div>
@@ -417,10 +455,10 @@ useEffect(() => {
 
 
           <button
-            // onClick={handleToggleTheme}
-            className="px-3 py-1.5 bg-bg hover:bg-[#4a4b4c] text-text text-[13px] rounded-xl transition-all"
+            onClick={handleToggleTheme}
+            className="px-3 py-1.5 bg-[var(--color-text)] hover:bg-[var(--color-hover)] text-text text-[13px] rounded-xl transition-all"
           >
-            {isDarkMode ? "🌙" : "☀️"}
+            {isDarkMode ? "☀️" : "🌙"}
           </button>
 
 

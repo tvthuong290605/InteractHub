@@ -33,7 +33,7 @@ const UserRow: React.FC<UserRow> = ({ user, onViewDetail, onSuspend, onBan }) =>
                             className="w-10 h-10 rounded-full object-cover"
                         />
                     ) : (
-                        <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-blue-500 text-[var(--color-text)] flex items-center justify-center">
                             {user.name.charAt(0)}
                         </div>
                     )}

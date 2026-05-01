@@ -59,7 +59,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-bg w-full max-w-[500px] rounded-2xl shadow-2xl overflow-hidden border border-border animate-in zoom-in-95 duration-200">
+      <div className="bg-[var(--color-bg)] w-full max-w-[500px] rounded-2xl shadow-2xl overflow-hidden border border-border animate-in zoom-in-95 duration-200">
 
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -69,7 +69,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
           >
             {step === 2 ? "⬅️" : "✕"}
           </button>
-          <h3 className="text-lg font-bold text-white">Báo cáo bài viết</h3>
+          <h3 className="text-lg font-bold text-[var(--color-text)]">Báo cáo bài viết</h3>
           <div className="w-10" />
         </div>
 
@@ -91,15 +91,15 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xl">{reason.icon}</span>
-                    <span className="text-white font-medium">{reason.label}</span>
+                    <span className="text-[var(--color-text)] font-medium">{reason.label}</span>
                   </div>
-                  <span className="text-gray-500 group-hover:text-white">➡️</span>
+                  <span className="text-gray-500 group-hover:text-[var(--color-text)]">➡️</span>
                 </button>
               ))}
             </>
           ) : (
             <div className="p-3">
-              <p className="text-white mb-2">
+              <p className="text-[var(--color-text)] mb-2">
                 Bạn đang báo cáo vì lý do:{" "}
                 <span className="font-bold text-[#1877f2]">{selectedReason}</span>
               </p>
@@ -108,7 +108,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
                 value={otherReason}
                 onChange={(e) => setOtherReason(e.target.value)}
                 placeholder="Nhập chi tiết thêm (không bắt buộc)..."
-                className="w-full bg-bg border border-border rounded-xl p-3 text-white text-sm focus:outline-none focus:border-border h-24"
+                className="w-full bg-bg border border-border rounded-xl p-3 text-[var(--color-text)] text-sm focus:outline-none focus:border-border h-24"
               />
             </div>
           )}
@@ -119,14 +119,14 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
           <div className="p-4 border-t border-border flex gap-2">
             <button
               onClick={() => setStep(1)}
-              className="flex-1 py-2 bg-bg hover:bg-bg text-white font-bold rounded-lg"
+              className="flex-1 py-2 bg-bg hover:bg-bg text-[var(--color-text)] font-bold rounded-lg"
             >
               Quay lại
             </button>
             <button
               onClick={handleSubmit}
               disabled={loading || finalReason.length === 0} // ✅ đã trim() rồi nên không cần gọi lại
-              className="flex-1 py-2 bg-bg hover:bg-bg text-white font-bold rounded-lg disabled:opacity-50"
+              className="flex-1 py-2 bg-bg hover:bg-bg text-[var(--color-text)] font-bold rounded-lg disabled:opacity-50"
             >
               {loading ? "Đang gửi..." : "Gửi báo cáo"}
             </button>

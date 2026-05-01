@@ -46,7 +46,7 @@ const PostDetailPage: React.FC = () => {
             <p className="text-red-400 text-lg mb-4">{error}</p>
             <button
               onClick={() => navigate(-1)}
-              className="px-6 py-2 bg-bg text-white rounded-lg font-semibold hover:bg-bg"
+              className="px-6 py-2 bg-bg text-[var(--color-text)] rounded-lg font-semibold hover:bg-bg"
             >
               Quay lại
             </button>
@@ -55,7 +55,7 @@ const PostDetailPage: React.FC = () => {
           <>
             <button
               onClick={() => navigate(-1)}
-              className="mb-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+              className="mb-4 flex items-center gap-2 text-gray-400 hover:text-[var(--color-text)] transition-colors"
             >
               ← Quay lại
             </button>

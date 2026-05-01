@@ -23,7 +23,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({ user }) => {
 
   return (
     <div className="bg-bg border border-gray-700 rounded-3xl p-8 shadow-xl">
-      <h4 className="text-2xl font-bold text-white mb-6 pb-4 border-b border-gray-700">
+      <h4 className="text-2xl font-bold text-[var(--color-text)] mb-6 pb-4 border-b border-gray-700">
         Thông tin cá nhân
       </h4>
 
@@ -31,25 +31,25 @@ const InfoContainer: React.FC<InfoContainerProps> = ({ user }) => {
         {/* Username */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="font-medium text-gray-400 w-32">Tên:</span>
-          <span className="text-white">{user.Username || "Chưa cập nhật"}</span>
+          <span className="text-[var(--color-text)]">{user.Username || "Chưa cập nhật"}</span>
         </div>
 
         {/* Email */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="font-medium text-gray-400 w-32">Email:</span>
-          <span className="text-white">{user.Email}</span>
+          <span className="text-[var(--color-text)]">{user.Email}</span>
         </div>
 
         {/* Gender */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="font-medium text-gray-400 w-32">Giới tính:</span>
-          <span className="text-white">{user.Gender || "Chưa cập nhật"}</span>
+          <span className="text-[var(--color-text)]">{user.Gender || "Chưa cập nhật"}</span>
         </div>
 
         {/* DateOfBirth */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="font-medium text-gray-400 w-32">Ngày sinh:</span>
-          <span className="text-white">
+          <span className="text-[var(--color-text)]">
             {user.DateOfBirth
               ? new Date(user.DateOfBirth).toLocaleDateString("vi-VN", {
                 year: "numeric",
@@ -63,13 +63,13 @@ const InfoContainer: React.FC<InfoContainerProps> = ({ user }) => {
         {/* Bio */}
         <div className="flex flex-col sm:flex-row gap-2">
           <span className="font-medium text-gray-400 w-32 flex-shrink-0">Tiểu sử:</span>
-          <span className="text-white leading-relaxed">{user.Bio || "Chưa có tiểu sử"}</span>
+          <span className="text-[var(--color-text)] leading-relaxed">{user.Bio || "Chưa có tiểu sử"}</span>
         </div>
 
         {/* CreatedAt */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <span className="font-medium text-gray-400 w-32">Tham gia:</span>
-          <span className="text-white">
+          <span className="text-[var(--color-text)]">
             {user.CreatedAt
               ? new Date(user.CreatedAt).toLocaleDateString("vi-VN", {
                 year: "numeric",

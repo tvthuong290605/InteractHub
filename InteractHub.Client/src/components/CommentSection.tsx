@@ -185,7 +185,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 e.stopPropagation();
                 if (shared.userId) navigate(`/profile/${shared.userId}`);
               }}
-              className="font-semibold text-[14px] leading-tight hover:underline text-white"
+              className="font-semibold text-[14px] leading-tight hover:underline text-[var(--color-text)]"
             >
               {shared.fullName}
             </p>
@@ -202,12 +202,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {(shared.title || shared.content) && (
           <div className="px-4 pb-3">
             {shared.title && (
-              <p className="font-bold text-[15px] mb-1 text-white">
+              <p className="font-bold text-[15px] mb-1 text-[var(--color-text)]">
                 {shared.title}
               </p>
             )}
             {shared.content && (
-              <p className="text-[14px] text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
+              <p className="text-[14px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
                 {shared.content}
               </p>
             )}
@@ -263,7 +263,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             )}
 
             <p
-              className="font-semibold text-white cursor-pointer hover:underline"
+              className="font-semibold text-[var(--color-text)] cursor-pointer hover:underline"
               onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
             >
               {post.fullName}
@@ -277,11 +277,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
         {/* Caption của người share (title + content của bài share wrapper) */}
         {post.title && (
-          <p className="font-bold text-[17px] text-white">{post.title}</p>
+          <p className="font-bold text-[17px] text-[var(--color-text)]">{post.title}</p>
         )}
 
         {post.content && (
-          <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-gray-200">
+          <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-[var(--color-text)]">
             {post.content}
           </p>
         )}
@@ -315,12 +315,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-6xl h-[92vh] bg-bg border border-border rounded-2xl overflow-hidden shadow-2xl flex">
+      <div className="relative w-full max-w-6xl h-[92vh] bg-[var(--color-bg)] border border-border rounded-2xl overflow-hidden shadow-2xl flex">
 
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 hover:bg-red-500 text-white transition"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] transition"
         >
           ✕
         </button>
@@ -333,9 +333,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {/* Right */}
         <div className="flex-1 flex flex-col min-h-0">
           <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-white font-bold">
+            <h3 className="text-[var(--color-text)] font-bold">
               Bình luận
-              <span className="ml-2 text-gray-400 text-sm font-normal">
+              <span className="ml-2 text-[var(--color-text)] text-sm font-normal">
                 ({comments.length})
               </span>
             </h3>
@@ -381,7 +381,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             <div ref={commentsEndRef} />
           </div>
 
-          <div className="border-t border-border p-4 flex items-center gap-3 bg-bg">
+          <div className="border-t border-border p-4 flex items-center gap-3 bg-[var(--color-bg)]">
             <input
               type="text"
               value={newComment}
@@ -393,13 +393,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                   handleAddComment();
                 }
               }}
-              className="flex-1 bg-bg border border-border rounded-2xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none"
+              className="flex-1 bg-[var(--color-bg)] border border-border rounded-2xl px-4 py-3 text-sm text-[var(--color-text)] placeholder-gray-500 focus:outline-none"
             />
 
             <button
               onClick={handleAddComment}
               disabled={!newComment.trim() || sending}
-              className="px-5 py-3 rounded-2xl bg-bg hover:bg-bg disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition"
+              className="px-5 py-3 rounded-2xl bg-[var(--color-bg)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--color-text)] text-sm font-medium transition"
             >
               {sending ? "Đang gửi..." : "Gửi"}
             </button>

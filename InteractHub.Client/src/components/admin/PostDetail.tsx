@@ -151,7 +151,7 @@ const CommentItem = ({
             <div className="flex gap-2 items-start">
 
                 {/* Avatar */}
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold text-white overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold text-[var(--color-text)] overflow-hidden">
                     {comment.UserAvatar
                         ? <img
                             src={getFullImageUrl(comment.UserAvatar)}
@@ -438,7 +438,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onClose }) => {
                 <div className="flex items-center gap-3 mb-4">
                     {post.authorAvatar
                         ? <img src={post.authorAvatar} className="w-12 h-12 rounded-full object-cover" />
-                        : <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">{post.author.charAt(0)}</div>
+                        : <div className="w-12 h-12 rounded-full bg-blue-500 text-[var(--color-text)] flex items-center justify-center">{post.author.charAt(0)}</div>
                     }
                     <div>
                         <p className="font-semibold">{post.author}</p>
@@ -502,7 +502,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onClose }) => {
                                     <div key={u.UserId}
                                         className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold text-white overflow-hidden">
+                                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold text-[var(--color-text)] overflow-hidden">
                                                 {u.Avatar
                                                     ? <img
                                                         src={getFullImageUrl(u.Avatar)}

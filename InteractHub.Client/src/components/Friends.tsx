@@ -38,7 +38,7 @@ const Friend: React.FC<FriendProps> = ({ friend }) => {
 
       {/* Info Section */}
       <div className="flex-1 min-w-0">
-        <p className="text-[16px] font-medium text-white truncate">
+        <p className="text-[16px] font-medium text-[var(--color-text)] truncate">
           {friend.fullName}
         </p>
         <p className="text-[14px] text-gray-400">Bạn bè</p>
@@ -53,7 +53,7 @@ const Friend: React.FC<FriendProps> = ({ friend }) => {
             // Logic mở chat box của bạn ở đây
           }}
           className="w-10 h-10 flex items-center justify-center bg-bg 
-                     hover:bg-bg text-white rounded-full transition-colors"
+                     hover:bg-bg text-[var(--color-text)] rounded-full transition-colors"
         >
           <FaMessage size={12} />
         </button>

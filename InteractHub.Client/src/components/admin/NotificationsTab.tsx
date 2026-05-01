@@ -71,7 +71,7 @@ const NotificationsTab: React.FC = () => {
                             <button
                                 key={v}
                                 onClick={() => setSettings({ ...settings, reportDigest: v })}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${settings.reportDigest === v ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-300 hover:border-blue-400"}`}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${settings.reportDigest === v ? "bg-blue-600 text-[var(--color-text)] border-blue-600" : "bg-white text-gray-600 border-gray-300 hover:border-blue-400"}`}
                             >
                                 {v === "realtime" ? "Thời gian thực" : v === "daily" ? "Hàng ngày" : "Hàng tuần"}
                             </button>
@@ -84,7 +84,7 @@ const NotificationsTab: React.FC = () => {
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-xl transition-all"
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-[var(--color-text)] text-sm font-medium rounded-xl transition-all"
                 >
                     {saving ? "Đang lưu..." : "Lưu cài đặt"}
                 </button>

@@ -91,7 +91,7 @@ const ProfilePage: React.FC = () => {
 
   return (
 
-    <div className="min-h-screen bg-bg text-white">
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <ProfileHeader
         userId={user.Id}
         isOwnProfile={isOwnProfilePage}
@@ -104,15 +104,15 @@ const ProfilePage: React.FC = () => {
           {/* CỘT TRÁI - sticky độc lập */}
           <aside className="w-full lg:w-[40%]">
             <div className="lg:sticky lg:top-4 space-y-4"> {/* ✅ sticky */}
-              <div className="bg-bg p-4 rounded-xl border border-border shadow-sm">
+              <div className="bg-[var(--color-bg)] p-4 rounded-xl border border-border shadow-sm">
                 <h3 className="text-xl font-bold mb-2">Giới thiệu</h3>
-                <p className="text-center text-gray-300 mb-4 italic">
+                <p className="text-center text-[var(--color-text)] mb-4 italic">
                   {user.Bio || "Chưa có tiểu sử"}
                 </p>
                 <InfoContainer user={user} isOwnProfile={isOwnProfilePage} />
               </div>
 
-              <div className="bg-bg p-4 rounded-xl border border-border shadow-sm">
+              <div className="bg-[var(--color-bg)] p-4 rounded-xl border border-border shadow-sm">
                 <FriendList  />
               </div>
             </div>
@@ -148,18 +148,18 @@ const ProfilePage: React.FC = () => {
       {/* MODAL CHỈNH SỬA HỒ SƠ */}
       {showModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-bg rounded-3xl w-full max-w-5xl max-h-[95vh] overflow-hidden
+          <div className="bg-[var(--color-bg)] rounded-3xl w-full max-w-5xl max-h-[95vh] overflow-hidden
                           relative shadow-2xl border border-border flex flex-col">
             <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
-              <h2 className="text-2xl font-bold text-white">Chỉnh sửa trang cá nhân</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text)]">Chỉnh sửa trang cá nhân</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 rounded-full hover:bg-bg text-gray-400 transition-colors"
+                className="p-2 rounded-full hover:bg-[var(--color-hover)] text-[var(--color-text)] transition-colors"
               >
                 <FaTimes size={20} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-bg">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[var(--color-bg)]">
               <ProfileUpdateForm
                 initialData={user}
                 onSubmitSuccess={handleSubmitSuccess}

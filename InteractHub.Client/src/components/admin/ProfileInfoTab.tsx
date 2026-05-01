@@ -108,7 +108,7 @@ const ProfileInfoTab: React.FC<Props> = ({ admin, onChange }) => {
 
             <div className="flex items-center gap-3 pt-2">
                 <button onClick={handleSave} disabled={saving}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-xl transition-all">
+                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-[var(--color-text)] text-sm font-medium rounded-xl transition-all">
                     <Save className="w-4 h-4" />
                     {saving ? "Đang lưu..." : "Lưu thay đổi"}
                 </button>

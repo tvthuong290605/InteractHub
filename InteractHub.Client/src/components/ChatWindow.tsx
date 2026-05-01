@@ -227,7 +227,7 @@ const MessageGroupUI: React.FC<{
             <div key={msg.id} className="flex flex-col gap-0.5">
               <div onClick={() => setShowTime((v) => !v)} className="cursor-pointer">
                 {msg.content.text && (
-                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg- text-white" : "bg-bg text-white"}`}>
+                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg- text-[var(--color-text)]" : "bg-bg text-[var(--color-text)]"}`}>
                     <MessageText text={msg.content.text} />
                   </div>
                 )}
@@ -554,7 +554,7 @@ const ChatWindow: React.FC<{
             alt=""
           />
           <div>
-            <p className="text-white font-semibold text-sm leading-tight">{conversation.name}</p>
+            <p className="text-[var(--color-text)] font-semibold text-sm leading-tight">{conversation.name}</p>
             <p className="text-[11px] text-green-500">Đang hoạt động</p>
           </div>
         </div>
@@ -563,7 +563,7 @@ const ChatWindow: React.FC<{
           {onMinimize && (
             <button
               onClick={onMinimize}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-bg text-gray-300 hover:text-white transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-bg text-gray-300 hover:text-[var(--color-text)] transition"
               title="Thu nhỏ"
             >
               <FaMinus size={10} />
@@ -572,7 +572,7 @@ const ChatWindow: React.FC<{
           {onClose && (
             <button
               onClick={onClose}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-red-500 text-gray-300 hover:text-white transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-red-500 text-gray-300 hover:text-[var(--color-text)] transition"
               title="Đóng"
             >
               <FaTimes size={10} />
@@ -624,7 +624,7 @@ const ChatWindow: React.FC<{
                 <div className="relative w-full h-full">
                   <video src={previewUrl} className="w-full h-full object-cover rounded-lg border border-gray-600" />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
-                    <FaPlay size={12} className="text-white" />
+                    <FaPlay size={12} className="text-[var(--color-text)]" />
                   </div>
                 </div>
               ) : (
@@ -632,7 +632,7 @@ const ChatWindow: React.FC<{
               )}
               <button
                 onClick={() => removeFile(index)}
-                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 shadow hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
+                className="absolute -top-1 -right-1 bg-red-500 text-[var(--color-text)] rounded-full p-0.5 shadow hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
               >
                 <FaTimes size={7} />
               </button>
@@ -654,7 +654,7 @@ const ChatWindow: React.FC<{
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Aa"
             rows={1}
-            className="flex-1 bg-bg text-white rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
+            className="flex-1 bg-bg text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
           />
           <button
             onClick={handleSend}

@@ -44,11 +44,14 @@ interface ShareModalProps {
 
     originalPost?: SharedPostPreview | null;
     createdAt?: string;
+
   };
 
   onClose: () => void;
 
   onShared?: () => void;
+    onSuccess?: () => void; // 👈 THÊM Ở ĐÂY
+
 }
 
 // ── Component ──────────────────────────────────────────────────
@@ -223,13 +226,13 @@ const ShareModal = ({
         {/* HEADER */}
         <div className="flex items-center justify-between border-b border-[#3a3b3c] px-4 py-3">
 
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold text-[var(--color-text)]">
             Chia sẻ bài viết
           </h3>
 
           <button
             onClick={onClose}
-            className="text-2xl text-gray-400 transition hover:text-white"
+            className="text-2xl text-gray-400 transition hover:text-[var(--color-text)]"
           >
             ✕
           </button>
@@ -255,7 +258,7 @@ const ShareModal = ({
               px-4
               py-3
               text-[15px]
-              text-white
+              text-[var(--color-text)]
               outline-none
               transition
               focus:border-blue-500
@@ -279,7 +282,7 @@ const ShareModal = ({
               />
 
               <div>
-                <p className="font-semibold text-white">
+                <p className="font-semibold text-[var(--color-text)]">
                   {previewPost.fullName || "Người dùng"}
                 </p>
 
@@ -297,7 +300,7 @@ const ShareModal = ({
             <div className="p-4">
 
               {previewPost.title && (
-                <p className="mb-2 text-[17px] font-bold text-white">
+                <p className="mb-2 text-[17px] font-bold text-[var(--color-text)]">
                   {previewPost.title}
                 </p>
               )}
@@ -337,7 +340,7 @@ const ShareModal = ({
                   ${
                     privacy === 1
                       ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-white"
+                      : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -352,7 +355,7 @@ const ShareModal = ({
                   ${
                     privacy === 2
                       ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-white"
+                      : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -367,7 +370,7 @@ const ShareModal = ({
                   ${
                     privacy === 3
                       ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-white"
+                      : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -382,7 +385,7 @@ const ShareModal = ({
             disabled={sharing}
             className="
               w-full rounded-2xl bg-blue-600 py-3
-              text-[17px] font-semibold text-white transition
+              text-[17px] font-semibold text-[var(--color-text)] transition
               hover:bg-blue-700
               disabled:bg-gray-600
             "
@@ -406,7 +409,7 @@ const ShareModal = ({
                 value={shareUrl}
                 className="
                   flex-1 rounded-2xl border border-gray-600
-                  bg-[#3a3b3c] px-4 py-2.5 text-sm text-white
+                  bg-[#3a3b3c] px-4 py-2.5 text-sm text-[var(--color-text)]
                   outline-none
                 "
               />
@@ -414,7 +417,7 @@ const ShareModal = ({
               <button
                 onClick={handleCopyLink}
                 className={`
-                  rounded-2xl px-5 font-medium text-white transition-all
+                  rounded-2xl px-5 font-medium text-[var(--color-text)] transition-all
                   ${
                     copied
                       ? "bg-green-600"
@@ -446,7 +449,7 @@ const ShareModal = ({
                 }
                 className="
                   w-full rounded-2xl border border-gray-600
-                  bg-[#3a3b3c] py-3 pl-11 pr-4 text-sm text-white
+                  bg-[#3a3b3c] py-3 pl-11 pr-4 text-sm text-[var(--color-text)]
                   outline-none
                 "
               />
@@ -497,7 +500,7 @@ const ShareModal = ({
                           className="h-9 w-9 rounded-full object-cover"
                         />
 
-                        <span className="text-[15px] text-white">
+                        <span className="text-[15px] text-[var(--color-text)]">
                           {friend.fullName}
                         </span>
                       </div>
@@ -512,7 +515,7 @@ const ShareModal = ({
                           ${
                             isSending
                               ? "bg-gray-600 text-gray-400"
-                              : "bg-blue-600 text-white hover:bg-blue-700"
+                              : "bg-blue-600 text-[var(--color-text)] hover:bg-blue-700"
                           }
                         `}
                       >

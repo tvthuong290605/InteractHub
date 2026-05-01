@@ -60,7 +60,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
 
         {/* HEADER */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="text-white font-bold text-lg">Người đã bày tỏ cảm xúc</h3>
+          <h3 className="text-[var(--color-text)] font-bold text-lg">Người đã bày tỏ cảm xúc</h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:bg-bg w-9 h-9 rounded-full flex items-center justify-center transition-colors"
@@ -126,11 +126,11 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
                     </div>
 
                     <div className="flex flex-col">
-                      <span className="text-white font-medium text-[16px]">{user.FullName}</span>
+                      <span className="text-[var(--color-text)] font-medium text-[16px]">{user.FullName}</span>
                     </div>
                   </div>
 
-                  <button className="bg-bg hover:bg-bg text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
+                  <button className="bg-bg hover:bg-bg text-[var(--color-text)] px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
                     Trang cá nhân
                   </button>
                 </div>

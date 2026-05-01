@@ -161,7 +161,7 @@ const EmailStep = ({ onSubmit, onBack, loading }: StepProps) => {
       
       <button
         disabled={loading}
-        className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 transition-all cursor-pointer disabled:opacity-70"
+        className="w-full py-4 bg-blue-600 text-[var(--color-text)] font-semibold rounded-2xl hover:bg-blue-700 transition-all cursor-pointer disabled:opacity-70"
       >
         {loading ? "Đang gửi email..." : "Continue"}
       </button>
@@ -244,7 +244,7 @@ const OtpStep = ({ onSubmit, loading }: any) => {
 
       <button
         disabled={loading}
-        className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 cursor-pointer"
+        className="w-full py-4 bg-blue-600 text-[var(--color-text)] font-semibold rounded-2xl hover:bg-blue-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 cursor-pointer"
       >
         {loading ? "Đang xác thực..." : "Verify OTP"}
       </button>
@@ -306,7 +306,7 @@ const ResetStep = ({ onSubmit, loading }: StepProps) => {
 
       <button
         disabled={loading}
-        className="w-full py-4 bg-green-600 text-white font-semibold rounded-2xl hover:bg-green-700 transition-all cursor-pointer disabled:opacity-70"
+        className="w-full py-4 bg-green-600 text-[var(--color-text)] font-semibold rounded-2xl hover:bg-green-700 transition-all cursor-pointer disabled:opacity-70"
       >
         {loading ? "Đang cập nhật..." : "Update Password"}
       </button>

@@ -20,7 +20,7 @@ const FriendPage: React.FC = () => {
 
           {/* ── CỘT TRÁI: Lời mời kết bạn ── */}
           <div className="w-[360px] flex-shrink-0">
-            <h2 className="text-xl font-bold text-white mb-4">
+            <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
               Lời mời kết bạn
             </h2>
             <FriendRequestList />
@@ -31,7 +31,7 @@ const FriendPage: React.FC = () => {
 
           {/* ── CỘT PHẢI: Danh sách bạn bè ── */}
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-white mb-4">
+            <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
               Bạn bè
             </h2>
             {user && <FriendList/>}

@@ -29,7 +29,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ message, onConfirm, onCan
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
     <div className="bg-bg border border-border rounded-2xl shadow-2xl p-6 w-[320px] text-center">
       <div className="text-3xl mb-3">👥</div>
-      <p className="text-white font-semibold text-base mb-1">Hủy kết bạn</p>
+      <p className="text-[var(--color-text)] font-semibold text-base mb-1">Hủy kết bạn</p>
       <p className="text-gray-400 text-sm mb-6">{message}</p>
       <div className="flex gap-3">
         <button
@@ -40,7 +40,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ message, onConfirm, onCan
         </button>
         <button
           onClick={onConfirm}
-          className="flex-1 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+          className="flex-1 py-2 rounded-xl bg-red-600 text-[var(--color-text)] font-semibold hover:bg-red-700 transition-colors"
         >
           Hủy bạn
         </button>
@@ -199,7 +199,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
               {/* Info */}
               <div className="flex-1 text-center md:text-left mb-2">
-                <h2 className="text-3xl font-bold text-white">
+                <h2 className="text-3xl font-bold text-[var(--color-text)]">
                   {user.Username}
                 </h2>
                 <p className="text-gray-400 mt-1">
@@ -211,12 +211,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               <div className="flex gap-2 mb-2">
                 {isOwnProfile ? (
                   <>
-                    <button className="px-4 py-2 bg-bg text-white rounded-lg font-bold">
+                    <button className="px-4 py-2 bg-bg text-[var(--color-text)] rounded-lg font-bold">
                       + Thêm vào tin
                     </button>
                     <button
                       onClick={onEditProfileClick}
-                      className="px-4 py-2 bg-bg text-white rounded-lg font-bold"
+                      className="px-4 py-2 bg-bg text-[var(--color-text)] rounded-lg font-bold"
                     >
                       ✎ Chỉnh sửa
                     </button>
@@ -227,7 +227,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                     {status === null && (
                       <button
                         onClick={handleAddFriend}
-                        className="px-4 py-2 bg-bg text-white rounded-lg font-bold"
+                        className="px-4 py-2 bg-bg text-[var(--color-text)] rounded-lg font-bold"
                       >
                         + Thêm bạn bè
                       </button>
@@ -237,7 +237,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                     {status === 0 && isRequester && (
                       <button
                         onClick={handleCancelRequest}
-                        className="px-4 py-2 bg-gray-600 text-white rounded-lg font-bold"
+                        className="px-4 py-2 bg-gray-600 text-[var(--color-text)] rounded-lg font-bold"
                       >
                         ✓ Đã gửi (Hủy)
                       </button>
@@ -248,13 +248,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                       <>
                         <button
                           onClick={handleAccept}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold"
+                          className="px-4 py-2 bg-green-600 text-[var(--color-text)] rounded-lg font-bold"
                         >
                           ✓ Chấp nhận
                         </button>
                         <button
                           onClick={handleReject}
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold"
+                          className="px-4 py-2 bg-red-600 text-[var(--color-text)] rounded-lg font-bold"
                         >
                           ✕ Từ chối
                         </button>
@@ -264,12 +264,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                     {/* Đã là bạn bè */}
                     {status === 1 && (
                       <>
-                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold">
+                        <button className="px-4 py-2 bg-green-600 text-[var(--color-text)] rounded-lg font-bold">
                           ✓ Bạn bè
                         </button>
                         <button
                           onClick={() => setShowUnfriendConfirm(true)}
-                          className="px-4 py-2 bg-bg hover:bg-red-600 text-white rounded-lg font-bold transition-colors"
+                          className="px-4 py-2 bg-bg hover:bg-red-600 text-[var(--color-text)] rounded-lg font-bold transition-colors"
                         >
                           Hủy kết bạn
                         </button>

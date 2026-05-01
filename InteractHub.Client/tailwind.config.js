@@ -14,10 +14,13 @@ module.exports = {
         border: "var(--color-border)",
         muted: "var(--color-muted)",
 
+        hover: "var(--color-hover)",
+        icon: "var(--color-icon)",
+
         primary: "#1877f2",
         green: "#42b72a",
       }
-    },
+    }
   },
   plugins: [],
 }

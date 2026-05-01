@@ -224,10 +224,10 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
           {(shared.title || shared.content) && (
             <div className="px-4 pb-3">
               {shared.title && (
-                <p className="font-bold text-[17px] mb-2 text-white">{shared.title}</p>
+                <p className="font-bold text-[17px] mb-2 text-[var(--color-text)]">{shared.title}</p>
               )}
               {shared.content && (
-                <p className="text-[15px] text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
+                <p className="text-[15px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
                   {shared.content}
                 </p>
               )}
@@ -247,14 +247,14 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
   // ── RENDER ───────────────────────────────────────────────────
   return (
-    <div className="bg-card border border-border rounded-3xl shadow-xl mb-6 overflow-hidden text-white">
+    <div className="bg-card border border-[var(--color-border)] rounded-3xl shadow-xl mb-6 overflow-hidden text-[var(--color-text)]">
 
       {/* HEADER */}
       <div className="flex items-start gap-3 p-4">
         <img
           src={post.authorAvatar ? resolveUrl(post.authorAvatar) : "/assets/img/icons8-user-default-64.png"}
           alt={post.fullName}
-          className="w-11 h-11 rounded-full object-cover ring-2 ring-gray-700 cursor-pointer shrink-0"
+          className="w-11 h-11 rounded-full object-cover ring-0 ring-gray-700 cursor-pointer shrink-0"
           onClick={() => { if (post.userId) navigate(`/profile/${post.userId}`); }}
           onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/assets/img/icons8-user-default-64.png"; }}
         />
@@ -284,12 +284,12 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
       {/* CONTENT */}
       {post.title && (
         <div className="px-4 pt-4 pb-2">
-          <p className="font-bold text-[17px] mb-1 text-white">{post.title}</p>
+          <p className="font-bold text-[17px] mb-1 text-[var(--color-text)]">{post.title}</p>
         </div>
       )}
       {post.content && (
         <div className="px-4 pt-0 pb-3">
-          <p className="text-[15px] text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-[15px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
             {post.content}
           </p>
         </div>
@@ -297,7 +297,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
       {/* MEDIA — bài thường */}
       {!isSharedPost && post.mediaUrls?.length > 0 && (
-        <div className="p-4">
+        <div className="p-0">
           <MediaGrid mediaUrls={post.mediaUrls} />
         </div>
       )}
@@ -307,7 +307,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
 
       {/* REACTION & COMMENT & SHARE COUNT */}
       {(reactionCount > 0 || commentCount > 0 || shareCount > 0) && (
-        <div className="px-4 py-2 border-t border-border text-gray-400 text-sm flex justify-between items-center">
+        <div className="px-4 py-2 border-t border-[var(--color-border)] text-gray-400 text-sm flex justify-between items-center">
           {/* Reaction count */}
           <div
             onClick={openReactionModal}
@@ -337,7 +337,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
       )}
 
       {/* ACTION BUTTONS */}
-      <div className="flex border-t border-border divide-x divide-border">
+      <div className="flex border-t border-[var(--color-border)] divide-x divide-[var(--color-border)]">
 
         {/* LIKE */}
         <div className="flex-1 relative">
@@ -345,17 +345,17 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
             <div
               onMouseEnter={handleMouseEnterPicker}
               onMouseLeave={handleMouseLeavePicker}
-              className="absolute bottom-[110%] left-2 z-50 bg-bg border border-border rounded-full px-3 py-2 flex gap-2 shadow-2xl"
+              className="absolute bottom-[110%] left-2 z-50 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-full px-3 py-2 flex gap-2 shadow-2xl"
             >
               {REACTIONS.map((r) => (
                 <button
                   key={r.key}
                   onClick={() => handleSelectReaction(r.key)}
                   title={r.label}
-                  className="group flex flex-col items-center hover:scale-125 transition duration-200"
+                  className="group flex flex-col items-center hover:scale-125  duration-200"
                 >
                   <span className="text-2xl">{r.emoji}</span>
-                  <span className="text-[10px] text-gray-300 opacity-0 group-hover:opacity-100">
+                  <span className="text-[10px] text-[var(--color-text)] opacity-0 group-hover:opacity-100">
                     {r.label}
                   </span>
                 </button>
@@ -367,7 +367,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
             onMouseEnter={handleMouseEnterBtn}
             onMouseLeave={handleMouseLeaveBtn}
             className={`w-full py-4 flex items-center justify-center gap-2 transition-colors
-              ${currentReaction ? currentReaction.color : "text-gray-300 hover:bg-bg"}`}
+              ${currentReaction ? currentReaction.color : "text-[var(--color-text)] hover:bg-[var(--color-bg)]"}`}
           >
             <span className="text-xl">{currentReaction ? currentReaction.emoji : "👍"}</span>
             <span className="font-medium">{currentReaction ? currentReaction.label : "Thích"}</span>
@@ -377,7 +377,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* COMMENT */}
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex-1 py-4 text-gray-300 hover:bg-bg transition"
+          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
         >
           💬 Bình luận
         </button>
@@ -386,7 +386,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {!isOwner && (
           <button
             onClick={() => setIsShareOpen(true)}
-            className="flex-1 py-4 text-gray-300 hover:bg-bg transition"
+            className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
           >
             🔗 Chia sẻ
           </button>
@@ -395,7 +395,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* REPORT */}
         <button
           onClick={() => setIsReportOpen(true)}
-          className="flex-1 py-4 text-gray-300 hover:bg-bg transition"
+          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
         >
           🚩 Báo cáo
         </button>

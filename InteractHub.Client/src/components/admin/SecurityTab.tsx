@@ -116,7 +116,7 @@ const SecurityTab: React.FC<Props> = ({ admin }) => {
 
             <div className="flex items-center gap-3 pt-1">
                 <button onClick={handleSave} disabled={saving}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-xl transition-all">
+                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-[var(--color-text)] text-sm font-medium rounded-xl transition-all">
                     {saving ? "Đang lưu..." : "Đổi mật khẩu"}
                 </button>
                 {success && (

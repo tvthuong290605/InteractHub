@@ -62,7 +62,7 @@ const FriendList = () => {
     return <div className="p-4 text-gray-500 text-sm">Vui lòng đăng nhập</div>;
   }
   return (
-    <div className="flex flex-col h-full bg-bg text-white">
+    <div className="flex flex-col h-full bg-bg text-[var(--color-text)]">
       <div className="p-4 sticky top-0 bg-bg z-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest">

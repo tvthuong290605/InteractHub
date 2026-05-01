@@ -61,7 +61,7 @@ const PostCard: React.FC<PostCardProps> = ({
                         className="w-12 h-12 rounded-full object-cover"
                     />
                 ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-[var(--color-text)] font-semibold">
                         {post.author.charAt(0)}
                     </div>
                 )}

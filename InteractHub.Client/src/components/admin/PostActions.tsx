@@ -39,7 +39,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onHide?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-green-600 text-[var(--color-text)] rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <EyeOff className="w-4 h-4" />
                         Ẩn
@@ -50,7 +50,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onDelete?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-red-600 text-[var(--color-text)] rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <Trash2 className="w-4 h-4" />
                         Xóa
@@ -66,7 +66,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onRestore?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-green-600 text-[var(--color-text)] rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <Eye className="w-4 h-4 text-green-500" />
                         Bỏ ẩn
@@ -77,7 +77,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onDelete?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-red-600 text-[var(--color-text)] rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <Trash2 className="w-4 h-4" />
                         Xóa
@@ -93,7 +93,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onHide?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-green-600 text-[var(--color-text)] rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <EyeOff className="w-4 h-4" />
                         Ẩn
@@ -104,7 +104,7 @@ const PostActions: React.FC<PostActionsProps> = ({
                                 onRestore?.(post.id);
                             }
                         }}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-red-600 text-[var(--color-text)] rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
                     >
                         <RotateCcw className="w-4 h-4 text-blue-500" />
                         Bỏ xóa

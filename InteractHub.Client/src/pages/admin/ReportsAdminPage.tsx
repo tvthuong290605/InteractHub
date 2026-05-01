@@ -310,15 +310,15 @@
 
 //                                         {report.status === 'pending' && (
 //                                             <div className="flex items-center gap-2">
-//                                                 <button className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1">
+//                                                 <button className="px-3 py-1.5 bg-blue-600 text-[var(--color-text)] rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1">
 //                                                     <Eye className="w-4 h-4" />
 //                                                     Điều tra
 //                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
+//                                                 <button className="px-3 py-1.5 bg-green-600 text-[var(--color-text)] rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
 //                                                     <CheckCircle className="w-4 h-4" />
 //                                                     Xác nhận vi phạm
 //                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
+//                                                 <button className="px-3 py-1.5 bg-gray-600 text-[var(--color-text)] rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
 //                                                     <X className="w-4 h-4" />
 //                                                     Từ chối
 //                                                 </button>
@@ -327,11 +327,11 @@
 
 //                                         {report.status === 'investigating' && (
 //                                             <div className="flex items-center gap-2">
-//                                                 <button className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
+//                                                 <button className="px-3 py-1.5 bg-green-600 text-[var(--color-text)] rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
 //                                                     <CheckCircle className="w-4 h-4" />
 //                                                     Giải quyết
 //                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
+//                                                 <button className="px-3 py-1.5 bg-gray-600 text-[var(--color-text)] rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
 //                                                     <X className="w-4 h-4" />
 //                                                     Từ chối
 //                                                 </button>
@@ -352,7 +352,7 @@
 //                         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
 //                             Trước
 //                         </button>
-//                         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm">
+//                         <button className="px-4 py-2 bg-blue-600 text-[var(--color-text)] rounded-lg font-medium text-sm">
 //                             1
 //                         </button>
 //                         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
@@ -564,7 +564,7 @@ const ReportsAdminPage: React.FC = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Trước</button>
-                                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
+                                <button className="px-4 py-2 bg-blue-600 text-[var(--color-text)] rounded-lg">1</button>
                                 <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
                                 <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Sau</button>
                             </div>

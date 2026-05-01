@@ -93,7 +93,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
 
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
-          <h2 className="text-xl font-bold text-white">Quản lý bài viết</h2>
+          <h2 className="text-xl font-bold text-[var(--color-text)]">Quản lý bài viết</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-bg text-gray-400 transition-colors"
@@ -111,10 +111,10 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
               placeholder="Tìm kiếm bài viết..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent flex-1 text-white text-sm outline-none placeholder-gray-500"
+              className="bg-transparent flex-1 text-[var(--color-text)] text-sm outline-none placeholder-gray-500"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="text-gray-400 hover:text-white">
+              <button onClick={() => setSearch("")} className="text-gray-400 hover:text-[var(--color-text)]">
                 <FaTimes size={12} />
               </button>
             )}
@@ -159,7 +159,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm truncate">
+                    <p className="text-[var(--color-text)] text-sm truncate">
                       {post.content || "Không có nội dung"}
                     </p>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -188,7 +188,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
                         <button
                           onClick={() => handleDelete(post.id)}
                           disabled={deletingId === post.id}
-                          className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white
+                          className="px-2 py-1 bg-red-600 hover:bg-red-700 text-[var(--color-text)]
                                      text-xs rounded-lg transition-colors disabled:opacity-50"
                         >
                           {deletingId === post.id ? <FaSpinner className="animate-spin" /> : "Xác nhận"}
@@ -196,7 +196,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
                         <button
                           onClick={() => setConfirmDeleteId(null)}
                           className="px-2 py-1 bg-bg hover:bg-[#6e6f70]
-                                     text-white text-xs rounded-lg transition-colors"
+                                     text-[var(--color-text)] text-xs rounded-lg transition-colors"
                         >
                           Hủy
                         </button>
@@ -309,12 +309,12 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
           >
             <FaTimes size={18} />
           </button>
-          <h2 className="text-xl font-bold text-white flex-1">Chỉnh sửa bài viết</h2>
+          <h2 className="text-xl font-bold text-[var(--color-text)] flex-1">Chỉnh sửa bài viết</h2>
           <button
             onClick={handleSave}
             disabled={saving}
             className="flex items-center gap-2 px-4 py-2 bg-bg hover:bg-bg
-                       text-white text-sm font-semibold rounded-xl transition-colors
+                       text-[var(--color-text)] text-sm font-semibold rounded-xl transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving
@@ -359,7 +359,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               value={title}
               onChange={(e) => setTiTle(e.target.value)}
               placeholder="Tiêu đề bài viết..."
-              className="w-full bg-bg text-white text-sm rounded-xl px-4 py-3
+              className="w-full bg-bg text-[var(--color-text)] text-sm rounded-xl px-4 py-3
                          outline-none border border-border focus:border-border
                          resize-none placeholder-gray-500 transition-colors"
             />
@@ -373,7 +373,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
               onChange={(e) => setContent(e.target.value)}
               rows={5}
               placeholder="Nội dung bài viết..."
-              className="w-full bg-bg text-white text-sm rounded-xl px-4 py-3
+              className="w-full bg-bg text-[var(--color-text)] text-sm rounded-xl px-4 py-3
                          outline-none border border-border focus:border-border
                          resize-none placeholder-gray-500 transition-colors"
             />
@@ -395,7 +395,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
                     <button
                       onClick={() => handleRemoveExisting(url)}
                       className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-black/70
-                                 text-white opacity-0 group-hover:opacity-100 transition-opacity
+                                 text-[var(--color-text)] opacity-0 group-hover:opacity-100 transition-opacity
                                  hover:bg-red-600"
                     >
                       <FaTrash size={11} />
@@ -422,7 +422,7 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
                     <button
                       onClick={() => handleRemoveNew(i)}
                       className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-black/70
-                                 text-white opacity-0 group-hover:opacity-100 transition-opacity
+                                 text-[var(--color-text)] opacity-0 group-hover:opacity-100 transition-opacity
                                  hover:bg-red-600"
                     >
                       <FaTrash size={11} />

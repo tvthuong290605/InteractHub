@@ -79,7 +79,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   return (
     <div className="flex flex-col h-full bg-bg">
       <div className="px-4 pt-4 pb-3 flex-shrink-0">
-        <h2 className="text-white font-bold text-[17px] mb-3">Tin nhắn</h2>
+        <h2 className="text-[var(--color-text)] font-bold text-[17px] mb-3">Tin nhắn</h2>
         <div className="relative">
           <FaSearch
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
@@ -89,7 +89,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm kiếm..."
-            className="w-full bg-bg text-white pl-9 pr-4 py-2 rounded-full text-sm outline-none focus:ring-1 focus:ring-[#1877f2]"
+            className="w-full bg-bg text-[var(--color-text)] pl-9 pr-4 py-2 rounded-full text-sm outline-none focus:ring-1 focus:ring-[#1877f2]"
           />
         </div>
       </div>
@@ -132,7 +132,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center">
-                    <p className={`text-[15px] truncate ${hasUnread ? "text-white font-bold" : "text-gray-200 font-medium"}`}>
+                    <p className={`text-[15px] truncate ${hasUnread ? "text-[var(--color-text)] font-bold" : "text-gray-200 font-medium"}`}>
                       {conv.name}
                     </p>
                     <span className={`text-[11px] flex-shrink-0 ml-2 ${hasUnread ? "text-[#1877f2] font-semibold" : "text-gray-500"}`}>
@@ -140,11 +140,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between items-center mt-0.5">
-                    <p className={`text-[13px] truncate ${hasUnread ? "text-white font-semibold" : "text-gray-500"}`}>
+                    <p className={`text-[13px] truncate ${hasUnread ? "text-[var(--color-text)] font-semibold" : "text-gray-500"}`}>
                       {conv.lastMessage ?? "Nhấn để trò chuyện"}
                     </p>
                     {hasUnread && (
-                      <span className="flex-shrink-0 ml-2 min-w-[20px] h-5 bg-bg rounded-full flex items-center justify-center text-white text-[11px] font-bold px-1">
+                      <span className="flex-shrink-0 ml-2 min-w-[20px] h-5 bg-bg rounded-full flex items-center justify-center text-[var(--color-text)] text-[11px] font-bold px-1">
                         {(conv.unreadCount ?? 0) > 99 ? "99+" : conv.unreadCount}
                       </span>
                     )}

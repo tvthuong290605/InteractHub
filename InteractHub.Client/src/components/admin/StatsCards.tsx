@@ -35,7 +35,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
                             </div>
 
                             <div className={`w-12 h-12 ${stat.color} flex items-center justify-center rounded-lg`}>
-                                <Icon className="text-white" />
+                                <Icon className="text-[var(--color-text)]" />
                             </div>
                         </div>
                     </div>

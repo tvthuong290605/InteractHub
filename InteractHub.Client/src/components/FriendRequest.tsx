@@ -75,7 +75,7 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
             disabled={isProcessing}
             onClick={(e) => handleAction(e, "accept")}
             className="flex-1 py-1.5 bg-bg hover:bg-bg disabled:bg-bg
-                       text-white text-[13px] font-bold rounded-lg transition-all
+                       text-[var(--color-text)] text-[13px] font-bold rounded-lg transition-all
                        flex items-center justify-center min-h-[32px] active:scale-95"
           >
             {isProcessing && action === "accept" ? (

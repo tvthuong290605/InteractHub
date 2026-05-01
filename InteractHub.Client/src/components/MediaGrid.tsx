@@ -128,7 +128,7 @@
 //                         {/* Overlay +N ở ảnh thứ 4 */}
 //                         {i === 2 && extra > 0 && (
 //                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center cursor-pointer">
-//                                 <span className="text-white text-2xl font-bold">
+//                                 <span className="text-[var(--color-text)] text-2xl font-bold">
 //                                     +{extra}
 //                                 </span>
 //                             </div>
@@ -302,7 +302,7 @@ const MediaGrid = ({ mediaUrls }: MediaGridProps) => {
                                 {renderMedia(url, i + 1)}
                                 {i === 2 && extra > 0 && (
                                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl pointer-events-none">
-                                        <span className="text-white text-2xl font-bold">+{extra}</span>
+                                        <span className="text-[var(--color-text)] text-2xl font-bold">+{extra}</span>
                                     </div>
                                 )}
                             </div>
@@ -321,7 +321,7 @@ const MediaGrid = ({ mediaUrls }: MediaGridProps) => {
                                 {renderMedia(url, i + 1)}
                                 {i === 2 && extra > 0 && (
                                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl pointer-events-none">
-                                        <span className="text-white text-2xl font-bold">+{extra}</span>
+                                        <span className="text-[var(--color-text)] text-2xl font-bold">+{extra}</span>
                                     </div>
                                 )}
                             </div>

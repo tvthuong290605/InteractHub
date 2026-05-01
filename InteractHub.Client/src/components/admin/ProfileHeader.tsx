@@ -67,7 +67,7 @@ const ProfileHeader: React.FC<Props> = ({ admin, onChange }) => {
                 <input ref={coverInputRef} type="file" accept="image/*" className="hidden"
                     onChange={(e) => handleImageChange(e, "cover")} />
                 <button onClick={() => coverInputRef.current?.click()}
-                    className="absolute bottom-3 right-4 px-3 py-1.5 bg-black/40 hover:bg-black/60 text-white rounded-lg text-sm font-medium flex items-center gap-1.5 backdrop-blur-sm transition-all">
+                    className="absolute bottom-3 right-4 px-3 py-1.5 bg-black/40 hover:bg-black/60 text-[var(--color-text)] rounded-lg text-sm font-medium flex items-center gap-1.5 backdrop-blur-sm transition-all">
                     <Camera className="w-4 h-4" />
                     {uploading ? "Đang upload..." : "Đổi ảnh bìa"}
                 </button>
@@ -80,14 +80,14 @@ const ProfileHeader: React.FC<Props> = ({ admin, onChange }) => {
                         <div className="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
                             {avatarSrc
                                 ? <img src={avatarSrc} alt="avatar" className="w-full h-full object-cover" />
-                                : <span className="text-white text-3xl font-bold">{initials}</span>
+                                : <span className="text-[var(--color-text)] text-3xl font-bold">{initials}</span>
                             }
                         </div>
                         <input ref={avatarInputRef} type="file" accept="image/*" className="hidden"
                             onChange={(e) => handleImageChange(e, "avatar")} />
                         <button onClick={() => avatarInputRef.current?.click()}
                             className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full border-2 border-white flex items-center justify-center shadow transition-colors">
-                            <Pencil className="w-3.5 h-3.5 text-white" />
+                            <Pencil className="w-3.5 h-3.5 text-[var(--color-text)]" />
                         </button>
                     </div>
 

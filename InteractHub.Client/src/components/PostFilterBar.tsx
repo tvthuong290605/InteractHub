@@ -53,12 +53,12 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
   return (
     <div className="bg-bg p-4 rounded-xl border border-border shadow-sm">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-bold text-white">Bài viết</h3>
+        <h3 className="text-lg font-bold text-[var(--color-text)]">Bài viết</h3>
         {isOwnProfile && (
           <button
             onClick={onManageClick}
             className="flex items-center gap-2 px-3 py-1.5 bg-bg hover:bg-bg
-                       text-white text-sm rounded-lg transition-colors"
+                       text-[var(--color-text)] text-sm rounded-lg transition-colors"
           >
             <FaTh size={13} />
             Quản lý bài viết
@@ -75,7 +75,7 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
               onClick={() => onStatusChange(opt.value as StatusFilter)}
               className={`px-3 py-1 rounded-md text-sm transition-colors
                 ${status === opt.value
-                  ? "bg-bg text-white"
+                  ? "bg-bg text-[var(--color-text)]"
                   : "text-gray-300 hover:bg-bg"
                 }`}
             >
@@ -92,7 +92,7 @@ const PostFilterBar: React.FC<PostFilterBarProps> = ({
               onClick={() => onSortChange(s)}
               className={`px-3 py-1 rounded-md text-sm transition-colors
                 ${sort === s
-                  ? "bg-bg text-white"
+                  ? "bg-bg text-[var(--color-text)]"
                   : "text-gray-300 hover:bg-bg"
                 }`}
             >

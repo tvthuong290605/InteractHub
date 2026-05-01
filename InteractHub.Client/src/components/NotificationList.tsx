@@ -89,15 +89,15 @@ const markAsRead = async (id: number, link?: string) => {
     if (actorsCount > 1) {
       return (
         <span>
-          <strong className="text-white font-semibold">{lastActorName}</strong> và{" "}
-          <strong className="text-white font-semibold">{actorsCount - 1} người khác</strong> {message}
+          <strong className="text-[var(--color-text)] font-semibold">{lastActorName}</strong> và{" "}
+          <strong className="text-[var(--color-text)] font-semibold">{actorsCount - 1} người khác</strong> {message}
         </span>
       );
     }
 
     return (
       <span>
-        <strong className="text-white font-semibold">{lastActorName}</strong> {message}
+        <strong className="text-[var(--color-text)] font-semibold">{lastActorName}</strong> {message}
       </span>
     );
   };
@@ -112,7 +112,7 @@ const markAsRead = async (id: number, link?: string) => {
             Thông báo
           </h2>
           {unreadCount > 0 && !loading && (
-            <span className="bg-red-500 text-white text-[11px] font-bold
+            <span className="bg-red-500 text-[var(--color-text)] text-[11px] font-bold
                              px-1.5 py-0.5 rounded-full leading-none">
               {unreadCount}
             </span>

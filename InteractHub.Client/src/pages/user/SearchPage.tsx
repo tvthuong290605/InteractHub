@@ -140,7 +140,7 @@ const SearchPage = () => {
   const showPosts  = activeTab === "all" || activeTab === "posts";
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-white">
+    <div className="min-h-screen bg-[#0f1117] text-[var(--color-text)]">
       {/* Breadcrumb */}
       <div className="border-b border-white/5 bg-[#0f1117]/80 backdrop-blur-xl sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-sm">
@@ -149,7 +149,7 @@ const SearchPage = () => {
           {keyword && (
             <>
               <span className="text-gray-700">/</span>
-              <span className="text-white font-semibold truncate max-w-xs">"{keyword}"</span>
+              <span className="text-[var(--color-text)] font-semibold truncate max-w-xs">"{keyword}"</span>
             </>
           )}
         </div>
@@ -171,7 +171,7 @@ const SearchPage = () => {
                   className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
                     activeTab === key
                       ? "bg-[#1877f2]/10 text-[#4d9fff]"
-                      : "text-gray-400 hover:bg-white/5 hover:text-white"
+                      : "text-gray-400 hover:bg-white/5 hover:text-[var(--color-text)]"
                   }`}
                 >
                   {activeTab === key && (
@@ -207,8 +207,8 @@ const SearchPage = () => {
                 onClick={() => setActiveTab(key)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all ${
                   activeTab === key
-                    ? "bg-[#1877f2] text-white shadow-lg shadow-blue-900/40"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-[#1877f2] text-[var(--color-text)] shadow-lg shadow-blue-900/40"
+                    : "text-gray-400 hover:text-[var(--color-text)]"
                 }`}
               >
                 {icon} {label}
@@ -219,7 +219,7 @@ const SearchPage = () => {
           {/* Heading */}
           {keyword ? (
             <div className="mb-6">
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-xl font-bold text-[var(--color-text)]">
                 Kết quả cho{" "}
                 <span className="text-[#4d9fff] bg-[#1877f2]/10 px-2 py-0.5 rounded-lg">
                   {keyword}
@@ -305,7 +305,7 @@ const SectionHeader = ({ icon, title, count, loading }: {
 }) => (
   <div className="flex items-center gap-2 mb-3">
     <span className="text-[#4d9fff]">{icon}</span>
-    <h2 className="text-sm font-semibold text-white">{title}</h2>
+    <h2 className="text-sm font-semibold text-[var(--color-text)]">{title}</h2>
     {loading ? (
       <span className="ml-1 h-3 w-10 bg-white/10 rounded-full animate-pulse inline-block" />
     ) : count !== undefined && count > 0 ? (
@@ -347,7 +347,7 @@ const UserCard = ({ user, currentUserId, status, onViewProfile, onAddFriend, onA
         return (
           <button
             onClick={onAccept}
-            className="flex items-center gap-1.5 text-xs bg-green-500 hover:bg-green-400 active:scale-95 text-white px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-green-900/30"
+            className="flex items-center gap-1.5 text-xs bg-green-500 hover:bg-green-400 active:scale-95 text-[var(--color-text)] px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-green-900/30"
           >
             <FaCheck size={10} /> Chấp nhận
           </button>
@@ -360,7 +360,7 @@ const UserCard = ({ user, currentUserId, status, onViewProfile, onAddFriend, onA
         return (
           <button
             onClick={onAddFriend}
-            className="flex items-center gap-1.5 text-xs bg-[#1877f2] hover:bg-[#166fe5] active:scale-95 text-white px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-blue-900/30"
+            className="flex items-center gap-1.5 text-xs bg-[#1877f2] hover:bg-[#166fe5] active:scale-95 text-[var(--color-text)] px-3 py-1.5 rounded-lg font-medium transition-all shadow-md shadow-blue-900/30"
           >
             <FaUserPlus size={11} /> Kết bạn
           </button>
@@ -378,7 +378,7 @@ const UserCard = ({ user, currentUserId, status, onViewProfile, onAddFriend, onA
       </div>
       <div className="flex-1 min-w-0">
         <p
-          className="font-semibold text-sm text-white truncate cursor-pointer hover:text-[#4d9fff] transition-colors"
+          className="font-semibold text-sm text-[var(--color-text)] truncate cursor-pointer hover:text-[#4d9fff] transition-colors"
           onClick={onViewProfile}
         >
           {user.FullName || user.Username}
@@ -439,7 +439,7 @@ const EmptySearch = () => (
     <div className="w-16 h-16 rounded-2xl bg-[#1a1d27] border border-white/5 flex items-center justify-center mb-4">
       <FaSearch size={24} className="text-gray-600" />
     </div>
-    <h3 className="text-lg font-semibold text-white mb-1">Tìm kiếm gì đó</h3>
+    <h3 className="text-lg font-semibold text-[var(--color-text)] mb-1">Tìm kiếm gì đó</h3>
     <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
       Nhập từ khóa vào ô tìm kiếm bên trên để tìm người dùng và bài viết.
     </p>

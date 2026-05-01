@@ -67,7 +67,7 @@ const DraggableAvatarBubble: React.FC<{
       <button
         onClick={(e) => { e.stopPropagation(); onClose(); }}
         className="absolute -top-1 -right-1 z-10 w-5 h-5 bg-bg hover:bg-red-500
-                   rounded-full flex items-center justify-center text-gray-300 hover:text-white
+                   rounded-full flex items-center justify-center text-gray-300 hover:text-[var(--color-text)]
                    opacity-0 group-hover:opacity-100 transition-all shadow-md border border-border"
       >
         <FaTimes size={7} />
@@ -98,7 +98,7 @@ const DraggableAvatarBubble: React.FC<{
         {/* Unread badge */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -left-1 min-w-[20px] h-5 bg-red-500 rounded-full
-                           flex items-center justify-center text-white text-[10px] font-bold px-1
+                           flex items-center justify-center text-[var(--color-text)] text-[10px] font-bold px-1
                            animate-bounce shadow-md">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
@@ -107,7 +107,7 @@ const DraggableAvatarBubble: React.FC<{
 
       {/* Tooltip tên */}
       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1
-                      bg-bg text-white text-xs rounded-lg shadow-lg whitespace-nowrap
+                      bg-bg text-[var(--color-text)] text-xs rounded-lg shadow-lg whitespace-nowrap
                       opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none
                       border border-border">
         {conversation.name}
@@ -175,7 +175,7 @@ const MainLayout: React.FC = () => {
               <div className="flex justify-start px-3 pt-3 flex-shrink-0">
                 <button
                   onClick={() => setRightSidebarView("closed")}
-                  className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-[var(--color-text)] transition-colors"
                 >
                   <FaChevronRight size={14} />
                 </button>
@@ -202,7 +202,7 @@ const MainLayout: React.FC = () => {
             <div className="flex flex-col items-center pt-3">
               <button
                 onClick={() => setRightSidebarView("friends")}
-                className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-white transition-colors"
+                className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-[var(--color-text)] transition-colors"
               >
                 <FaChevronRight size={14} className="rotate-180" />
               </button>

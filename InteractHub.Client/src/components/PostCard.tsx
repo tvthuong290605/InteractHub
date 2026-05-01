@@ -22,7 +22,7 @@ const PostCard: React.FC<PostCardProps> = ({ url, title }) => {
       <div className="w-full p-3 border-border group-hover:border-blue-400 transition-colors">
         <div className="flex items-center gap-2 mb-1.5">
           <div className="w-5 h-5 bg-bg rounded-full flex items-center justify-center">
-             <span className="text-[10px] text-white">🔗</span>
+             <span className="text-[10px] text-[var(--color-text)]">🔗</span>
           </div>
           <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">
             Bài viết từ InteractHub
