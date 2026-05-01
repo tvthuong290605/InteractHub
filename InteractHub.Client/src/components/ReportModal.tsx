@@ -25,25 +25,25 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
 
   // ✅ Đưa ra component level để dùng được trong JSX
   const finalReason =
-  selectedReason === "other"
-    ? otherReason.trim()
-    : otherReason.trim()
-    ? `${selectedReason}: ${otherReason.trim()}`
-    : selectedReason;
+    selectedReason === "other"
+      ? otherReason.trim()
+      : otherReason.trim()
+        ? `${selectedReason}: ${otherReason.trim()}`
+        : selectedReason;
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const res = await postService.reportPost({
         postId,
-        reason: finalReason ,
+        reason: finalReason,
       });
 
-      if (res.data.Success) {
-        toast.success(res.data.Message);
+      if (res.success) {
+        toast.success(res.message);
         onClose();
       } else {
-        toast.error(res.data.Message);
+        toast.error(res.message);
         onClose();
       }
     } catch (err) {
