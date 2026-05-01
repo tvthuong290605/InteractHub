@@ -466,18 +466,25 @@ const ChatWindow: React.FC<{
 
   // ── File handling ─────────────────────────────────────────────
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
-    setSelectedFiles((prev) => [
-      ...prev,
-      ...Array.from(files).map((file) => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-        isVideo: file.type.startsWith("video/"),
-      })),
-    ]);
+  const files = e.target.files;
+  if (!files?.length) return;
+
+  // ✅ Snapshot ngay lập tức trước khi làm bất cứ thứ gì khác
+  const fileArray = Array.from(files);
+
+  const newFiles: SelectedFile[] = fileArray.map((file) => ({
+    file,
+    previewUrl: URL.createObjectURL(file),
+    isVideo: file.type.startsWith("video/"),
+  }));
+
+  setSelectedFiles((prev) => [...prev, ...newFiles]);
+
+  // ✅ Reset SAU khi đã xử lý xong hoàn toàn
+  requestAnimationFrame(() => {
     e.target.value = "";
-  };
+  });
+};
 
   const removeFile = (index: number) => {
     setSelectedFiles((prev) => {

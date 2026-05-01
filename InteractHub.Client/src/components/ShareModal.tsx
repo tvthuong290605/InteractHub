@@ -1,9 +1,28 @@
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "../context/useAuth"; 
-import { friendshipService, type UserDto } from "../services/friendshipService";
+import { useAuth } from "../context/useAuth";
+
+import {
+  friendshipService,
+  type UserDto,
+} from "../services/friendshipService";
+
 import { messageService } from "../services/messageService";
+import { postService } from "../services/postService";
+
 import { resolveUrl } from "../utils/urlUtils";
 import { removeVietnameseTones } from "../utils/stringUtils";
+
+import MediaGrid from "../components/MediaGrid";
+
+// ── Types ──────────────────────────────────────────────────────
+interface SharedPostPreview {
+  fullName?: string;
+  authorAvatar?: string;
+  title?: string;
+  content?: string;
+  mediaUrls?: string[];
+  createdAt?: string;
+}
 
 interface FriendType {
   id: string;
@@ -14,73 +33,160 @@ interface FriendType {
 interface ShareModalProps {
   post: {
     id: string | number;
+
     title?: string;
+    content?: string;
+
+    fullName?: string;
+    authorAvatar?: string;
+
+    mediaUrls?: string[];
+
+    originalPost?: SharedPostPreview | null;
+    createdAt?: string;
   };
+
   onClose: () => void;
+
+  onShared?: () => void;
 }
 
-const ShareModal = ({ post, onClose }: ShareModalProps) => {
+// ── Component ──────────────────────────────────────────────────
+const ShareModal = ({
+  post,
+  onClose,
+  onShared,
+}: ShareModalProps) => {
   const { user } = useAuth();
-  
-  // States
+
+  // ── State ────────────────────────────────────────────────────
   const [friends, setFriends] = useState<FriendType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [sendingIds, setSendingIds] = useState<string[]>([]); // Lưu danh sách ID đã bấm gửi
 
-  // URL chia sẻ
+  const [copied, setCopied] = useState(false);
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const [sendingIds, setSendingIds] = useState<string[]>([]);
+
+  const [sharing, setSharing] = useState(false);
+
+  // 1 = Public
+  // 2 = Friends
+  // 3 = Private
+  const [privacy, setPrivacy] = useState<1 | 2 | 3>(1);
+
+  const [shareContent, setShareContent] = useState("");
+
   const shareUrl = `${window.location.origin}/post/${post.id}`;
 
-  // 1. Logic Sao chép liên kết
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // ── Share Preview ────────────────────────────────────────────
+  const previewPost = post.originalPost ?? post;
+
+  // ============================================================
+  // SHARE TO FEED
+  // ============================================================
+
+  const handleShareToFeed = async () => {
+    if (sharing) return;
+
+    try {
+      setSharing(true);
+
+      await postService.sharePost({
+        originalPostId: Number(post.id),
+        content: shareContent,
+        status: privacy,
+      });
+
+      alert("✅ Đã chia sẻ bài viết!");
+
+      onShared?.();
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+
+      alert("❌ Không thể chia sẻ bài viết!");
+    } finally {
+      setSharing(false);
+    }
   };
 
-  // 2. Logic Gửi tin nhắn chia sẻ
+  // ============================================================
+  // COPY LINK
+  // ============================================================
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 1800);
+    } catch (error) {
+      console.error(error);
+
+      alert("Không thể sao chép liên kết!");
+    }
+  };
+
+  // ============================================================
+  // SEND MESSAGE
+  // ============================================================
+
   const handleSend = async (friendId: string) => {
     if (sendingIds.includes(friendId)) return;
 
     try {
-      // Đánh dấu đang gửi (hoặc đã gửi) để tránh spam nút
       setSendingIds((prev) => [...prev, friendId]);
 
-      // Bước A: Lấy hoặc tạo cuộc hội thoại
-      const convRes = await messageService.getOrCreateConversation(friendId);
-      const conversationId = convRes.data.id;
+      const convRes =
+        await messageService.getOrCreateConversation(friendId);
 
-      // Bước B: Gửi nội dung bài viết
-      const shareContent = `${shareUrl}`;
-      await messageService.sendMessage(conversationId, shareContent);
-
-      console.log(`Đã chia sẻ cho ${friendId} thành công`);
+      await messageService.sendMessage(
+        convRes.data.id,
+        shareUrl
+      );
     } catch (error) {
-      console.error("Lỗi khi chia sẻ:", error);
-      alert("Không thể gửi tin nhắn. Vui lòng thử lại sau.");
-      // Xóa khỏi danh sách đã gửi nếu thất bại để có thể bấm lại
-      setSendingIds((prev) => prev.filter(id => id !== friendId));
+      console.error(error);
+
+      alert("Không thể gửi tin nhắn!");
+    } finally {
+      setSendingIds((prev) =>
+        prev.filter((id) => id !== friendId)
+      );
     }
   };
 
-  // 3. Lấy danh sách bạn bè từ API
+  // ============================================================
+  // FETCH FRIENDS
+  // ============================================================
+
   useEffect(() => {
     if (!user?.Id) return;
 
     const fetchFriends = async () => {
       try {
         setLoading(true);
-        const res = await friendshipService.getFriendsList(user.Id);
-        // Cast dữ liệu về UserDto để tránh lỗi 'any'
-        const mappedFriends = (res.data as UserDto[]).map((f) => ({
-          id: f.Id,
-          fullName: f.Username || "Người dùng",
-          avatarUrl: f.AvatarUrl,
-        }));
+
+        const res = await friendshipService.getFriendsList(
+          user.Id
+        );
+
+        const mappedFriends = (res.data as UserDto[]).map(
+          (friend) => ({
+            id: friend.Id,
+            fullName: friend.Username || "Người dùng",
+            avatarUrl: friend.AvatarUrl,
+          })
+        );
+
         setFriends(mappedFriends);
       } catch (error) {
-        console.error("Lỗi tải danh sách bạn bè:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -89,109 +195,338 @@ const ShareModal = ({ post, onClose }: ShareModalProps) => {
     fetchFriends();
   }, [user?.Id]);
 
-  // 4. Logic lọc bạn bè theo tìm kiếm
+  // ============================================================
+  // FILTER FRIENDS
+  // ============================================================
+
   const filteredFriends = useMemo(() => {
-    return friends.filter((f) =>
-      removeVietnameseTones(f.fullName.toLowerCase()).includes(
-        removeVietnameseTones(searchKeyword.toLowerCase())
+    return friends.filter((friend) =>
+      removeVietnameseTones(
+        friend.fullName.toLowerCase()
+      ).includes(
+        removeVietnameseTones(
+          searchKeyword.toLowerCase()
+        )
       )
     );
   }, [friends, searchKeyword]);
 
+  // ============================================================
+  // Render
+  // ============================================================
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-bg border border-border w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-        
-        {/* Header */}
-        <div className="p-4 border-b border-border flex justify-between items-center">
-          <h3 className="text-lg font-bold text-white text-center flex-1">Chia sẻ bài viết</h3>
-          <button 
-            onClick={onClose} 
-            className="w-8 h-8 rounded-full bg-bg flex items-center justify-center hover:bg-bg transition text-white"
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-lg p-4">
+
+      <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-[#3a3b3c] bg-[#242526] shadow-2xl">
+
+        {/* HEADER */}
+        <div className="flex items-center justify-between border-b border-[#3a3b3c] px-4 py-3">
+
+          <h3 className="text-lg font-semibold text-white">
+            Chia sẻ bài viết
+          </h3>
+
+          <button
+            onClick={onClose}
+            className="text-2xl text-gray-400 transition hover:text-white"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4 space-y-5">
-          {/* Section: Sao chép Link */}
-          <div>
-            <p className="text-gray-400 text-[11px] mb-2 font-bold uppercase tracking-widest">Liên kết bài viết</p>
-            <div className="flex gap-2">
-              <input 
-                readOnly 
-                value={shareUrl} 
-                className="flex-1 bg-bg border border-border rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500"
+        {/* BODY */}
+        <div className="custom-scrollbar max-h-[85vh] overflow-y-auto p-4 space-y-4">
+
+          {/* USER CONTENT */}
+          <textarea
+            value={shareContent}
+            onChange={(e) =>
+              setShareContent(e.target.value)
+            }
+            placeholder="Viết gì đó về bài viết này..."
+            rows={3}
+            className="
+              w-full
+              resize-none
+              rounded-2xl
+              border border-transparent
+              bg-[#3a3b3c]
+              px-4
+              py-3
+              text-[15px]
+              text-white
+              outline-none
+              transition
+              focus:border-blue-500
+            "
+          />
+
+          {/* ── PREVIEW POST ───────────────────────────── */}
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+
+            {/* HEADER */}
+            <div className="flex items-center gap-3 border-b border-border p-4">
+
+              <img
+                src={
+                  previewPost.authorAvatar
+                    ? resolveUrl(previewPost.authorAvatar)
+                    : "/assets/img/icons8-user-default-64.png"
+                }
+                alt={previewPost.fullName}
+                className="h-11 w-11 rounded-full object-cover"
               />
-              <button 
+
+              <div>
+                <p className="font-semibold text-white">
+                  {previewPost.fullName || "Người dùng"}
+                </p>
+
+                {previewPost.createdAt && (
+                  <p className="text-xs text-gray-400">
+                    {new Date(
+                      previewPost.createdAt
+                    ).toLocaleString("vi-VN")}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* CONTENT */}
+            <div className="p-4">
+
+              {previewPost.title && (
+                <p className="mb-2 text-[17px] font-bold text-white">
+                  {previewPost.title}
+                </p>
+              )}
+
+              {previewPost.content && (
+                <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-gray-200">
+                  {previewPost.content}
+                </p>
+              )}
+            </div>
+
+            {/* MEDIA */}
+            {previewPost.mediaUrls &&
+              previewPost.mediaUrls.length > 0 && (
+                <div className="px-4 pb-4">
+                  <MediaGrid
+                    mediaUrls={previewPost.mediaUrls}
+                  />
+                </div>
+              )}
+          </div>
+
+          {/* PRIVACY */}
+          <div>
+
+            <p className="mb-2 text-sm text-gray-400">
+              Ai có thể xem?
+            </p>
+
+            <div className="flex gap-2">
+
+              {/* PUBLIC */}
+              <button
+                onClick={() => setPrivacy(1)}
+                className={`
+                  flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
+                  ${
+                    privacy === 1
+                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                      : "border-gray-600 text-white"
+                  }
+                `}
+              >
+                🌍 Công khai
+              </button>
+
+              {/* FRIEND */}
+              <button
+                onClick={() => setPrivacy(2)}
+                className={`
+                  flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
+                  ${
+                    privacy === 2
+                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                      : "border-gray-600 text-white"
+                  }
+                `}
+              >
+                👥 Bạn bè
+              </button>
+
+              {/* PRIVATE */}
+              <button
+                onClick={() => setPrivacy(3)}
+                className={`
+                  flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
+                  ${
+                    privacy === 3
+                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                      : "border-gray-600 text-white"
+                  }
+                `}
+              >
+                🔒 Riêng tư
+              </button>
+            </div>
+          </div>
+
+          {/* SHARE BUTTON */}
+          <button
+            onClick={handleShareToFeed}
+            disabled={sharing}
+            className="
+              w-full rounded-2xl bg-blue-600 py-3
+              text-[17px] font-semibold text-white transition
+              hover:bg-blue-700
+              disabled:bg-gray-600
+            "
+          >
+            {sharing
+              ? "Đang chia sẻ..."
+              : "Chia sẻ ngay"}
+          </button>
+
+          {/* COPY LINK */}
+          <div>
+
+            <p className="mb-1.5 text-xs text-gray-400">
+              LIÊN KẾT
+            </p>
+
+            <div className="flex gap-2">
+
+              <input
+                readOnly
+                value={shareUrl}
+                className="
+                  flex-1 rounded-2xl border border-gray-600
+                  bg-[#3a3b3c] px-4 py-2.5 text-sm text-white
+                  outline-none
+                "
+              />
+
+              <button
                 onClick={handleCopyLink}
-                className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all whitespace-nowrap ${
-                  copied ? "bg-green-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
-                }`}
+                className={`
+                  rounded-2xl px-5 font-medium text-white transition-all
+                  ${
+                    copied
+                      ? "bg-green-600"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }
+                `}
               >
                 {copied ? "Đã chép" : "Sao chép"}
               </button>
             </div>
           </div>
 
-          {/* Section: Tìm kiếm & Danh sách bạn bè */}
-          <div className="flex flex-col gap-3">
-            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Gửi qua tin nhắn</p>
-            
+          {/* SEND MESSAGE */}
+          <div>
+
+            <p className="mb-2 text-xs text-gray-400">
+              GỬI QUA TIN NHẮN
+            </p>
+
+            {/* SEARCH */}
             <div className="relative">
+
               <input
                 type="text"
                 placeholder="Tìm kiếm bạn bè..."
                 value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                className="w-full bg-bg border border-border py-2 pl-9 pr-4 rounded-xl text-sm text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                onChange={(e) =>
+                  setSearchKeyword(e.target.value)
+                }
+                className="
+                  w-full rounded-2xl border border-gray-600
+                  bg-[#3a3b3c] py-3 pl-11 pr-4 text-sm text-white
+                  outline-none
+                "
               />
-              <span className="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
+
+              <span className="absolute left-4 top-3.5 text-gray-400">
+                🔍
+              </span>
             </div>
 
-            {/* List Friends Container */}
-            <div className="max-h-60 overflow-y-auto space-y-1 pr-1 custom-scrollbar min-h-[120px]">
+            {/* FRIEND LIST */}
+            <div className="custom-scrollbar mt-2 max-h-60 overflow-y-auto space-y-1">
+
               {loading ? (
-                // Loading Skeletons
-                [1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center gap-3 p-2 animate-pulse">
-                    <div className="w-10 h-10 bg-bg rounded-full" />
-                    <div className="h-4 bg-bg rounded w-32" />
-                  </div>
-                ))
+                <div className="space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="h-14 animate-pulse rounded-2xl bg-[#3a3b3c]"
+                    />
+                  ))}
+                </div>
               ) : filteredFriends.length > 0 ? (
                 filteredFriends.map((friend) => {
-                  const isSent = sendingIds.includes(friend.id);
+                  const isSending =
+                    sendingIds.includes(friend.id);
+
                   return (
-                    <div key={friend.id} className="flex items-center justify-between p-2 hover:bg-bg rounded-xl transition group">
+                    <div
+                      key={friend.id}
+                      className="
+                        flex items-center justify-between
+                        rounded-2xl p-2.5 transition
+                        hover:bg-[#3a3b3c]
+                      "
+                    >
+
                       <div className="flex items-center gap-3">
-                        <img 
-                          src={friend.avatarUrl ? resolveUrl(friend.avatarUrl) : "/assets/img/icons8-user-default-64.png"} 
+
+                        <img
+                          src={
+                            friend.avatarUrl
+                              ? resolveUrl(
+                                  friend.avatarUrl
+                                )
+                              : "/assets/img/icons8-user-default-64.png"
+                          }
                           alt={friend.fullName}
-                          className="w-10 h-10 rounded-full object-cover border border-gray-700"
-                          onError={(e) => { e.currentTarget.src = "/assets/img/icons8-user-default-64.png"; }}
+                          className="h-9 w-9 rounded-full object-cover"
                         />
-                        <span className="text-white text-sm font-medium">{friend.fullName}</span>
+
+                        <span className="text-[15px] text-white">
+                          {friend.fullName}
+                        </span>
                       </div>
-                      
-                      <button 
-                        onClick={() => handleSend(friend.id)}
-                        disabled={isSent}
-                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                          isSent 
-                            ? "bg-gray-700 text-gray-400 cursor-default" 
-                            : "bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white"
-                        }`}
+
+                      <button
+                        onClick={() =>
+                          handleSend(friend.id)
+                        }
+                        disabled={isSending}
+                        className={`
+                          rounded-xl px-5 py-1.5 text-sm transition-all
+                          ${
+                            isSending
+                              ? "bg-gray-600 text-gray-400"
+                              : "bg-blue-600 text-white hover:bg-blue-700"
+                          }
+                        `}
                       >
-                        {isSent ? "Đã gửi" : "Gửi"}
+                        {isSending
+                          ? "Đang gửi..."
+                          : "Gửi"}
                       </button>
                     </div>
                   );
                 })
               ) : (
-                <div className="text-center py-8 text-gray-500 text-sm italic">
-                  {searchKeyword ? "Không tìm thấy bạn bè này" : "Danh sách bạn bè trống"}
-                </div>
+                <p className="py-6 text-center text-gray-500">
+                  Không tìm thấy bạn bè
+                </p>
               )}
             </div>
           </div>

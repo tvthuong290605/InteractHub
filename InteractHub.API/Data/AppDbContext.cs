@@ -246,18 +246,33 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Conversation> Conversations { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<MessageMedia> MessageMedias { get; set; }
-    // ❌ Bỏ MessageReadStatuses — dùng IsRead trong Message
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // --- 1. Post ---
+        // ==================== POST ====================
         modelBuilder.Entity<Post>(entity =>
         {
             entity.Property(p => p.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
 
+            entity.Property(p => p.UpdatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
+            entity.Property(p => p.Status)
+                .HasDefaultValue(1);
+
+            entity.Property(p => p.ShareCount)
+                .HasDefaultValue(0);
+
+            // Self-referencing cho chức năng Share / Repost
+            entity.HasOne(p => p.OriginalPost)
+                .WithMany(p => p.SharedPosts)
+                .HasForeignKey(p => p.OriginalPostId)
+                .OnDelete(DeleteBehavior.Restrict); // Không xóa cascade khi xóa bài gốc
+
+            // Các quan hệ khác
             entity.HasMany(p => p.Likes)
                 .WithOne(l => l.Post)
                 .HasForeignKey(l => l.PostId)
@@ -267,47 +282,63 @@ public class AppDbContext : IdentityDbContext<User>
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(p => p.PostMedias)
+                .WithOne(pm => pm.Post)
+                .HasForeignKey(pm => pm.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(p => p.Reports)
+                .WithOne(r => r.Post)
+                .HasForeignKey(r => r.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(p => p.Post_Hashtags)
+                .WithOne(ph => ph.Post)
+                .HasForeignKey(ph => ph.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // --- 2. PostMedia ---
+        // ==================== POSTMEDIA ====================
         modelBuilder.Entity<PostMedia>()
             .HasOne(pm => pm.Post)
             .WithMany(p => p.PostMedias)
             .HasForeignKey(pm => pm.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // --- 3. Like ---
+        // ==================== LIKE ====================
         modelBuilder.Entity<Like>(entity =>
         {
-            entity.Property(l => l.Type)
-                .HasConversion<int>()
-                .IsRequired();
-
-            entity.Property(l => l.Status)
-                .HasDefaultValue(1);
-
-            entity.Property(l => l.CreatedAt)
-                .HasDefaultValueSql("GETDATE()");
+            entity.Property(l => l.Type).HasConversion<int>().IsRequired();
+            entity.Property(l => l.Status).HasDefaultValue(1);
+            entity.Property(l => l.CreatedAt).HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(l => l.User)
                 .WithMany(u => u.Likes)
                 .HasForeignKey(l => l.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(l => l.Post)
+                .WithMany(p => p.Likes)
+                .HasForeignKey(l => l.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // --- 4. Comment ---
+        // ==================== COMMENT ====================
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("GETDATE()");
-
-            entity.Property(c => c.Status)
-                .HasDefaultValue(1);
+            entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETDATE()");
+            entity.Property(c => c.Status).HasDefaultValue(1);
 
             entity.HasOne(c => c.User)
                 .WithMany(u => u.Comments)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(c => c.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(c => c.Parent)
                 .WithMany(c => c.Replies)
@@ -315,7 +346,18 @@ public class AppDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // --- 5. Friendship ---
+        // ==================== COMMENTLIKE ====================
+        modelBuilder.Entity<CommentLike>(entity =>
+        {
+            entity.HasKey(cl => new { cl.CommentId, cl.UserId });
+
+            entity.HasOne(cl => cl.Comment)
+                .WithMany(c => c.CommentLikes)
+                .HasForeignKey(cl => cl.CommentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ==================== FRIENDSHIP ====================
         modelBuilder.Entity<Friendship>(entity =>
         {
             entity.HasOne(f => f.Requester)
@@ -329,18 +371,7 @@ public class AppDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // --- 6. PostReport ---
-        modelBuilder.Entity<PostReport>(entity =>
-        {
-            entity.HasOne(pr => pr.User)
-                .WithMany(u => u.PostReports)
-                .HasForeignKey(pr => pr.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(pr => new { pr.UserId, pr.PostId }).IsUnique();
-        });
-
-        // --- 7. Hashtag & Post_Hashtag ---
+        // ==================== HASHTAG & POST_HASHTAG ====================
         modelBuilder.Entity<Hashtag>(entity =>
         {
             entity.HasIndex(h => h.Tag).IsUnique();
@@ -353,37 +384,38 @@ public class AppDbContext : IdentityDbContext<User>
 
             entity.HasOne(ph => ph.Post)
                 .WithMany(p => p.Post_Hashtags)
-                .HasForeignKey(ph => ph.PostId);
+                .HasForeignKey(ph => ph.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(ph => ph.Hashtag)
                 .WithMany(h => h.Post_Hashtags)
-                .HasForeignKey(ph => ph.HashtagId);
+                .HasForeignKey(ph => ph.HashtagId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // --- 8. CommentLike ---
-        modelBuilder.Entity<CommentLike>(entity =>
+        // ==================== POSTREPORT ====================
+        modelBuilder.Entity<PostReport>(entity =>
         {
-            entity.HasKey(cl => new { cl.CommentId, cl.UserId });
+            entity.HasOne(pr => pr.User)
+                .WithMany(u => u.PostReports)
+                .HasForeignKey(pr => pr.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(cl => cl.Comment)
-                .WithMany(c => c.CommentLikes)
-                .HasForeignKey(cl => cl.CommentId)
+            entity.HasOne(pr => pr.Post)
+                .WithMany(p => p.Reports)
+                .HasForeignKey(pr => pr.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(cl => cl.User)
-                .WithMany()
-                .HasForeignKey(cl => cl.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(pr => new { pr.UserId, pr.PostId }).IsUnique();
         });
 
-        // --- 9. Notification ---
+        // ==================== NOTIFICATION ====================
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.Property(n => n.CreatedAt)
-                .HasDefaultValueSql("GETDATE()");
+            entity.Property(n => n.CreatedAt).HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(n => n.User)
-                .WithMany()
+                .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -393,9 +425,9 @@ public class AppDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // --- 10. Conversation ---
+        // ==================== CONVERSATION ====================
         modelBuilder.Entity<Conversation>(entity =>
-        {// Đảm bảo 2 user chỉ có 1 cuộc hội thoại
+        {
             entity.HasIndex(c => new { c.User1Id, c.User2Id }).IsUnique();
 
             entity.HasOne(c => c.User1)
@@ -407,18 +439,14 @@ public class AppDbContext : IdentityDbContext<User>
                 .WithMany()
                 .HasForeignKey(c => c.User2Id)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(c => c.LastMessageAt); // Tối ưu sort danh sách chat
         });
 
-        // --- 11. Message ---
+        // ==================== MESSAGE ====================
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.Property(m => m.CreatedAt)
-                .HasDefaultValueSql("GETDATE()");
-
-            entity.Property(m => m.IsRead)
-                .HasDefaultValue(false);
+            entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETDATE()");
+            entity.Property(m => m.IsRead).HasDefaultValue(false);
+            entity.Property(m => m.IsDeleted).HasDefaultValue(false);
 
             entity.HasOne(m => m.Conversation)
                 .WithMany(c => c.Messages)
@@ -429,12 +457,9 @@ public class AppDbContext : IdentityDbContext<User>
                 .WithMany()
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Tối ưu query lấy tin nhắn theo thời gian
-            entity.HasIndex(m => new { m.ConversationId, m.CreatedAt });
         });
 
-        // --- 12. MessageMedia ---
+        // ==================== MESSAGEMEDIA ====================
         modelBuilder.Entity<MessageMedia>(entity =>
         {
             entity.HasOne(mm => mm.Message)

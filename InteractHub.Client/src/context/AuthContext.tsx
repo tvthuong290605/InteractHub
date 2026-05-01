@@ -4,7 +4,7 @@ import { createContext } from "react";
 export interface User {
   Id: string;
   Username: string;
-  FullName: string;
+  // FullName: string;
   Email: string;
   Roles: string[];
   Gender?: string;

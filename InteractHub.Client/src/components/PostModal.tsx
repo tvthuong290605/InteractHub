@@ -186,6 +186,7 @@ const PostModal: React.FC<PostModalProps> = ({ user, onClose, onPostCreated }) =
       formData.append("Title", postTitle.trim()); 
       formData.append("Content", postContent.trim());
       formData.append("Status", status.toString());
+      formData.append("OriginalPostId", "");
       selectedMedia.forEach(item => formData.append("Files", item.file));
 
       const data = await postService.createPost(formData);
