@@ -921,6 +921,7 @@ interface PostAdminDto {
   CommentCount: number;
   Comments: CommentDto[];
   MediaUrls?: string[];
+  SharedPost?: PostAdminDto | null;
 }
 
 interface PostReportAdminDTO {

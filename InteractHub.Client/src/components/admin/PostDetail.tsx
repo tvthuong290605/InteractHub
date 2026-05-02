@@ -34,6 +34,8 @@ interface Post {
     status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
     createdAt: string;
     mediaUrls?: string[];
+    SharedPost?: Post | null;
+
 }
 
 interface PostDetailProps {
@@ -450,6 +452,52 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onClose }) => {
                 {/* Content */}
                 <h2 className="text-xl font-bold mb-2">{post.title}</h2>
                 <p className="text-gray-700 mb-4 whitespace-pre-wrap">{post.content}</p>
+                {/* Shared Post */}
+                {post.SharedPost && (
+                    <div className="border rounded-lg p-3 bg-gray-100 mb-4 max-h-[300px] overflow-y-auto">
+
+                        {/* HEADER */}
+                        <div className="flex items-center gap-2 mb-2">
+                            {post.SharedPost.authorAvatar ? (
+                                <img
+                                    src={post.SharedPost.authorAvatar}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white">
+                                    {post.SharedPost.author.charAt(0)}
+                                </div>
+                            )}
+
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-sm">
+                                    {post.SharedPost.author}
+                                </span>
+
+                                <span className="text-xs text-gray-500">
+                                    {new Date(new Date(post.SharedPost.createdAt).getTime() + 7 * 60 * 60 * 1000).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* TITLE */}
+                        {post.SharedPost.title && (
+                            <h4 className="font-bold mb-1">
+                                {post.SharedPost.title}
+                            </h4>
+                        )}
+
+                        {/* CONTENT */}
+                        <p className="text-gray-700 whitespace-pre-wrap mb-2">
+                            {post.SharedPost.content}
+                        </p>
+
+                        {/* MEDIA */}
+                        {post.SharedPost?.mediaUrls && post.SharedPost?.mediaUrls.length > 0 && (
+                            <MediaGrid mediaUrls={post.SharedPost.mediaUrls} />
+                        )}
+                    </div>
+                )}
 
                 {/* MediaGrid */}
                 {mediaUrls.length > 0 && (

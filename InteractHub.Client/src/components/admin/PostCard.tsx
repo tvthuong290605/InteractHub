@@ -16,6 +16,8 @@ interface Post {
     status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
     createdAt: string;
     mediaUrls?: string[];
+    SharedPost?: Post | null;
+
 }
 
 interface CommentDTO {
@@ -70,7 +72,11 @@ const PostCard: React.FC<PostCardProps> = ({
                     <div className="flex items-start justify-between gap-4 mb-2">
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-gray-900">{post.title}</h3>
+                                <h3 className="font-semibold text-gray-900">
+                                    {post.SharedPost
+                                        ? "Đã chia sẻ 1 bài viết"
+                                        : post.title}
+                                </h3>
 
                             </div>
 

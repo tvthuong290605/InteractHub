@@ -358,6 +358,11 @@ public class PostRepository : IPostRepository
 
             .Include(p => p.Comments)
                 .ThenInclude(c => c.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.PostMedias)
 
             .AsSplitQuery()
 
@@ -468,9 +473,24 @@ public class PostRepository : IPostRepository
                     })
                     .ToList(),
 
-                CommentCount = p.Comments?.Count?? 0,
+                CommentCount = p.Comments?.Count ?? 0,
 
-                Comments = rootComments
+                Comments = rootComments,
+                SharedPost = p.OriginalPost == null ? null : new PostAdminDTO
+                {
+                    Id = p.OriginalPost.Id,
+                    Title = p.OriginalPost.Title,
+                    Content = p.OriginalPost.Content,
+                    UserId = p.OriginalPost.UserId,
+                    AuthorName = p.OriginalPost.User?.FullName ?? "User",
+                    AuthorAvatar = p.OriginalPost.User?.ProfilePicture ?? "",
+                    CreatedAt = p.OriginalPost.CreatedAt,
+
+                    MediaUrls = p.OriginalPost.PostMedias?
+                    
+                    .Select(m => m.Url)
+                    .ToList() ?? new List<string>()
+                }
             };
         });
     }

@@ -140,12 +140,21 @@ public class PostReportRepository : Repository<PostReport>, IPostReportRepositor
             .Include(r => r.Post)
                 .ThenInclude(p => p.PostMedias)
             .Include(r => r.Post)
+                .ThenInclude(p => p.OriginalPost)
+                    .ThenInclude(op => op.User)
+
+            .Include(r => r.Post)
+                .ThenInclude(p => p.OriginalPost)
+                    .ThenInclude(op => op.PostMedias)
+            .Include(r => r.Post)
                 .ThenInclude(p => p.Likes!)
                 .ThenInclude(l => l.User)
 
             .Include(r => r.Post)
                 .ThenInclude(p => p.Comments!)
                 .ThenInclude(c => c.User)
+
+
             .AsSplitQuery()
             .ToListAsync();
 
@@ -249,7 +258,22 @@ public class PostReportRepository : Repository<PostReport>, IPostReportRepositor
 
                     // ✅ COMMENT FULL
                     CommentCount = p.Comments?.Count ?? 0,
-                    Comments = rootComments
+                    Comments = rootComments,
+                    SharedPost = p.OriginalPost == null ? null : new PostAdminDTO
+                    {
+                        Id = p.OriginalPost.Id,
+                        Title = p.OriginalPost.Title,
+                        Content = p.OriginalPost.Content,
+                        UserId = p.OriginalPost.UserId,
+                        AuthorName = p.OriginalPost.User?.FullName ?? "User",
+                        AuthorAvatar = p.OriginalPost.User?.ProfilePicture ?? "",
+                        CreatedAt = p.OriginalPost.CreatedAt,
+
+                        MediaUrls = p.OriginalPost.PostMedias?
+
+                    .Select(m => m.Url)
+                    .ToList() ?? new List<string>()
+                    }
                 }
             };
         }).ToList();

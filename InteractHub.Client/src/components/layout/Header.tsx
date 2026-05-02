@@ -12,10 +12,23 @@ const Header: React.FC = () => {
     const BASE_URL = "https://localhost:7069";
 
     useEffect(() => {
-        const data = localStorage.getItem("interact_hub_user");
-        if (data) {
-            setUser(JSON.parse(data));
-        }
+        const loadUser = () => {
+            const data = localStorage.getItem("interact_hub_user");
+            if (data) setUser(JSON.parse(data));
+        };
+
+        loadUser();
+
+        // Lắng nghe thay đổi từ tab khác
+        window.addEventListener("storage", loadUser);
+
+        // Lắng nghe thay đổi trong cùng tab
+        window.addEventListener("user-updated", loadUser);
+
+        return () => {
+            window.removeEventListener("storage", loadUser);
+            window.removeEventListener("user-updated", loadUser);
+        };
     }, []);
     const getTitle = () => {
         // localtion.pathname sẽ trả về đường dẫn hiện tại, ví dụ: "/admin/dashboard"

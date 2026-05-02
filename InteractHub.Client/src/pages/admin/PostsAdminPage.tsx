@@ -18,9 +18,10 @@ interface PostResponse {
     AuthorAvatar?: string;
     CreatedAt?: string;
     LikeCount?: number;
-    UserLike?: { UserId: string; UserName: string; Avatar: string; Type?: string }[];
+    UserLike?: { UserId: string; UserName: string; Avatar?: string; Type?: string }[];
     CommentCount?: number;
     Comments: CommentDTO[];
+    SharedPost?: PostResponse | null;
 
 
     MediaUrls?: string[];
@@ -53,6 +54,8 @@ interface Post {
     status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
     createdAt: string;
     mediaUrls?: string[];
+    SharedPost?: Post | null;
+
 }
 const BASE_URL = "https://localhost:7069";
 
@@ -89,7 +92,7 @@ const mapPost = (p: PostResponse): Post => ({
     likes: (p.UserLike || []).map(like => ({
         UserId: like.UserId,
         UserName: like.UserName,
-        Avatar: like.Avatar,
+        Avatar: like.Avatar!,
         Type: like.Type
     })),
 
@@ -115,7 +118,8 @@ const mapPost = (p: PostResponse): Post => ({
 
     mediaUrls: p.MediaUrls?.map(url =>
         url.startsWith("http") ? url : BASE_URL + url
-    ) || []
+    ) || [],
+    SharedPost: p.SharedPost ? mapPost(p.SharedPost) : null
 });
 
 const statusMap = {
@@ -254,7 +258,7 @@ const PostsAdminPage: React.FC = () => {
                         <div className="divide-y">
                             {filteredPosts.map((post) => (
                                 <PostCard
-                                    key={post.id}  
+                                    key={post.id}
                                     post={post}
                                     onHide={(id) => handleChangeStatus(id, "hidden")}
                                     onRestore={(id) => handleChangeStatus(id, "private")}

@@ -25,6 +25,7 @@ public class PostAdminDTO
     
     // Danh sách URL ảnh/video để hiển thị
     public List<string> MediaUrls { get; set; } = new();
+    public PostAdminDTO? SharedPost { get; set; }
 }
 
 public class UpdatePostStatusRequest
@@ -75,6 +76,7 @@ public class PostReportAdminDTO
     public string? AdminNote { get; set; }
 
     public PostAdminDTO Post{get; set;} = new PostAdminDTO();
+    public PostAdminDTO? SharedPost { get; set; }
 
 }
 
