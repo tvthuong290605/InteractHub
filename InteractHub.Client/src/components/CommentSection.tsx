@@ -113,6 +113,27 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   // RENDER MEDIA
   // ───────────────────────────────────────────────────────────
 
+
+
+
+  // màu cho hagtag do thưởng làm
+  const renderContent = (text: string) => {
+    if (!text) return null;
+
+    return text.split(/(\s+)/).map((part, i) =>
+      part.startsWith("#") && part.length > 1 ? (
+        <span key={i} className="text-[#1877f2] font-semibold">
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+
+
+
+
   const renderMedia = (url: string, index: number) => {
     const fullUrl = resolveUrl(url);
     if (!fullUrl) return null;
@@ -127,6 +148,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         />
       );
     }
+
+
+
+
 
     return (
       <img
@@ -148,6 +173,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const renderOriginalPost = () => {
     const shared = post.originalPost;
     if (!shared) return null;
+
+
+
+
 
     return (
       <div
@@ -208,8 +237,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             )}
             {shared.content && (
               <p className="text-[14px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
-                {shared.content}
-              </p>
+                {renderContent(shared.content)}              </p>
             )}
           </div>
         )}
@@ -218,9 +246,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {shared.mediaUrls?.length > 0 && (
           <div className="border-t border-border">
             <div
-              className={`grid gap-2 p-2 ${
-                shared.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
-              }`}
+              className={`grid gap-2 p-2 ${shared.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
+                }`}
             >
               {shared.mediaUrls.map((url, index) => (
                 <div key={index}>{renderMedia(url, index)}</div>
@@ -282,24 +309,22 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
         {post.content && (
           <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-[var(--color-text)]">
-            {post.content}
-          </p>
+            {renderContent(post.content)}          </p>
         )}
 
         {/* Nếu là bài share: hiện khung bài gốc lồng vào */}
         {isSharedPost
           ? renderOriginalPost()
           : post.mediaUrls?.length > 0 && (
-              <div
-                className={`grid gap-2 ${
-                  post.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
+            <div
+              className={`grid gap-2 ${post.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
                 }`}
-              >
-                {post.mediaUrls.map((url, index) => (
-                  <div key={index}>{renderMedia(url, index)}</div>
-                ))}
-              </div>
-            )}
+            >
+              {post.mediaUrls.map((url, index) => (
+                <div key={index}>{renderMedia(url, index)}</div>
+              ))}
+            </div>
+          )}
       </div>
     );
   };
@@ -399,7 +424,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             <button
               onClick={handleAddComment}
               disabled={!newComment.trim() || sending}
-              className="px-5 py-3 rounded-2xl bg-[var(--color-bg)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--color-text)] text-sm font-medium transition"
+              className="px-5 py-3 rounded-2xl bg-[var(--color-blue)] hover:bg-[var(--color-blue2)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--color-text)] text-sm font-medium transition"
             >
               {sending ? "Đang gửi..." : "Gửi"}
             </button>

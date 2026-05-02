@@ -227,7 +227,7 @@ const MessageGroupUI: React.FC<{
             <div key={msg.id} className="flex flex-col gap-0.5">
               <div onClick={() => setShowTime((v) => !v)} className="cursor-pointer">
                 {msg.content.text && (
-                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg- text-[var(--color-text)]" : "bg-bg text-[var(--color-text)]"}`}>
+                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg-[var(--color-blue)] text-[var(--color-white)]" : "bg-[var(--color-hover1)] text-[var(--color-black)]"}`}>
                     <MessageText text={msg.content.text} />
                   </div>
                 )}
@@ -545,7 +545,9 @@ const ChatWindow: React.FC<{
       {/* ── HEADER ── */}
       <div
         onMouseDown={onDragMouseDown}
-        className="flex items-center justify-between px-3 py-2 border-borderb border-[var(--color-border)] bg-[var(--color-bg)] cursor-grab active:cursor-grabbing flex-shrink-0"
+        className="relative flex items-center justify-between px-3 py-2 bg-[var(--color-bg)] cursor-grab active:cursor-grabbing flex-shrink-0
+after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[1px]
+after:bg-gradient-to-r after:from-transparent after:via-[var(--color-border)] after:to-transparent shadow-[0_1px_8px_rgba(0,0,0,0.08)]"
       >
         <div className="flex items-center gap-2 pointer-events-none">
           <img
@@ -563,33 +565,33 @@ const ChatWindow: React.FC<{
           {onMinimize && (
             <button
               onClick={onMinimize}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-[var(--color-blue)] hover:text-[var(--color-blue)] transition"
               title="Thu nhỏ"
             >
-              <FaMinus size={10} />
+              <FaMinus size={15} />
             </button>
           )}
           {onClose && (
             <button
               onClick={onClose}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-[var(--color-blue)] hover:text-[var(--color-blue)] transition"
               title="Đóng"
             >
-              <FaTimes size={10} />
+              <FaTimes size={15} />
             </button>
           )}
         </div>
       </div>
 
       {/* ── MESSAGES ── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 no-scrollbar relative">
+      <div ref={scrollRef} className="flex-1 bg-[var(--color-bg)] overflow-y-auto p-3 no-scrollbar relative">
         {loadingMore && (
           <div className="flex justify-center py-3">
             <div className="w-5 h-5 rounded-full border-2 border-border border-t-transparent animate-spin" />
           </div>
         )}
         {!hasMore && messages.length > 0 && !loadingMore && (
-          <p className="text-center text-gray-600 text-[11px] py-2 select-none">Đây là tin nhắn đầu tiên</p>
+          <p className="text-center text-[var(--color-text)] text-[11px] py-2 select-none">Đây là tin nhắn đầu tiên</p>
         )}
         {groupsWithSep.map(({ group, showSep }, i) => (
           <React.Fragment key={i}>
@@ -607,10 +609,10 @@ const ChatWindow: React.FC<{
         {showScrollBottom && (
           <button
             onClick={() => { shouldScrollBottomRef.current = true; bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-[var(--color-bg)] border border-[var(--color-border)]
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-[var(--color-blue)] border border-[var(--color-border)]
                        rounded-full flex items-center justify-center text-[#1877f2] shadow-lg hover:bg-[var(--color-hover)] transition-all"
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5z" /></svg>
+            <svg viewBox="0 0 24 24"   className="bg-[var(--color-blue)] text-[var(--color-blue)]" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5z" /></svg>
           </button>
         )}
       </div>
@@ -645,7 +647,7 @@ const ChatWindow: React.FC<{
       <div className="px-3 py-2 border-t border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0">
         <div className="flex items-center gap-2">
           <input type="file" ref={fileInputRef} className="hidden" multiple accept="image/*,video/*" onChange={handleFileChange} />
-          <button onClick={() => fileInputRef.current?.click()} className="text-gray-400 hover:text-blue-400 transition flex-shrink-0">
+          <button onClick={() => fileInputRef.current?.click()} className="text-[var(--color-blue)] hover:text-blue-400 transition flex-shrink-0">
             <FaImage size={18} />
           </button>
           <textarea
@@ -654,7 +656,7 @@ const ChatWindow: React.FC<{
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Aa"
             rows={1}
-            className="flex-1 bg-[var(--color-bg)] text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
+            className="flex-1 bg-[var(--color-hover1)] text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
           />
           <button
             onClick={handleSend}
@@ -664,7 +666,7 @@ const ChatWindow: React.FC<{
             {sending ? (
               <div className="w-5 h-5 rounded-full border-2 border-[var(--color-border)] border-t-transparent animate-spin" />
             ) : (
-              <FaPaperPlane size={18} className={inputText.trim() || selectedFiles.length > 0 ? "text-blue-500" : "text-gray-600"} />
+              <FaPaperPlane size={18} className={inputText.trim() || selectedFiles.length > 0 ? "text-blue-500" : "text-[var(--color-blue)]"} />
             )}
           </button>
         </div>

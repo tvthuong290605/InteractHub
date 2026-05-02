@@ -89,7 +89,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm kiếm..."
-            className="w-full bg-bg text-[var(--color-text)] pl-9 pr-4 py-2 rounded-full text-sm outline-none focus:ring-1 focus:ring-[#1877f2]"
+            className="w-full bg-[var(--color-hover1)] text-[var(--color-text)] pl-9 pr-4 py-2 rounded-full text-sm outline-none focus:ring-1 focus:ring-[#1877f2]"
           />
         </div>
       </div>
@@ -132,7 +132,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center">
-                    <p className={`text-[15px] truncate ${hasUnread ? "text-[var(--color-text)] font-bold" : "text-gray-200 font-medium"}`}>
+                    <p className={`text-[15px] truncate ${hasUnread ? "text-[var(--color-text)] font-bold" : "text-[var(--color-text)] font-medium"}`}>
                       {conv.name}
                     </p>
                     <span className={`text-[11px] flex-shrink-0 ml-2 ${hasUnread ? "text-[#1877f2] font-semibold" : "text-gray-500"}`}>

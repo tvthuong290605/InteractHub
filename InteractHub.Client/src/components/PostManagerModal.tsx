@@ -14,9 +14,9 @@ const resolveUrl = (path?: string | null): string => {
 };
 
 const STATUS_OPTIONS = [
-  { value: 1, label: "Công khai",  icon: <FaGlobe size={12} />,       color: "text-green-400", bg: "bg-green-400/10 border-green-400/30" },
-  { value: 2, label: "Bạn bè",     icon: <FaUserFriends size={12} />, color: "text-blue-400",  bg: "bg-blue-400/10 border-blue-400/30"  },
-  { value: 3, label: "Riêng tư",   icon: <FaLock size={12} />,        color: "text-gray-400",  bg: "bg-gray-400/10 border-gray-400/30"  },
+  { value: 1, label: "Công khai",  icon: <FaGlobe size={19} />,       color: "text-[var(--color-green)]", bg: "bg-green-400/10 border-green-400/30" },
+  { value: 2, label: "Bạn bè",     icon: <FaUserFriends size={19} />, color: "text-[var(--color-blue)]",  bg: "bg-blue-400/10 border-blue-400/30"  },
+  { value: 3, label: "Riêng tư",   icon: <FaLock size={19} />,        color: "text-[var(--color-gray)]",  bg: "bg-gray-400/10 border-gray-400/30"  },
 ];
 
 interface PostManagerModalProps {
@@ -88,7 +88,7 @@ const PostManagerModal: React.FC<PostManagerModalProps> = ({ userId, onClose }) 
   // ── Danh sách ─────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-bg rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
+      <div className="bg-[var(--color-bg)] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
                       border border-border shadow-2xl overflow-hidden">
 
         {/* Header */}
@@ -298,14 +298,14 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-bg rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
+      <div className="bg-[var(--color-bg)] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col
                       border border-border shadow-2xl overflow-hidden">
 
         {/* Header */}
         <div className="flex items-center gap-3 p-5 border-b border-border shrink-0">
           <button
             onClick={onBack}
-            className="p-2 rounded-full hover:bg-bg text-gray-400 transition-colors"
+            className="p-2 rounded-full hover:bg-[var(--color-hover)] text-gray-400 transition-colors"
           >
             <FaTimes size={18} />
           </button>
@@ -313,13 +313,13 @@ const PostEditView: React.FC<PostEditViewProps> = ({ post, onDone, onBack }) => 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-bg hover:bg-bg
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--color-blue)] hover:bg-[var(--color-blue2)]
                        text-[var(--color-text)] text-sm font-semibold rounded-xl transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving
               ? <><FaSpinner className="animate-spin" /> Đang lưu...</>
-              : <><FaCheck size={13} /> Lưu</>
+              : <><FaCheck size={19} /> Lưu</>
             }
           </button>
         </div>

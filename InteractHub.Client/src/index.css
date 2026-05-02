@@ -14,12 +14,22 @@
   --color-muted: #65676b;
 
   /* thêm */
-  --color-hover: #8a8a8d;   /* xám đậm hơn chút */
-    --color-hover1: #c1c1c5;   /* xám đậm hơn chút */
-    --color-hover2: #1cc016;   /* xám đậm hơn chút */
-    --color-hover22: #78c377;   /* xám đậm hơn chút */
+  --color-hover: #8a8a8d;
+  /* xám đậm hơn chút */
+  --color-hover1: #c1c1c5;
+  /* xám đậm hơn chút */
+  --color-hover2: #1cc016;
+  /* xám đậm hơn chút */
+  --color-hover22: #78c377;
+  /* xám đậm hơn chút */
+  --color-blue: #1877f2;
+  /* xanh dương (light mode) */
+  --color-blue2: #4b90ea;
+  /* xanh dương (light mode) */
 
-      --color-icon: #65676b;
+  --color-white: #ffffff;
+  --color-icon: #65676b;
+  --color-black: #000000;
 }
 
 .dark {
@@ -30,12 +40,23 @@
   --color-muted: #b0b3b8;
 
   /* thêm */
-  --color-hover: #b4b4b4;   /* trắng (dark mode) */
-    --color-hover1: #e1dede;   /* trắng (dark mode) */
-    --color-hover2: #1cc016;   /* xám đậm hơn chút */
-    --color-hover22: #78c377;   /* xám đậm hơn chút */
+  --color-hover: #b4b4b4;
+  /* trắng (dark mode) */
+  --color-hover1: #e1dede;
+  /* trắng (dark mode) */
+  --color-hover2: #1cc016;
+  /* xám đậm hơn chút */
+  --color-hover22: #78c377;
+  /* xám đậm hơn chút */
+  --color-blue: #1877f2;
+  /* xanh dương (light mode) */
+  --color-blue2: #4b90ea;
+  /* xanh dương (light mode) */
 
-      --color-icon: #b0b3b8;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-icon: #b0b3b8;
 }
 
 /* Firefox */
@@ -47,6 +68,7 @@
 * {
   -ms-overflow-style: none;
 }
+
 /* Custom Scrollbar cho các Sidebar và Main Content */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

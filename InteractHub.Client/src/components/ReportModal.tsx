@@ -65,7 +65,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
         <div className="flex items-center justify-between p-4 border-b border-border">
           <button
             onClick={step === 2 ? () => setStep(1) : onClose}
-            className="p-2 hover:bg-bg rounded-full text-gray-400"
+            className="p-2 hover:bg-[var(--color-hover)] rounded-full text-gray-400"
           >
             {step === 2 ? "⬅️" : "✕"}
           </button>
@@ -87,7 +87,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
                     setSelectedReason(reason.label);
                     setStep(2);
                   }}
-                  className="w-full flex items-center justify-between p-3 hover:bg-bg rounded-xl transition-colors group"
+                  className="w-full flex items-center justify-between p-3 hover:bg-[var(--color-hover)] rounded-xl transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xl">{reason.icon}</span>
@@ -119,14 +119,14 @@ const ReportModal: React.FC<ReportModalProps> = ({ postId, onClose }) => {
           <div className="p-4 border-t border-border flex gap-2">
             <button
               onClick={() => setStep(1)}
-              className="flex-1 py-2 bg-bg hover:bg-bg text-[var(--color-text)] font-bold rounded-lg"
+              className="flex-1 py-2 bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] font-bold rounded-lg"
             >
               Quay lại
             </button>
             <button
               onClick={handleSubmit}
               disabled={loading || finalReason.length === 0} // ✅ đã trim() rồi nên không cần gọi lại
-              className="flex-1 py-2 bg-bg hover:bg-bg text-[var(--color-text)] font-bold rounded-lg disabled:opacity-50"
+              className="flex-1 py-2 bg-[var(--color-blue)] hover:bg-[var(--color-blue2)] text-[var(--color-text)] font-bold rounded-lg disabled:opacity-50"
             >
               {loading ? "Đang gửi..." : "Gửi báo cáo"}
             </button>

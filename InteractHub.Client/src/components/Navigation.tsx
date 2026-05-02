@@ -322,7 +322,7 @@ const Navbar: React.FC<NavbarProps> = ({ user: propUser, onChatClick, onNotifyCl
               onFocus={handleFocus}
               className="w-full bg-[#eae6e6] text-[#000000] pl-11 pr-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#ffffff] text-sm"
             />
-
+            
             {/* Dropdown */}
             {showDropdown && (
               <div
@@ -481,7 +481,7 @@ const Navbar: React.FC<NavbarProps> = ({ user: propUser, onChatClick, onNotifyCl
 
           <button
             onClick={handleLogout}
-            className="px-4 py-1.5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-text text-[13px] font-bold rounded-xl transition-all border border-red-600/20"
+            className="px-4 py-1.5 bg-red-600/10 hover:bg-red-600/5 text-red-500 hover:text-text text-[13px] font-bold rounded-xl transition-all border border-red-600/20"
           >
             Đăng xuất
           </button>

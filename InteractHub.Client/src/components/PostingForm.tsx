@@ -18,7 +18,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
   return (
     <div
-      className={`bg-bg border border-[var(--color-border)] rounded-3xl p-5 shadow-xl
+      className={`bg-[var(--color-bg)] border border-[var(--color-black)]/10 rounded-3xl p-5 shadow-xl
         ${variant === "profile" ? "w-full" : "max-w-2xl mx-auto"}`}
     >
       <div className="flex items-center gap-4">
@@ -39,7 +39,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
         <button
           onClick={() => setShowForm(true)}
-          className="flex-1 bg-[var(--color-hover)] hover:bg-[#4a4b4d] text-left text-gray-300 
+          className="flex-1 bg-[var(--color-hover1)] hover:bg-[var(--color-hover)] text-left text-[#ffffff] 
              text-[17px] py-3.5 px-5 rounded-full transition-all duration-200
              focus:outline-none focus:border-[var(--color-border)] active:scale-[0.985]"
         >
@@ -72,7 +72,7 @@ const PostingForm: React.FC<PostingFormProps> = ({  variant = "home" }) => {
 
 const ActionButton = ({ icon, label, textColor }: { icon: React.ReactNode; label: string; textColor: string }) => (
   <button
-    className="flex items-center justify-center gap-3 py-3.5 hover:bg-bg 
+    className="flex items-center justify-center gap-3 py-3.5 hover:bg-[var(--color-hover)] 
                rounded-2xl transition-all duration-200 text-gray-300 hover:text-[var(--color-text)] group"
   >
     <div className="group-hover:scale-110 transition-transform duration-200">

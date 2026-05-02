@@ -140,9 +140,9 @@ const SearchPage = () => {
   const showPosts  = activeTab === "all" || activeTab === "posts";
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-[var(--color-text)]">
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       {/* Breadcrumb */}
-      <div className="border-b border-white/5 bg-[#0f1117]/80 backdrop-blur-xl sticky top-0 z-30">
+      <div className="border-b border-white/5 bg-[var(--color-bg)] backdrop-blur-xl sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-sm">
           <FaSearch size={12} className="text-gray-500" />
           <span className="text-gray-500">Tìm kiếm</span>
@@ -249,7 +249,7 @@ const SearchPage = () => {
                   {loadingPeople ? (
                     <PeopleSkeleton />
                   ) : people.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className=" border border-white/5 bg-[var(--color-bg)] rounded-2xl p-4">
                       {people.map((u) => (
                         <UserCard
                           key={u.Id}
@@ -369,7 +369,7 @@ const UserCard = ({ user, currentUserId, status, onViewProfile, onAddFriend, onA
   };
 
   return (
-    <div className="group flex items-center gap-3 bg-[#1a1d27] hover:bg-[#1e2233] border border-white/5 hover:border-white/10 rounded-2xl p-3.5 transition-all duration-200">
+    <div className="group flex items-center gap-3 bg-[var(--color-bg)] hover:bg-[var(--color-hover1)] border border-white/5 hover:border-white/10 rounded-2xl p-3.5 transition-all duration-200">
       <div className="flex-shrink-0 cursor-pointer" onClick={onViewProfile}>
         <img
           src={avatarSrc} alt=""
