@@ -65,7 +65,7 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
             return Result<AuthResponse>.BadRequest("Mật khẩu không chính xác.");
 
-        if (user.Status != 1)
+        if (user.Status != 1 && user.Status != 2)
             return Result<AuthResponse>.BadRequest("Tài khoản đã bị khóa.");
 
         var token = await GenerateJwtToken(user);

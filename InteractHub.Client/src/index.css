@@ -16,6 +16,8 @@
   /* thêm */
   --color-hover: #8a8a8d;   /* xám đậm hơn chút */
     --color-hover1: #c1c1c5;   /* xám đậm hơn chút */
+    --color-hover2: #1cc016;   /* xám đậm hơn chút */
+    --color-hover22: #78c377;   /* xám đậm hơn chút */
 
       --color-icon: #65676b;
 }
@@ -30,6 +32,9 @@
   /* thêm */
   --color-hover: #b4b4b4;   /* trắng (dark mode) */
     --color-hover1: #e1dede;   /* trắng (dark mode) */
+    --color-hover2: #1cc016;   /* xám đậm hơn chút */
+    --color-hover22: #78c377;   /* xám đậm hơn chút */
+
       --color-icon: #b0b3b8;
 }
 

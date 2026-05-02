@@ -43,14 +43,14 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
   return (
     <div 
       onClick={handleGoToProfile} // 5. Lắng nghe sự kiện click trên toàn bộ item
-      className="group flex items-center gap-3 p-2 rounded-xl hover:bg-bg transition-all duration-200 ease-in-out cursor-pointer"
+      className="group flex items-center gap-3 p-2 rounded-xl border-1 border-[var(--color-border)]  transition-all duration-200 ease-in-out cursor-pointer"
     >
       {/* Avatar Section */}
       <div className="relative flex-shrink-0">
         <img
           src={resolveUrl(request.avatarUrl)}
           alt={request.fullName}
-          className="w-20 h-20 rounded-full object-cover shadow-sm border border-border group-hover:border-border transition-colors"
+          className="w-20 h-20 rounded-full object-cover shadow-sm border border-[var(--color-border)] group-hover:border-[var(--color-border)] transition-colors"
           onError={(e) => {
             (e.target as HTMLImageElement).src = "/images/default-avatar.png";
           }}
@@ -60,11 +60,11 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
       {/* Content Section */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-baseline mb-2">
-          <h4 className="text-[16px] font-semibold text-[#e4e6eb] truncate pr-2 group-hover:underline">
+          <h4 className="text-[16px] font-semibold text-[var(--color-text)] truncate pr-2 group-hover:underline">
             {request.fullName}
           </h4>
           
-          <span className="text-[11px] text-[#b0b3b8] whitespace-nowrap italic font-medium">
+          <span className="text-[11px] text-[var(--color-text)] whitespace-nowrap italic font-medium">
             {getTimeAgo(request.createdAt)}
           </span>
         </div>
@@ -74,24 +74,24 @@ const FriendRequest = ({ request, onAccept, onReject }: FriendRequestProps) => {
           <button
             disabled={isProcessing}
             onClick={(e) => handleAction(e, "accept")}
-            className="flex-1 py-1.5 bg-bg hover:bg-bg disabled:bg-bg
+            className="flex-1 py-1.5 bg-[var(--color-hover2)] hover:bg-[var(--color-hover22)] disabled:bg-[var(--color-bg)]
                        text-[var(--color-text)] text-[13px] font-bold rounded-lg transition-all
                        flex items-center justify-center min-h-[32px] active:scale-95"
           >
             {isProcessing && action === "accept" ? (
-              <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+              <div className="h-4 w-4 border-2 border-[var(--color-border)] border-t-transparent animate-spin rounded-full"></div>
             ) : "Xác nhận"}
           </button>
 
           <button
             disabled={isProcessing}
             onClick={(e) => handleAction(e, "reject")}
-            className="flex-1 py-1.5 bg-bg hover:bg-bg disabled:opacity-50
-                       text-[#e4e6eb] text-[13px] font-bold rounded-lg transition-all
+            className="flex-1 py-1.5 bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] disabled:opacity-50
+                       text-[var(--color-text)] text-[13px] font-bold rounded-lg transition-all
                        flex items-center justify-center min-h-[32px] active:scale-95"
           >
             {isProcessing && action === "reject" ? (
-              <div className="h-4 w-4 border-2 border-[#b0b3b8] border-t-transparent animate-spin rounded-full"></div>
+              <div className="h-4 w-4 border-2 border-[var(--color-border)] border-t-transparent animate-spin rounded-full"></div>
             ) : "Xóa"}
           </button>
         </div>

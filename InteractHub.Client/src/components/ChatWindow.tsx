@@ -529,7 +529,7 @@ const ChatWindow: React.FC<{
 
   return (
     <div
-  className="fixed z-50 flex flex-col bg-gray-900 rounded-2xl shadow-2xl border border-border overflow-hidden select-none"
+  className="fixed z-50 flex flex-col bg-[var(--color-bg)] rounded-2xl shadow-2xl border border-[var(--color-border)] overflow-hidden select-none"
   style={{ left: pos.x, top: pos.y, width: size.w, height: size.h }}
 >
       {/* ── Resize handles ── */}
@@ -545,7 +545,7 @@ const ChatWindow: React.FC<{
       {/* ── HEADER ── */}
       <div
         onMouseDown={onDragMouseDown}
-        className="flex items-center justify-between px-3 py-2 border-borderb border-gray-700 bg-bg cursor-grab active:cursor-grabbing flex-shrink-0"
+        className="flex items-center justify-between px-3 py-2 border-borderb border-[var(--color-border)] bg-[var(--color-bg)] cursor-grab active:cursor-grabbing flex-shrink-0"
       >
         <div className="flex items-center gap-2 pointer-events-none">
           <img
@@ -563,7 +563,7 @@ const ChatWindow: React.FC<{
           {onMinimize && (
             <button
               onClick={onMinimize}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-bg text-gray-300 hover:text-[var(--color-text)] transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
               title="Thu nhỏ"
             >
               <FaMinus size={10} />
@@ -572,7 +572,7 @@ const ChatWindow: React.FC<{
           {onClose && (
             <button
               onClick={onClose}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-bg hover:bg-red-500 text-gray-300 hover:text-[var(--color-text)] transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
               title="Đóng"
             >
               <FaTimes size={10} />
@@ -607,8 +607,8 @@ const ChatWindow: React.FC<{
         {showScrollBottom && (
           <button
             onClick={() => { shouldScrollBottomRef.current = true; bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-bg border border-border
-                       rounded-full flex items-center justify-center text-[#1877f2] shadow-lg hover:bg-bg transition-all"
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-[var(--color-bg)] border border-[var(--color-border)]
+                       rounded-full flex items-center justify-center text-[#1877f2] shadow-lg hover:bg-[var(--color-hover)] transition-all"
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5z" /></svg>
           </button>
@@ -617,18 +617,18 @@ const ChatWindow: React.FC<{
 
       {/* ── FILE PREVIEW ── */}
       {selectedFiles.length > 0 && (
-        <div className="flex gap-2 p-2 bg-bg border-t border-border overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 p-2 bg-[var(--color-bg)] border-t border-[var(--color-border)] overflow-x-auto no-scrollbar">
           {selectedFiles.map(({ previewUrl, isVideo }, index) => (
             <div key={index} className="relative w-14 h-14 flex-shrink-0 group">
               {isVideo ? (
                 <div className="relative w-full h-full">
-                  <video src={previewUrl} className="w-full h-full object-cover rounded-lg border border-gray-600" />
+                  <video src={previewUrl} className="w-full h-full object-cover rounded-lg border border-[var(--color-border)]" />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
                     <FaPlay size={12} className="text-[var(--color-text)]" />
                   </div>
                 </div>
               ) : (
-                <img src={previewUrl} className="w-full h-full object-cover rounded-lg border border-gray-600" alt="preview" />
+                <img src={previewUrl} className="w-full h-full object-cover rounded-lg border border-[var(--color-border)]" alt="preview" />
               )}
               <button
                 onClick={() => removeFile(index)}
@@ -642,7 +642,7 @@ const ChatWindow: React.FC<{
       )}
 
       {/* ── INPUT ── */}
-      <div className="px-3 py-2 border-t border-border bg-bg flex-shrink-0">
+      <div className="px-3 py-2 border-t border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0">
         <div className="flex items-center gap-2">
           <input type="file" ref={fileInputRef} className="hidden" multiple accept="image/*,video/*" onChange={handleFileChange} />
           <button onClick={() => fileInputRef.current?.click()} className="text-gray-400 hover:text-blue-400 transition flex-shrink-0">
@@ -654,7 +654,7 @@ const ChatWindow: React.FC<{
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Aa"
             rows={1}
-            className="flex-1 bg-bg text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
+            className="flex-1 bg-[var(--color-bg)] text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
           />
           <button
             onClick={handleSend}
@@ -662,7 +662,7 @@ const ChatWindow: React.FC<{
             className="flex-shrink-0 w-8 h-8 flex items-center justify-center"
           >
             {sending ? (
-              <div className="w-5 h-5 rounded-full border-2 border-border border-t-transparent animate-spin" />
+              <div className="w-5 h-5 rounded-full border-2 border-[var(--color-border)] border-t-transparent animate-spin" />
             ) : (
               <FaPaperPlane size={18} className={inputText.trim() || selectedFiles.length > 0 ? "text-blue-500" : "text-gray-600"} />
             )}
