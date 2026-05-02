@@ -192,10 +192,35 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
       ? STATUS_BADGE[post.status as keyof typeof STATUS_BADGE]
       : null;
 
+
+
+// tách màu hagtag do thưởng làm 
+const renderContent = (text: string) => {
+  if (!text) return null;
+
+  return text.split(/(\s+)/).map((part, i) =>
+    part.startsWith("#") && part.length > 1 ? (
+      <span key={i} className="text-[var(--color-blue)] font-semibold">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+};
+
+
+
+
   // ── RENDER SHARED POST ───────────────────────────────────────
   const renderSharedPost = () => {
     if (!post.originalPost) return null;
     const shared = post.originalPost;
+
+
+
+
+
 
     return (
       <div className="px-4 pb-4">
@@ -316,7 +341,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
       {post.content && (
         <div className="px-4 pt-0 pb-3">
           <p className="text-[15px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
-            {post.content}
+            {renderContent(post.content)}
           </p>
         </div>
       )}
@@ -393,7 +418,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
             onMouseEnter={handleMouseEnterBtn}
             onMouseLeave={handleMouseLeaveBtn}
             className={`w-full py-4 flex items-center justify-center gap-2 transition-colors
-              ${currentReaction ? currentReaction.color : "text-[var(--color-text)] hover:bg-[var(--color-bg)]"}`}
+              ${currentReaction ? currentReaction.color : "text-[var(--color-text)] hover:bg-[var(--color-blue)]"}`}
           >
             <span className="text-xl">{currentReaction ? currentReaction.emoji : "👍"}</span>
             <span className="font-medium">{currentReaction ? currentReaction.label : "Thích"}</span>
@@ -403,7 +428,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* COMMENT */}
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
+          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-blue)] transition"
         >
           💬 Bình luận
         </button>
@@ -412,7 +437,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {!isOwner && (
           <button
             onClick={() => setIsShareOpen(true)}
-            className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
+            className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-blue)] transition"
           >
             🔗 Chia sẻ
           </button>
@@ -421,7 +446,7 @@ const Post = ({ post, autoOpenComments = false }: PostProps) => {
         {/* REPORT */}
         <button
           onClick={() => setIsReportOpen(true)}
-          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-bg)] transition"
+          className="flex-1 py-4 text-[var(--color-text)] hover:bg-[var(--color-blue)] transition"
         >
           🚩 Báo cáo
         </button>

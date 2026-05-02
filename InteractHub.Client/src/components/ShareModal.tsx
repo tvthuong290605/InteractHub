@@ -50,7 +50,7 @@ interface ShareModalProps {
   onClose: () => void;
 
   onShared?: () => void;
-    onSuccess?: () => void; // 👈 THÊM Ở ĐÂY
+  onSuccess?: () => void; // 👈 THÊM Ở ĐÂY
 
 }
 
@@ -202,6 +202,23 @@ const ShareModal = ({
   // FILTER FRIENDS
   // ============================================================
 
+
+  const renderContentWithHashtag = (text: string) => {
+    const parts = text.split(/(#\w+)/g);
+
+    return parts.map((part, index) => {
+      if (part.startsWith("#")) {
+        return (
+          <span key={index} className="text-blue-400 font-medium cursor-pointer">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
+
   const filteredFriends = useMemo(() => {
     return friends.filter((friend) =>
       removeVietnameseTones(
@@ -221,10 +238,10 @@ const ShareModal = ({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-lg p-4">
 
-      <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-[#3a3b3c] bg-[#242526] shadow-2xl">
+      <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between border-b border-[#3a3b3c] px-4 py-3">
+        <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
 
           <h3 className="text-lg font-semibold text-[var(--color-text)]">
             Chia sẻ bài viết
@@ -253,8 +270,8 @@ const ShareModal = ({
               w-full
               resize-none
               rounded-2xl
-              border border-transparent
-              bg-[#3a3b3c]
+              border border-[var(--color-border)]
+              bg-[var(--color-bg)]
               px-4
               py-3
               text-[15px]
@@ -306,8 +323,8 @@ const ShareModal = ({
               )}
 
               {previewPost.content && (
-                <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-gray-200">
-                  {previewPost.content}
+                <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-[var(--color-text)]">
+                  {renderContentWithHashtag(previewPost.content)}
                 </p>
               )}
             </div>
@@ -337,10 +354,9 @@ const ShareModal = ({
                 onClick={() => setPrivacy(1)}
                 className={`
                   flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
-                  ${
-                    privacy === 1
-                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-[var(--color-text)]"
+                  ${privacy === 1
+                    ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                    : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -352,10 +368,9 @@ const ShareModal = ({
                 onClick={() => setPrivacy(2)}
                 className={`
                   flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
-                  ${
-                    privacy === 2
-                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-[var(--color-text)]"
+                  ${privacy === 2
+                    ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                    : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -367,10 +382,9 @@ const ShareModal = ({
                 onClick={() => setPrivacy(3)}
                 className={`
                   flex-1 rounded-xl border py-2.5 text-sm font-medium transition-all
-                  ${
-                    privacy === 3
-                      ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                      : "border-gray-600 text-[var(--color-text)]"
+                  ${privacy === 3
+                    ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                    : "border-gray-600 text-[var(--color-text)]"
                   }
                 `}
               >
@@ -408,8 +422,8 @@ const ShareModal = ({
                 readOnly
                 value={shareUrl}
                 className="
-                  flex-1 rounded-2xl border border-gray-600
-                  bg-[#3a3b3c] px-4 py-2.5 text-sm text-[var(--color-text)]
+                  flex-1 rounded-2xl border border-[var(--color-border)]
+                  bg-[var(--color-bg)] px-4 py-2.5 text-sm text-[var(--color-text)]
                   outline-none
                 "
               />
@@ -418,10 +432,9 @@ const ShareModal = ({
                 onClick={handleCopyLink}
                 className={`
                   rounded-2xl px-5 font-medium text-[var(--color-text)] transition-all
-                  ${
-                    copied
-                      ? "bg-green-600"
-                      : "bg-blue-600 hover:bg-blue-700"
+                  ${copied
+                    ? "bg-green-600"
+                    : "bg-blue-600 hover:bg-blue-700"
                   }
                 `}
               >
@@ -448,8 +461,8 @@ const ShareModal = ({
                   setSearchKeyword(e.target.value)
                 }
                 className="
-                  w-full rounded-2xl border border-gray-600
-                  bg-[#3a3b3c] py-3 pl-11 pr-4 text-sm text-[var(--color-text)]
+                  w-full rounded-2xl border border-[var(--color-border)]
+                  bg-[var(--color-bg)] py-3 pl-11 pr-4 text-sm text-[var(--color-text)]
                   outline-none
                 "
               />
@@ -467,7 +480,7 @@ const ShareModal = ({
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className="h-14 animate-pulse rounded-2xl bg-[#3a3b3c]"
+                      className="h-14 animate-pulse rounded-2xl bg-[var(--color-bg)]"
                     />
                   ))}
                 </div>
@@ -482,7 +495,7 @@ const ShareModal = ({
                       className="
                         flex items-center justify-between
                         rounded-2xl p-2.5 transition
-                        hover:bg-[#3a3b3c]
+                        hover:bg-[var(--color-bg)]
                       "
                     >
 
@@ -492,8 +505,8 @@ const ShareModal = ({
                           src={
                             friend.avatarUrl
                               ? resolveUrl(
-                                  friend.avatarUrl
-                                )
+                                friend.avatarUrl
+                              )
                               : "/assets/img/icons8-user-default-64.png"
                           }
                           alt={friend.fullName}
@@ -512,10 +525,9 @@ const ShareModal = ({
                         disabled={isSending}
                         className={`
                           rounded-xl px-5 py-1.5 text-sm transition-all
-                          ${
-                            isSending
-                              ? "bg-gray-600 text-gray-400"
-                              : "bg-blue-600 text-[var(--color-text)] hover:bg-blue-700"
+                          ${isSending
+                            ? "bg-gray-600 text-gray-400"
+                            : "bg-blue-600 text-[var(--color-text)] hover:bg-blue-700"
                           }
                         `}
                       >

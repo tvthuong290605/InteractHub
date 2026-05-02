@@ -133,7 +133,7 @@ const LoginForm = ({
         type="submit"
         disabled={isLoading}
         className="w-full py-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-                   text-[var(--color-text)] font-bold text-lg rounded-2xl transition-all duration-200
+                   text-[#ffffff] font-bold text-lg rounded-2xl transition-all duration-200
                    hover:scale-[1.01] shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] hover:shadow-[0_12px_25px_-5px_rgba(37,99,235,0.5)]
                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
       >

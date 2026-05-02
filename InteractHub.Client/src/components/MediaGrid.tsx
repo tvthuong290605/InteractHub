@@ -214,7 +214,7 @@ const MediaGrid = ({ mediaUrls }: MediaGridProps) => {
                 <img
                     src={resolved}
                     alt={`media-${index}`}
-                    className="w-full h-full object-contain max-h-[500px] cursor-pointer"
+                    className="w-full h-full bg-[var(--color-hover)] object-contain max-h-[500px] cursor-pointer"
                 />
             </PhotoView>
         );

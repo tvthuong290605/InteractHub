@@ -223,7 +223,7 @@ userList.sort((a, b) => {
 
             {/* VIEWER */}
             {viewingUserIndex !== null && (
-                <div className="fixed inset-0 z-[1000] bg-[var(--color-bg)] flex items-center justify-center">
+                <div className="fixed inset-0 z-[1000] bg-[var(--color-hover)] flex items-center justify-center">
                     <button onClick={closeViewer} className="absolute top-5 right-5 text-[var(--color-text)]/70 hover:text-[var(--color-hover1)] text-4xl z-[1010]">&times;</button>
                     <button onClick={handlePrev} className="absolute left-4 w-12 h-12 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] flex items-center justify-center z-[1010]"><FaChevronLeft /></button>
                     <button onClick={handleNext} className="absolute right-4 w-12 h-12 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] flex items-center justify-center z-[1010]"><FaChevronRight /></button>
@@ -322,8 +322,8 @@ userList.sort((a, b) => {
                             )}
                         </div>
                         <div className="p-4 flex gap-3">
-                            <button onClick={handleCancel} className="flex-1 py-2 bg-gray-700 text-[var(--color-text)] rounded-lg font-bold">Hủy</button>
-                            <button onClick={handleCreateStory} className="flex-1 py-2 bg-blue-600 text-[var(--color-text)] rounded-lg font-bold">Chia sẻ</button>
+                            <button onClick={handleCancel} className="flex-1 py-2 bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] rounded-lg font-bold">Hủy</button>
+                            <button onClick={handleCreateStory} className="flex-1 py-2 bg-[var(--color-blue)] hover:bg-[var(--color-blue2)] text-[var(--color-text)] rounded-lg font-bold">Chia sẻ</button>
                         </div>
                     </div>
                 </div>

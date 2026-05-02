@@ -54,7 +54,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
       onClick={onClose}
     >
       <div
-        className="bg-bg w-full max-lg rounded-2xl border border-border shadow-2xl flex flex-col max-h-[80vh] sm:max-w-[500px]"
+        className="bg-[var(--color-bg)] w-full max-lg rounded-2xl border border-border shadow-2xl flex flex-col max-h-[80vh] sm:max-w-[500px]"
         onClick={e => e.stopPropagation()}
       >
 
@@ -130,7 +130,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
                     </div>
                   </div>
 
-                  <button className="bg-bg hover:bg-bg text-[var(--color-text)] px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
+                  <button className="bg-[var(--color-blue)] hover:bg-bg text-[var(--color-text)] px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
                     Trang cá nhân
                   </button>
                 </div>

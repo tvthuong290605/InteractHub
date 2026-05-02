@@ -90,10 +90,10 @@ const LoginPage = () => {
 
           {/* CỘT TRÁI */}
           <div className="flex-1 max-w-[520px] text-[var(--color-text)] text-center lg:text-left">
-            <h1 className="text-7xl font-bold tracking-tight mb-4 text-[var(--color-text)] drop-shadow-lg">
+            <h1 className="text-7xl font-bold tracking-tight mb-4 text-[#ffffff] drop-shadow-lg">
               interacthub
             </h1>
-            <p className="text-2xl leading-relaxed text-[var(--color-text)]/90">
+            <p className="text-2xl leading-relaxed text-[#ffffff]/90">
               {authMode === "register"
                 ? "Join millions of people sharing moments that matter."
                 : "Interacthub helps you connect and share with the people in your life."}

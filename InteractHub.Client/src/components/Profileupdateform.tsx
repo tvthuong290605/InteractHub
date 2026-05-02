@@ -241,7 +241,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
               <button
                 type="button"
                 onClick={() => coverInputRef.current?.click()}
-                className="absolute bottom-4 right-4 bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] px-4 py-2 rounded-lg text-sm flex items-center gap-2 backdrop-blur-md transition-all border border-white/10"
+                className="absolute bottom-4 right-4 bg-[var(--color-blue)] hover:bg-[var(--color-blue2)] text-[var(--color-text)] px-4 py-2 rounded-lg text-sm flex items-center gap-2 backdrop-blur-md transition-all border border-white/10"
               >
                 <FaCamera /> Thay đổi ảnh bìa
               </button>
@@ -418,14 +418,14 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-6 py-2.5 rounded-xl text-[var(--color-text)] hover:bg-[var(--color-hover)] font-semibold flex items-center gap-2 transition-colors"
+                className="px-6 py-2.5 rounded-xl text-[var(--color-text)] bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] font-semibold flex items-center gap-2 transition-colors"
               >
                 <FaTimes /> Hủy
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-10 py-2.5 bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-[var(--color-text)] font-bold rounded-xl shadow-lg  flex items-center gap-2 min-w-[160px] justify-center transition-all"
+                className="px-10 py-2.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue2)] text-[var(--color-text)] font-bold rounded-xl shadow-lg  flex items-center gap-2 min-w-[160px] justify-center transition-all"
               >
                 {isLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white" />
