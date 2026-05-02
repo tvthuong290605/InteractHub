@@ -54,27 +54,27 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
       onClick={onClose}
     >
       <div
-        className="bg-[#242526] w-full max-lg rounded-2xl border border-[#3e4042] shadow-2xl flex flex-col max-h-[80vh] sm:max-w-[500px]"
+        className="bg-bg w-full max-lg rounded-2xl border border-border shadow-2xl flex flex-col max-h-[80vh] sm:max-w-[500px]"
         onClick={e => e.stopPropagation()}
       >
 
         {/* HEADER */}
-        <div className="flex items-center justify-between p-4 border-b border-[#3e4042]">
-          <h3 className="text-white font-bold text-lg">Người đã bày tỏ cảm xúc</h3>
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h3 className="text-[var(--color-text)] font-bold text-lg">Người đã bày tỏ cảm xúc</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:bg-[#3a3b3c] w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+            className="text-gray-400 hover:bg-bg w-9 h-9 rounded-full flex items-center justify-center transition-colors"
           >
             ✕
           </button>
         </div>
 
         {/* TABS */}
-        <div className="flex border-b border-[#3e4042] px-2 overflow-x-auto no-scrollbar scroll-smooth">
+        <div className="flex border-b border-border px-2 overflow-x-auto no-scrollbar scroll-smooth">
           <button
             onClick={() => setActiveTab("all")}
             className={`px-4 py-3 text-sm font-semibold border-b-4 transition-all whitespace-nowrap 
-              ${activeTab === "all" ? "border-blue-500 text-blue-500" : "border-transparent text-gray-400 hover:bg-[#3a3b3c]"}`}
+              ${activeTab === "all" ? "border-blue-500 text-blue-500" : "border-transparent text-gray-400 hover:bg-bg"}`}
           >
             Tất cả {summary.Total}
           </button>
@@ -87,7 +87,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
                 key={type}
                 onClick={() => setActiveTab(type)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-4 transition-all whitespace-nowrap
-                  ${activeTab === type ? "border-blue-500 text-blue-500" : "border-transparent text-gray-400 hover:bg-[#3a3b3c]"}`}
+                  ${activeTab === type ? "border-blue-500 text-blue-500" : "border-transparent text-gray-400 hover:bg-bg"}`}
               >
                 <span className="text-xl">{reactionInfo?.emoji}</span>
                 <span>{count}</span>
@@ -108,7 +108,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
               {users.map((user) => (
                 <div
                   key={user.UserId}
-                  className="flex items-center justify-between p-2.5 hover:bg-[#3a3b3c] rounded-xl transition-colors cursor-pointer"
+                  className="flex items-center justify-between p-2.5 hover:bg-bg rounded-xl transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
@@ -118,7 +118,7 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
                         alt={user.FullName}
                         onError={(e) => (e.currentTarget.src = "/assets/img/icons8-user-default-64.png")}
                       />
-                      <div className="absolute -bottom-1 -right-1 bg-[#242526] rounded-full p-0.5 shadow-lg border border-[#3e4042]">
+                      <div className="absolute -bottom-1 -right-1 bg-bg rounded-full p-0.5 shadow-lg border border-border">
                         <span className="text-[14px] leading-none block">
                           {REACTIONS.find(r => r.key === user.Type?.toLowerCase())?.emoji || "👍"}
                         </span>
@@ -126,11 +126,11 @@ const ReactionModal = ({ postId, summary, onClose, resolveUrl }: ReactionModalPr
                     </div>
 
                     <div className="flex flex-col">
-                      <span className="text-white font-medium text-[16px]">{user.FullName}</span>
+                      <span className="text-[var(--color-text)] font-medium text-[16px]">{user.FullName}</span>
                     </div>
                   </div>
 
-                  <button className="bg-[#3a3b3c] hover:bg-[#4e4f50] text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
+                  <button className="bg-bg hover:bg-bg text-[var(--color-text)] px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors active:scale-95">
                     Trang cá nhân
                   </button>
                 </div>

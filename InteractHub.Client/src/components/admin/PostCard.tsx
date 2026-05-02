@@ -10,7 +10,7 @@ interface Post {
     title: string;
     content: string;
     countLike: number;
-    likes: { UserId: string; UserName: string; Avatar: string; Type? :string}[];
+    likes: { UserId: string; UserName: string; Avatar: string; Type?: string }[];
     countComment: number;
     comments: CommentDTO[];
     status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
@@ -61,7 +61,7 @@ const PostCard: React.FC<PostCardProps> = ({
                         className="w-12 h-12 rounded-full object-cover"
                     />
                 ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-[var(--color-text)] font-semibold">
                         {post.author.charAt(0)}
                     </div>
                 )}
@@ -71,13 +71,15 @@ const PostCard: React.FC<PostCardProps> = ({
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                                 <h3 className="font-semibold text-gray-900">{post.title}</h3>
-                                
+
                             </div>
 
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <span>{post.author}</span>
                                 <span>•</span>
-                                <span>{post.createdAt}</span>
+                                <span>
+                                    {new Date(new Date(post.createdAt).getTime() + 7 * 60 * 60 * 1000).toLocaleString()}
+                                </span>
                             </div>
                         </div>
 

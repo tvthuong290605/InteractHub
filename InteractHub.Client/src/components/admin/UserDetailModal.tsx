@@ -88,7 +88,7 @@ export const UserDetailModal: React.FC<Props> = ({
 
                 {/* HEADER */}
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xl font-bold">
+                    <div className="w-16 h-16 rounded-full bg-indigo-500 text-[var(--color-text)] flex items-center justify-center text-xl font-bold">
                         {user.name.charAt(0).toUpperCase()}
                     </div>
 

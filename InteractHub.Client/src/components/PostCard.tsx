@@ -17,12 +17,12 @@ const PostCard: React.FC<PostCardProps> = ({ url, title }) => {
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
-      className="block bg-[#242526] border border-[#4e4f50] rounded-xl overflow-hidden hover:bg-[#303132] transition-all no-underline group"
+      className="block bg-bg border border-border rounded-xl overflow-hidden hover:bg-bg transition-all no-underline group"
     >
-      <div className="w-full p-3 border-[#1877f2] group-hover:border-blue-400 transition-colors">
+      <div className="w-full p-3 border-border group-hover:border-blue-400 transition-colors">
         <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-5 h-5 bg-[#1877f2] rounded-full flex items-center justify-center">
-             <span className="text-[10px] text-white">🔗</span>
+          <div className="w-5 h-5 bg-bg rounded-full flex items-center justify-center">
+             <span className="text-[10px] text-[var(--color-text)]">🔗</span>
           </div>
           <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">
             Bài viết từ InteractHub
@@ -33,7 +33,7 @@ const PostCard: React.FC<PostCardProps> = ({ url, title }) => {
           {title || "Nhấn để xem chi tiết bài viết này"}
         </p>
         
-        <div className="mt-2 pt-2 border-t border-[#3e4042] flex items-center justify-between">
+        <div className="mt-2 pt-2 border-t border-border flex items-center justify-between">
           <p className="text-[10px] text-gray-500 truncate max-w-[180px]">
             {url.replace(/^https?:\/\//, '')}
           </p>

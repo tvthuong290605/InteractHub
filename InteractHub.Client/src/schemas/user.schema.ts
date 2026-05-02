@@ -1,3 +1,4 @@
+// import { Fullscreen } from "lucide-react";
 import { z } from "zod";
 
 // Logic validate mật khẩu mạnh (dùng chung)
@@ -22,6 +23,7 @@ export const userSchema = z.object({
   CreatedAt: z.string().optional(),
   Roles: z.array(z.string()).default(["User"]),
   FriendshipStatus: z.string().optional().nullable(),
+
 });
 
 export type User = z.infer<typeof userSchema>;

@@ -138,11 +138,11 @@ const groupMessages = (messages: Message[]): MessageGroup[] => {
 // ── DATE SEPARATOR ────────────────────────────────────────────────
 const DateSeparator: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center gap-3 my-4 px-2">
-    <div className="flex-1 h-px bg-[#3e4042]" />
+    <div className="flex-1 h-px bg-bg" />
     <span className="text-[11px] text-gray-500 font-medium flex-shrink-0 select-none">
       {label}
     </span>
-    <div className="flex-1 h-px bg-[#3e4042]" />
+    <div className="flex-1 h-px bg-bg" />
   </div>
 );
 
@@ -227,7 +227,7 @@ const MessageGroupUI: React.FC<{
             <div key={msg.id} className="flex flex-col gap-0.5">
               <div onClick={() => setShowTime((v) => !v)} className="cursor-pointer">
                 {msg.content.text && (
-                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg-[#1877f2] text-white" : "bg-[#3a3b3c] text-white"}`}>
+                  <div className={`px-4 py-2 text-[15px] leading-snug break-words ${br} ${isMe ? "bg- text-[var(--color-text)]" : "bg-bg text-[var(--color-text)]"}`}>
                     <MessageText text={msg.content.text} />
                   </div>
                 )}
@@ -237,7 +237,7 @@ const MessageGroupUI: React.FC<{
                       <img
                         key={i}
                         src={url}
-                        className="max-w-[200px] max-h-[200px] rounded-xl object-cover border border-[#3e4042] cursor-zoom-in hover:opacity-90 transition"
+                        className="max-w-[200px] max-h-[200px] rounded-xl object-cover border border-border cursor-zoom-in hover:opacity-90 transition"
                         alt="media"
                         onClick={(e) => { e.stopPropagation(); window.open(url, "_blank"); }}
                       />
@@ -248,7 +248,7 @@ const MessageGroupUI: React.FC<{
                   <div className="flex flex-col gap-1 mt-1">
                     {msg.content.videoUrls!.map((url, i) => (
                       <video key={i} src={url} controls
-                        className="max-w-[220px] rounded-xl border border-[#3e4042]"
+                        className="max-w-[220px] rounded-xl border border-border"
                         onClick={(e) => e.stopPropagation()}
                       />
                     ))}
@@ -466,18 +466,25 @@ const ChatWindow: React.FC<{
 
   // ── File handling ─────────────────────────────────────────────
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
-    setSelectedFiles((prev) => [
-      ...prev,
-      ...Array.from(files).map((file) => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-        isVideo: file.type.startsWith("video/"),
-      })),
-    ]);
+  const files = e.target.files;
+  if (!files?.length) return;
+
+  // ✅ Snapshot ngay lập tức trước khi làm bất cứ thứ gì khác
+  const fileArray = Array.from(files);
+
+  const newFiles: SelectedFile[] = fileArray.map((file) => ({
+    file,
+    previewUrl: URL.createObjectURL(file),
+    isVideo: file.type.startsWith("video/"),
+  }));
+
+  setSelectedFiles((prev) => [...prev, ...newFiles]);
+
+  // ✅ Reset SAU khi đã xử lý xong hoàn toàn
+  requestAnimationFrame(() => {
     e.target.value = "";
-  };
+  });
+};
 
   const removeFile = (index: number) => {
     setSelectedFiles((prev) => {
@@ -522,9 +529,9 @@ const ChatWindow: React.FC<{
 
   return (
     <div
-      className="fixed z-50 flex flex-col bg-[#18191a] rounded-2xl shadow-2xl border border-[#3e4042] overflow-hidden select-none"
-      style={{ left: pos.x, top: pos.y, width: size.w, height: size.h }}
-    >
+  className="fixed z-50 flex flex-col bg-[var(--color-bg)] rounded-2xl shadow-2xl border border-[var(--color-border)] overflow-hidden select-none"
+  style={{ left: pos.x, top: pos.y, width: size.w, height: size.h }}
+>
       {/* ── Resize handles ── */}
       <div onMouseDown={(e) => onResizeMouseDown(e, "n")} className="absolute top-0 left-2 right-2 h-1 cursor-n-resize z-20" />
       <div onMouseDown={(e) => onResizeMouseDown(e, "s")} className="absolute bottom-0 left-2 right-2 h-1 cursor-s-resize z-20" />
@@ -538,7 +545,7 @@ const ChatWindow: React.FC<{
       {/* ── HEADER ── */}
       <div
         onMouseDown={onDragMouseDown}
-        className="flex items-center justify-between px-3 py-2 border-b border-gray-700 bg-[#242526] cursor-grab active:cursor-grabbing flex-shrink-0"
+        className="flex items-center justify-between px-3 py-2 border-borderb border-[var(--color-border)] bg-[var(--color-bg)] cursor-grab active:cursor-grabbing flex-shrink-0"
       >
         <div className="flex items-center gap-2 pointer-events-none">
           <img
@@ -547,7 +554,7 @@ const ChatWindow: React.FC<{
             alt=""
           />
           <div>
-            <p className="text-white font-semibold text-sm leading-tight">{conversation.name}</p>
+            <p className="text-[var(--color-text)] font-semibold text-sm leading-tight">{conversation.name}</p>
             <p className="text-[11px] text-green-500">Đang hoạt động</p>
           </div>
         </div>
@@ -556,7 +563,7 @@ const ChatWindow: React.FC<{
           {onMinimize && (
             <button
               onClick={onMinimize}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-[#3a3b3c] hover:bg-[#4e4f50] text-gray-300 hover:text-white transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
               title="Thu nhỏ"
             >
               <FaMinus size={10} />
@@ -565,7 +572,7 @@ const ChatWindow: React.FC<{
           {onClose && (
             <button
               onClick={onClose}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-[#3a3b3c] hover:bg-red-500 text-gray-300 hover:text-white transition"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-gray-300 hover:text-[var(--color-text)] transition"
               title="Đóng"
             >
               <FaTimes size={10} />
@@ -578,7 +585,7 @@ const ChatWindow: React.FC<{
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 no-scrollbar relative">
         {loadingMore && (
           <div className="flex justify-center py-3">
-            <div className="w-5 h-5 rounded-full border-2 border-[#1877f2] border-t-transparent animate-spin" />
+            <div className="w-5 h-5 rounded-full border-2 border-border border-t-transparent animate-spin" />
           </div>
         )}
         {!hasMore && messages.length > 0 && !loadingMore && (
@@ -600,8 +607,8 @@ const ChatWindow: React.FC<{
         {showScrollBottom && (
           <button
             onClick={() => { shouldScrollBottomRef.current = true; bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#242526] border border-[#3e4042]
-                       rounded-full flex items-center justify-center text-[#1877f2] shadow-lg hover:bg-[#3a3b3c] transition-all"
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-[var(--color-bg)] border border-[var(--color-border)]
+                       rounded-full flex items-center justify-center text-[#1877f2] shadow-lg hover:bg-[var(--color-hover)] transition-all"
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5z" /></svg>
           </button>
@@ -610,22 +617,22 @@ const ChatWindow: React.FC<{
 
       {/* ── FILE PREVIEW ── */}
       {selectedFiles.length > 0 && (
-        <div className="flex gap-2 p-2 bg-[#242526] border-t border-[#3e4042] overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 p-2 bg-[var(--color-bg)] border-t border-[var(--color-border)] overflow-x-auto no-scrollbar">
           {selectedFiles.map(({ previewUrl, isVideo }, index) => (
             <div key={index} className="relative w-14 h-14 flex-shrink-0 group">
               {isVideo ? (
                 <div className="relative w-full h-full">
-                  <video src={previewUrl} className="w-full h-full object-cover rounded-lg border border-gray-600" />
+                  <video src={previewUrl} className="w-full h-full object-cover rounded-lg border border-[var(--color-border)]" />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
-                    <FaPlay size={12} className="text-white" />
+                    <FaPlay size={12} className="text-[var(--color-text)]" />
                   </div>
                 </div>
               ) : (
-                <img src={previewUrl} className="w-full h-full object-cover rounded-lg border border-gray-600" alt="preview" />
+                <img src={previewUrl} className="w-full h-full object-cover rounded-lg border border-[var(--color-border)]" alt="preview" />
               )}
               <button
                 onClick={() => removeFile(index)}
-                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 shadow hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
+                className="absolute -top-1 -right-1 bg-red-500 text-[var(--color-text)] rounded-full p-0.5 shadow hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
               >
                 <FaTimes size={7} />
               </button>
@@ -635,7 +642,7 @@ const ChatWindow: React.FC<{
       )}
 
       {/* ── INPUT ── */}
-      <div className="px-3 py-2 border-t border-[#3e4042] bg-[#242526] flex-shrink-0">
+      <div className="px-3 py-2 border-t border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0">
         <div className="flex items-center gap-2">
           <input type="file" ref={fileInputRef} className="hidden" multiple accept="image/*,video/*" onChange={handleFileChange} />
           <button onClick={() => fileInputRef.current?.click()} className="text-gray-400 hover:text-blue-400 transition flex-shrink-0">
@@ -647,7 +654,7 @@ const ChatWindow: React.FC<{
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Aa"
             rows={1}
-            className="flex-1 bg-[#3a3b3c] text-white rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
+            className="flex-1 bg-[var(--color-bg)] text-[var(--color-text)] rounded-2xl px-4 py-2 resize-none outline-none max-h-[100px] text-sm"
           />
           <button
             onClick={handleSend}
@@ -655,7 +662,7 @@ const ChatWindow: React.FC<{
             className="flex-shrink-0 w-8 h-8 flex items-center justify-center"
           >
             {sending ? (
-              <div className="w-5 h-5 rounded-full border-2 border-[#1877f2] border-t-transparent animate-spin" />
+              <div className="w-5 h-5 rounded-full border-2 border-[var(--color-border)] border-t-transparent animate-spin" />
             ) : (
               <FaPaperPlane size={18} className={inputText.trim() || selectedFiles.length > 0 ? "text-blue-500" : "text-gray-600"} />
             )}

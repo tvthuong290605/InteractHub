@@ -66,9 +66,9 @@ const DraggableAvatarBubble: React.FC<{
       {/* Nút đóng — hiện khi hover */}
       <button
         onClick={(e) => { e.stopPropagation(); onClose(); }}
-        className="absolute -top-1 -right-1 z-10 w-5 h-5 bg-[#3a3b3c] hover:bg-red-500
-                   rounded-full flex items-center justify-center text-gray-300 hover:text-white
-                   opacity-0 group-hover:opacity-100 transition-all shadow-md border border-[#4e4f50]"
+        className="absolute -top-1 -right-1 z-10 w-5 h-5 bg-bg hover:bg-red-500
+                   rounded-full flex items-center justify-center text-gray-300 hover:text-[var(--color-text)]
+                   opacity-0 group-hover:opacity-100 transition-all shadow-md border border-border"
       >
         <FaTimes size={7} />
       </button>
@@ -81,7 +81,7 @@ const DraggableAvatarBubble: React.FC<{
       >
         <img
           src={resolveUrl(conversation.avatar) || "/assets/img/icons8-user-default-64.png"}
-          className="w-14 h-14 rounded-full object-cover border-2 border-[#1877f2] shadow-xl
+          className="w-14 h-14 rounded-full object-cover border-2 border-border shadow-xl
                      group-hover:scale-110 transition-transform duration-200"
           alt={conversation.name}
           draggable={false}
@@ -98,7 +98,7 @@ const DraggableAvatarBubble: React.FC<{
         {/* Unread badge */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -left-1 min-w-[20px] h-5 bg-red-500 rounded-full
-                           flex items-center justify-center text-white text-[10px] font-bold px-1
+                           flex items-center justify-center text-[var(--color-text)] text-[10px] font-bold px-1
                            animate-bounce shadow-md">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
@@ -107,9 +107,9 @@ const DraggableAvatarBubble: React.FC<{
 
       {/* Tooltip tên */}
       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1
-                      bg-[#18191a] text-white text-xs rounded-lg shadow-lg whitespace-nowrap
+                      bg-bg text-[var(--color-text)] text-xs rounded-lg shadow-lg whitespace-nowrap
                       opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none
-                      border border-[#3e4042]">
+                      border border-border">
         {conversation.name}
       </div>
     </div>
@@ -149,7 +149,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-[#18191a] overflow-hidden flex flex-col">
+    <div className="h-screen bg-bg overflow-hidden flex flex-col">
       <Navbar
         onChatClick={handleChatClick}
         onNotifyClick={handleNotifyClick}
@@ -158,14 +158,14 @@ const MainLayout: React.FC = () => {
       <div className="flex flex-1 overflow-hidden">
 
         {/* ── NỘI DUNG TRANG ── */}
-        <main className="flex-1 h-full overflow-y-auto custom-scrollbar bg-[#18191a]">
+        <main className="flex-1 h-full overflow-y-auto custom-scrollbar bg-bg">
           <Outlet />
         </main>
 
         {/* ── CỘT PHẢI ── */}
         <aside
           className={`
-            hidden xl:flex flex-col h-full bg-[#18191a] border-l border-gray-800/30
+            hidden xl:flex flex-col h-full bg-bg border-l border-gray-800/30
             transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0
             ${isOpen ? "w-[340px]" : "w-12"}
           `}
@@ -175,7 +175,7 @@ const MainLayout: React.FC = () => {
               <div className="flex justify-start px-3 pt-3 flex-shrink-0">
                 <button
                   onClick={() => setRightSidebarView("closed")}
-                  className="p-2 rounded-xl hover:bg-[#3a3b3c] text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-[var(--color-text)] transition-colors"
                 >
                   <FaChevronRight size={14} />
                 </button>
@@ -202,7 +202,7 @@ const MainLayout: React.FC = () => {
             <div className="flex flex-col items-center pt-3">
               <button
                 onClick={() => setRightSidebarView("friends")}
-                className="p-2 rounded-xl hover:bg-[#3a3b3c] text-gray-400 hover:text-white transition-colors"
+                className="p-2 rounded-xl hover:bg-bg text-gray-400 hover:text-[var(--color-text)] transition-colors"
               >
                 <FaChevronRight size={14} className="rotate-180" />
               </button>

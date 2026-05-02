@@ -72,10 +72,10 @@ const FriendRequestList = () => {
       <div className="space-y-3 px-2">
         {[1, 2].map((i) => (
           <div key={i} className="flex gap-3 animate-pulse items-center p-2">
-            <div className="w-14 h-14 bg-[#3a3b3c] rounded-full"></div>
+            <div className="w-14 h-14 bg-[var(--color-bg)] rounded-full"></div>
             <div className="flex-1 space-y-2">
-              <div className="h-3 bg-[#3a3b3c] rounded w-1/2"></div>
-              <div className="h-8 bg-[#3a3b3c] rounded w-full"></div>
+              <div className="h-3 bg-[var(--color-bg)] rounded w-1/2"></div>
+              <div className="h-8 bg-[var(--color-bg)] rounded w-full"></div>
             </div>
           </div>
         ))}
@@ -85,8 +85,8 @@ const FriendRequestList = () => {
 
   if (requests.length === 0) {
     return (
-      <div className="mx-2 p-4 text-center rounded-xl border border-gray-800/50 bg-[#242526]">
-        <p className="text-gray-500 text-[13px]">Không có lời mời kết bạn mới</p>
+      <div className="mx-2 p-4 text-center rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-bg)]">
+        <p className="text-[var(--color-text)] text-[13px]">Không có lời mời kết bạn mới</p>
       </div>
     );
   }

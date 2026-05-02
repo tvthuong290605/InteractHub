@@ -107,7 +107,7 @@ const LoginForm = ({
               {...register("rememberMe")}
             />
             <svg
-              className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100
+              className="absolute h-3.5 w-3.5 text-[var(--color-text)] opacity-0 peer-checked:opacity-100
                          top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-opacity"
               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
@@ -133,7 +133,7 @@ const LoginForm = ({
         type="submit"
         disabled={isLoading}
         className="w-full py-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-                   text-white font-bold text-lg rounded-2xl transition-all duration-200
+                   text-[var(--color-text)] font-bold text-lg rounded-2xl transition-all duration-200
                    hover:scale-[1.01] shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] hover:shadow-[0_12px_25px_-5px_rgba(37,99,235,0.5)]
                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
       >

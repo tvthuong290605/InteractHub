@@ -63,9 +63,9 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
       <input
         ref={ref}
         type={type}
-        className={`w-full px-4 py-3 bg-[#3a3b3c] border rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 transition-all text-base ${error
+        className={`w-full px-4 py-3 bg-bg border rounded-xl text-[var(--color-text)] placeholder:text-[var(--color-text)] focus:outline-none focus:ring-2 transition-all text-base ${error
           ? "border-red-500 focus:ring-red-500/20"
-          : "border-[#4e4f50] focus:ring-[#1877f2]/50"
+          : "border-border focus:ring-[#1877f2]/50"
           } ${className}`}
         {...rest}
       />
@@ -228,11 +228,11 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
   return (
     <>
       {toast && <Toast message={toast.message} type={toast.type} />}
-      <div className="bg-[#242526] overflow-hidden max-w-4xl mx-auto text-gray-200 rounded-xl border border-[#3e4042]">
+      <div className="bg-bg overflow-hidden max-w-4xl mx-auto text-gray-200 rounded-xl border border-border">
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {/* Visuals: Cover & Avatar */}
           <div className="relative pb-16">
-            <div className="h-48 md:h-60 relative group overflow-hidden bg-[#3a3b3c]">
+            <div className="h-48 md:h-60 relative group overflow-hidden bg-bg">
               <img
                 src={coverPreview}
                 className="w-full h-full object-cover"
@@ -241,7 +241,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
               <button
                 type="button"
                 onClick={() => coverInputRef.current?.click()}
-                className="absolute bottom-4 right-4 bg-black/60 hover:bg-black/80 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 backdrop-blur-md transition-all border border-white/10"
+                className="absolute bottom-4 right-4 bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] px-4 py-2 rounded-lg text-sm flex items-center gap-2 backdrop-blur-md transition-all border border-white/10"
               >
                 <FaCamera /> Thay đổi ảnh bìa
               </button>
@@ -258,13 +258,13 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
               <div className="relative inline-block">
                 <img
                   src={avatarPreview}
-                  className="w-32 h-32 rounded-full border-4 border-[#242526] object-cover bg-[#3a3b3c] shadow-xl"
+                  className="w-32 h-32 rounded-full border-4 border-[#242526] object-cover bg-bg shadow-xl"
                   alt="Avatar"
                 />
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute bottom-1 right-1 bg-[#1877f2] hover:bg-[#166fe5] p-2.5 rounded-full shadow-lg border-2 border-[#242526] transition-colors"
+                  className="absolute bottom-1 right-1 bg-bg hover:bg-bg p-2.5 rounded-full shadow-lg border-2 border-[#242526] transition-colors"
                 >
                   <FaCamera size={14} />
                 </button>
@@ -283,7 +283,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Cột trái: Thông tin cá nhân */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 text-[#1877f2] font-bold uppercase tracking-widest text-xs border-b border-[#3e4042] pb-3">
+                <div className="flex items-center gap-2 text-[var(--color-text)] font-bold uppercase tracking-widest text-xs border-b border-[var(--color-border)] pb-3">
                   <FaUserEdit /> Thông tin cá nhân
                 </div>
                 <div className="space-y-4">
@@ -297,7 +297,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
                       label="Email"
                       {...register("email")}
                       readOnly
-                      className="opacity-50 cursor-not-allowed bg-[#242526]"
+                      className=" cursor-not-allowed bg-bg"
                     />
                     <InputField
                       label="Số điện thoại"
@@ -312,7 +312,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
                       </label>
                       <select
                         {...register("gender")}
-                        className="w-full px-4 py-3 bg-[#3a3b3c] border border-[#4e4f50] rounded-xl text-gray-200 focus:ring-2 focus:ring-[#1877f2]/50 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-bg border border-border rounded-xl text-[var(--color-text)] focus:ring-2 focus:ring-[#1877f2]/50 outline-none transition-all"
                       >
                         <option value="Chưa cập nhật">Chưa cập nhật</option>
                         <option value="Nam">Nam</option>
@@ -329,17 +329,17 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex justify-between">
-                      <label className="text-sm font-semibold text-gray-400 ml-1">
+                      <label className="text-sm font-semibold text-[var(--color-text)] ml-1">
                         Tiểu sử
                       </label>
-                      <span className="text-[10px] text-gray-500">
+                      <span className="text-[10px] text-[var(--color-text)] ">
                         {bioValue.length}/160
                       </span>
                     </div>
                     <textarea
                       rows={3}
                       {...register("bio")}
-                      className="w-full px-4 py-3 bg-[#3a3b3c] border border-[#4e4f50] rounded-xl focus:ring-2 focus:ring-[#1877f2]/50 outline-none resize-none text-gray-200 transition-all"
+                      className="w-full px-4 py-3 bg-[var(--color-bg)] border border-border rounded-xl focus:ring-2 focus:ring-[#1877f2]/50 outline-none resize-none text-[var(--color-text)] transition-all"
                     />
                   </div>
                 </div>
@@ -347,10 +347,10 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
 
               {/* Cột phải: Bảo mật */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 text-[#1877f2] font-bold uppercase tracking-widest text-xs border-b border-[#3e4042] pb-3">
+                <div className="flex items-center gap-2 text-[var(--color-text)] font-bold uppercase tracking-widest text-xs border-b border-border pb-3">
                   <FaShieldAlt /> Bảo mật mật khẩu
                 </div>
-                <div className="space-y-5 bg-[#1c1d1e] p-5 rounded-2xl border border-[#3e4042]">
+                <div className="space-y-5 bg-[var(--color-bg)] p-5 rounded-2xl border border-border">
                   <InputField
                     label="Mật khẩu hiện tại"
                     type="password"
@@ -369,7 +369,7 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
 
                   {newPasswordValue && (
                     <div className="space-y-2 px-1">
-                      <div className="h-1.5 bg-[#4e4f50] rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-[var(--color-bg)]   rounded-full overflow-hidden">
                         <div
                           className={`h-full transition-all duration-300 ${strength.score <= 2
                             ? "bg-red-500"
@@ -403,8 +403,8 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
                     placeholder="Xác nhận mật khẩu"
                   />
                 </div>
-                <div className="px-4 py-3 bg-[#1877f2]/5 border border-[#1877f2]/20 rounded-xl">
-                  <p className="text-[11px] text-gray-500 italic leading-relaxed">
+                <div className="px-4 py-3 bg-[var(--color-bg)]/5 border border-border/20 rounded-xl">
+                  <p className="text-[11px] text-[var(--color-text)]  italic leading-relaxed">
                     Lưu ý: Bạn chỉ cần nhập mật khẩu hiện tại khi muốn thay
                     đổi mật khẩu mới. Các thông tin cá nhân khác có thể cập
                     nhật độc lập.
@@ -414,18 +414,18 @@ const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({
             </div>
 
             {/* Nút hành động */}
-            <div className="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-[#3e4042]">
+            <div className="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-border">
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-6 py-2.5 rounded-xl text-gray-300 hover:bg-[#3a3b3c] font-semibold flex items-center gap-2 transition-colors"
+                className="px-6 py-2.5 rounded-xl text-[var(--color-text)] hover:bg-[var(--color-hover)] font-semibold flex items-center gap-2 transition-colors"
               >
                 <FaTimes /> Hủy
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-10 py-2.5 bg-[#1877f2] hover:bg-[#166fe5] text-white font-bold rounded-xl shadow-lg disabled:opacity-60 flex items-center gap-2 min-w-[160px] justify-center transition-all"
+                className="px-10 py-2.5 bg-[var(--color-bg)] hover:bg-[var(--color-hover)] text-[var(--color-text)] font-bold rounded-xl shadow-lg  flex items-center gap-2 min-w-[160px] justify-center transition-all"
               >
                 {isLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white" />

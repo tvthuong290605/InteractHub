@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import { commentService, type CommentResponse } from "../services/commetService";
@@ -7,53 +7,69 @@ import { resolveUrl } from "../utils/urlUtils";
 
 interface CommentSectionProps {
   postId: number;
-  authorId: string | undefined; // ✅ thêm prop authorId
+  authorId?: string;
   post: PostData;
   onClose: () => void;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post, onClose }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({
+  postId,
+  authorId,
+  post,
+  onClose,
+}) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const commentsEndRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const commentsEndRef = useRef<HTMLDivElement>(null);
 
   const highlightedCommentId = location.hash.startsWith("#comment-")
     ? Number(location.hash.replace("#comment-", ""))
     : null;
 
-  // ── Fetch comments ────────────────────────────────────────────
-  useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await commentService.getByPost(postId);
-        setComments(data ?? []);
-      } catch (err) {
-        console.error(err);
-        setError("Không thể tải bình luận.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchComments();
+  const isSharedPost = !!post.originalPostId && !!post.originalPost;
+
+  // ───────────────────────────────────────────────────────────
+  // FETCH
+  // ───────────────────────────────────────────────────────────
+
+  const fetchComments = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await commentService.getByPost(postId);
+      setComments(data || []);
+    } catch (err) {
+      console.error(err);
+      setError("Không thể tải bình luận.");
+    } finally {
+      setLoading(false);
+    }
   }, [postId]);
 
-  // ── Scroll tới comment được highlight ─────────────────────────
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
+
   useEffect(() => {
     if (!highlightedCommentId) return;
-    setTimeout(() => {
-      const el = document.getElementById(`comment-${highlightedCommentId}`);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const timer = setTimeout(() => {
+      document
+        .getElementById(`comment-${highlightedCommentId}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 300);
+
+    return () => clearTimeout(timer);
   }, [highlightedCommentId, comments]);
 
-  // ── Khoá scroll body khi modal mở ─────────────────────────────
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -61,19 +77,26 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
     };
   }, []);
 
-  // ── Thêm comment ──────────────────────────────────────────────
+  // ───────────────────────────────────────────────────────────
+  // SEND COMMENT
+  // ───────────────────────────────────────────────────────────
+
   const handleAddComment = async () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || sending) return;
+
     try {
+      setSending(true);
+
       const data = await commentService.create({
         PostId: postId,
         Content: newComment.trim(),
         ParentId: null,
       });
+
       if (data) {
         setComments((prev) => [...prev, data]);
         setNewComment("");
-        // Scroll xuống comment mới nhất
+
         setTimeout(() => {
           commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 100);
@@ -81,163 +104,288 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
     } catch (err) {
       console.error(err);
       alert("Lỗi gửi bình luận");
+    } finally {
+      setSending(false);
     }
   };
 
-  // ── Render media ──────────────────────────────────────────────
+  // ───────────────────────────────────────────────────────────
+  // RENDER MEDIA
+  // ───────────────────────────────────────────────────────────
+
   const renderMedia = (url: string, index: number) => {
     const fullUrl = resolveUrl(url);
     if (!fullUrl) return null;
-    if (url.match(/\.(mp4|webm|ogg)$/i)) {
+
+    if (/\.(mp4|webm|ogg)$/i.test(url)) {
       return (
         <video
           key={index}
           src={fullUrl}
           controls
-          className="w-full rounded-lg object-contain max-h-[400px]"
+          className="w-full max-h-[500px] rounded-xl object-contain bg-black"
         />
       );
     }
+
     return (
       <img
         key={index}
         src={fullUrl}
-        className="w-full rounded-lg object-cover max-h-[400px]"
+        alt={`media-${index}`}
+        className="w-full max-h-[500px] rounded-xl object-cover"
         onError={(e) => {
-          (e.currentTarget as HTMLImageElement).style.display = "none";
+          e.currentTarget.style.display = "none";
         }}
       />
     );
   };
 
+  // ───────────────────────────────────────────────────────────
+  // RENDER ORIGINAL POST (khung lồng bên trong)
+  // ───────────────────────────────────────────────────────────
+
+  const renderOriginalPost = () => {
+    const shared = post.originalPost;
+    if (!shared) return null;
+
+    return (
+      <div
+        onClick={() => navigate(`/post/${shared.id}`)}
+        className="
+          border border-border
+          rounded-2xl
+          overflow-hidden
+          bg-[#1e1f22]
+          hover:bg-[#2b2d31]
+          transition-all
+          cursor-pointer
+          mt-3
+        "
+      >
+        {/* Header bài gốc */}
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <img
+            src={
+              shared.authorAvatar
+                ? resolveUrl(shared.authorAvatar)
+                : "/assets/img/icons8-user-default-64.png"
+            }
+            alt={shared.fullName}
+            className="w-9 h-9 rounded-full object-cover shrink-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (shared.userId) navigate(`/profile/${shared.userId}`);
+            }}
+          />
+
+          <div className="flex flex-col">
+            <p
+              onClick={(e) => {
+                e.stopPropagation();
+                if (shared.userId) navigate(`/profile/${shared.userId}`);
+              }}
+              className="font-semibold text-[14px] leading-tight hover:underline text-[var(--color-text)]"
+            >
+              {shared.fullName}
+            </p>
+
+            <div className="flex items-center gap-1 text-xs text-gray-400">
+              <span>{new Date(shared.createdAt).toLocaleString("vi-VN")}</span>
+              <span>·</span>
+              <span>🌍</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Nội dung bài gốc */}
+        {(shared.title || shared.content) && (
+          <div className="px-4 pb-3">
+            {shared.title && (
+              <p className="font-bold text-[15px] mb-1 text-[var(--color-text)]">
+                {shared.title}
+              </p>
+            )}
+            {shared.content && (
+              <p className="text-[14px] text-[var(--color-text)] whitespace-pre-wrap break-words leading-relaxed">
+                {shared.content}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Media bài gốc */}
+        {shared.mediaUrls?.length > 0 && (
+          <div className="border-t border-border">
+            <div
+              className={`grid gap-2 p-2 ${
+                shared.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
+              }`}
+            >
+              {shared.mediaUrls.map((url, index) => (
+                <div key={index}>{renderMedia(url, index)}</div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ───────────────────────────────────────────────────────────
+  // RENDER LEFT PANEL
+  // ───────────────────────────────────────────────────────────
+
+  const renderLeftPanel = () => {
+    return (
+      <div className="p-4 space-y-3">
+        {/* Author của bài share (hoặc bài thường) */}
+        <div className="flex items-center gap-3">
+          <img
+            src={
+              post.authorAvatar
+                ? resolveUrl(post.authorAvatar)
+                : "/assets/img/icons8-user-default-64.png"
+            }
+            alt="avatar"
+            className="w-11 h-11 rounded-full object-cover cursor-pointer shrink-0"
+            onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
+            onError={(e) => {
+              e.currentTarget.src = "/assets/img/icons8-user-default-64.png";
+            }}
+          />
+
+          <div>
+            {isSharedPost && (
+              <p className="text-xs text-gray-400 mb-0.5">
+                🔁 Đã chia sẻ một bài viết
+              </p>
+            )}
+
+            <p
+              className="font-semibold text-[var(--color-text)] cursor-pointer hover:underline"
+              onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
+            >
+              {post.fullName}
+            </p>
+
+            <p className="text-xs text-gray-400">
+              {new Date(post.createdAt).toLocaleString("vi-VN")}
+            </p>
+          </div>
+        </div>
+
+        {/* Caption của người share (title + content của bài share wrapper) */}
+        {post.title && (
+          <p className="font-bold text-[17px] text-[var(--color-text)]">{post.title}</p>
+        )}
+
+        {post.content && (
+          <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-[var(--color-text)]">
+            {post.content}
+          </p>
+        )}
+
+        {/* Nếu là bài share: hiện khung bài gốc lồng vào */}
+        {isSharedPost
+          ? renderOriginalPost()
+          : post.mediaUrls?.length > 0 && (
+              <div
+                className={`grid gap-2 ${
+                  post.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
+                }`}
+              >
+                {post.mediaUrls.map((url, index) => (
+                  <div key={index}>{renderMedia(url, index)}</div>
+                ))}
+              </div>
+            )}
+      </div>
+    );
+  };
+
+  // ───────────────────────────────────────────────────────────
+  // RENDER
+  // ───────────────────────────────────────────────────────────
+
   return (
-    // ── Backdrop ──────────────────────────────────────────────────
     <div
-      className="fixed inset-0 z-[1000] bg-black/70 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1000] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={(e) => {
-        // Đóng khi click ra ngoài modal
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      {/* ── Modal container ─────────────────────────────────────── */}
-      <div className="relative w-full max-w-5xl h-[90vh] bg-[#242526] rounded-2xl shadow-2xl border border-[#3e4042] flex overflow-hidden">
+      <div className="relative w-full max-w-6xl h-[92vh] bg-[var(--color-bg)] border border-border rounded-2xl overflow-hidden shadow-2xl flex">
 
-        {/* ── Nút đóng ── */}
+        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-8 h-8 bg-[#3a3b3c] hover:bg-[#4e4f50] rounded-full flex items-center justify-center text-gray-300 hover:text-white transition"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] transition"
         >
           ✕
         </button>
 
-        {/* ════════════════════════════════════════════════════════
-            CỘT TRÁI — Nội dung bài viết (scroll độc lập)
-        ════════════════════════════════════════════════════════ */}
-        <div className="w-[55%] border-r border-[#3e4042] flex flex-col overflow-y-auto no-scrollbar">
+        {/* Left */}
+        <div className="w-[55%] border-r border-border flex flex-col overflow-y-auto no-scrollbar">
+          {renderLeftPanel()}
+        </div>
 
-          {/* Header bài viết */}
-          <div className="flex items-center gap-3 p-4 sticky top-0 bg-[#242526] z-10 border-b border-[#3e4042]">
-            <img
-              src={
-                post.authorAvatar
-                  ? resolveUrl(post.authorAvatar)
-                  : "/assets/img/icons8-user-default-64.png"
-              }
-              className="w-10 h-10 rounded-full object-cover cursor-pointer"
-              onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src =
-                  "/assets/img/icons8-user-default-64.png";
-              }}
-            />
-            <div>
-              <p
-                className="font-semibold text-white cursor-pointer hover:underline"
-                onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
-              >
-                {post.fullName}
-              </p>
-              <p className="text-gray-400 text-xs">
-                {new Date(post.createdAt).toLocaleString("vi-VN")}
-              </p>
-            </div>
-          </div>
-
-          {/* Nội dung bài viết */}
-          <div className="p-4 flex flex-col gap-3">
-            {post.title && (
-              <h3 className="font-bold text-[18px] text-white">{post.title}</h3>
-            )}
-            <p className="text-gray-200 text-[15px] leading-relaxed whitespace-pre-wrap">
-              {post.content}
-            </p>
-
-            {/* Media */}
-            {post.mediaUrls?.length > 0 && (
-              <div className={`grid gap-1 ${post.mediaUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
-                {post.mediaUrls.map((url: string, i: number) => (
-                  <div key={i}>{renderMedia(url, i)}</div>
-                ))}
-              </div>
-            )}
-          </div>
-      </div>
-
-        {/* ════════════════════════════════════════════════════════
-            CỘT PHẢI — Comments (scroll độc lập)
-        ════════════════════════════════════════════════════════ */}
+        {/* Right */}
         <div className="flex-1 flex flex-col min-h-0">
-
-          {/* Header cột phải */}
-          <div className="px-4 py-3 border-b border-[#3e4042] flex-shrink-0">
-            <h3 className="text-white font-bold text-[15px]">
+          <div className="px-4 py-3 border-b border-border">
+            <h3 className="text-[var(--color-text)] font-bold">
               Bình luận
-              {comments.length > 0 && (
-                <span className="ml-2 text-gray-400 font-normal text-sm">
-                  ({comments.length})
-                </span>
-              )}
+              <span className="ml-2 text-[var(--color-text)] text-sm font-normal">
+                ({comments.length})
+              </span>
             </h3>
           </div>
 
-          {/* Danh sách comment — scroll */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 no-scrollbar">
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar">
             {loading ? (
               <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-[#1877f2]" />
+                <div className="w-7 h-7 rounded-full border-2 border-border border-t-transparent animate-spin" />
               </div>
             ) : error ? (
-              <p className="text-center text-red-500 py-6">{error}</p>
+              <div className="text-center py-10">
+                <p className="text-red-500 mb-3">{error}</p>
+                <button
+                  onClick={fetchComments}
+                  className="text-sm text-blue-400 hover:underline"
+                >
+                  Tải lại
+                </button>
+              </div>
             ) : comments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-10 gap-2">
-                <span className="text-3xl">💬</span>
-                <p className="text-gray-500 text-sm">Hãy là người đầu tiên bình luận</p>
+              <div className="h-full flex flex-col items-center justify-center gap-2">
+                <span className="text-4xl">💬</span>
+                <p className="text-gray-500">Chưa có bình luận nào</p>
               </div>
             ) : (
               comments.map((comment) => (
-                <div id={`comment-${comment.Id}`} key={comment.Id}>
+                <div
+                  key={comment.Id}
+                  id={`comment-${comment.Id}`}
+                >
                   <Comment
                     comment={comment}
                     postId={postId}
                     parentUserName={comment.ParentUserName}
                     highlighted={comment.Id === highlightedCommentId}
-                    postAuthorId={authorId} // ✅ truyền authorId xuống Comment
+                    postAuthorId={authorId}
                   />
                 </div>
               ))
             )}
-            {/* Anchor để scroll xuống cuối */}
+
             <div ref={commentsEndRef} />
           </div>
 
-          {/* Input gửi comment — cố định dưới cùng */}
-          <div className="flex-shrink-0 p-4 border-t border-[#3e4042] flex gap-2 items-center bg-[#242526]">
+          <div className="border-t border-border p-4 flex items-center gap-3 bg-[var(--color-bg)]">
             <input
               type="text"
-              placeholder="Viết bình luận..."
-              className="flex-1 px-4 py-2.5 bg-[#3a3b3c] border border-[#4e4f50] rounded-2xl
-                         text-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-[#1877f2] transition"
               value={newComment}
+              placeholder="Viết bình luận..."
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -245,15 +393,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, authorId, post,
                   handleAddComment();
                 }
               }}
-              autoFocus
+              className="flex-1 bg-[var(--color-bg)] border border-border rounded-2xl px-4 py-3 text-sm text-[var(--color-text)] placeholder-gray-500 focus:outline-none"
             />
+
             <button
               onClick={handleAddComment}
-              disabled={!newComment.trim() || loading}
-              className="bg-[#1877f2] hover:bg-[#166fe5] disabled:opacity-40 disabled:cursor-not-allowed
-                         text-white px-4 py-2.5 rounded-2xl text-sm font-medium transition"
+              disabled={!newComment.trim() || sending}
+              className="px-5 py-3 rounded-2xl bg-[var(--color-bg)] hover:bg-[var(--color-bg)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--color-text)] text-sm font-medium transition"
             >
-              Gửi
+              {sending ? "Đang gửi..." : "Gửi"}
             </button>
           </div>
         </div>

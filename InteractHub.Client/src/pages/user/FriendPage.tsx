@@ -13,25 +13,25 @@ const FriendPage: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#18191a]">
+    <div className="min-h-screen bg-bg">
 
       <main className="max-w-[1200px] mx-auto pt-20 px-4">
         <div className="flex gap-4 items-start">
 
           {/* ── CỘT TRÁI: Lời mời kết bạn ── */}
           <div className="w-[360px] flex-shrink-0">
-            <h2 className="text-xl font-bold text-white mb-4">
+            <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
               Lời mời kết bạn
             </h2>
             <FriendRequestList />
           </div>
 
           {/* Divider */}
-          <div className="w-px self-stretch bg-[#3e4042]" />
+          <div className="w-px self-stretch bg-bg" />
 
           {/* ── CỘT PHẢI: Danh sách bạn bè ── */}
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-white mb-4">
+            <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
               Bạn bè
             </h2>
             {user && <FriendList/>}

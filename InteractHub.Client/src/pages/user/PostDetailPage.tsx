@@ -35,18 +35,18 @@ const PostDetailPage: React.FC = () => {
   }, [id, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#18191a]">
+    <div className="min-h-screen bg-bg">
       <main className="max-w-[680px] mx-auto pt-20 px-4">
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#1877f2] border-t-transparent" />
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-border border-t-transparent" />
           </div>
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-400 text-lg mb-4">{error}</p>
             <button
               onClick={() => navigate(-1)}
-              className="px-6 py-2 bg-[#1877f2] text-white rounded-lg font-semibold hover:bg-[#166fe5]"
+              className="px-6 py-2 bg-bg text-[var(--color-text)] rounded-lg font-semibold hover:bg-bg"
             >
               Quay lại
             </button>
@@ -55,7 +55,7 @@ const PostDetailPage: React.FC = () => {
           <>
             <button
               onClick={() => navigate(-1)}
-              className="mb-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+              className="mb-4 flex items-center gap-2 text-gray-400 hover:text-[var(--color-text)] transition-colors"
             >
               ← Quay lại
             </button>

@@ -26,4 +26,12 @@ public interface IPostRepository
     IEnumerable<string> friendIds,
     int page,
     int pageSize);
+
+
+
+
+
+
+
+    Task<IEnumerable<Post>> SearchPostsAsync(string keyword);
 }

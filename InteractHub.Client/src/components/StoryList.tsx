@@ -174,10 +174,10 @@ userList.sort((a, b) => {
         <div className="relative w-full group px-2">
             {userList.length >= 6 && (
                 <>
-                    <button onClick={() => scroll("left")} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-[#3e4042] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => scroll("left")} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-bg flex items-center justify-center text-[var(--color-text)] opacity-0 group-hover:opacity-100 transition-opacity">
                         <FaChevronLeft />
                     </button>
-                    <button onClick={() => scroll("right")} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-[#3e4042] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => scroll("right")} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-bg flex items-center justify-center text-[var(--color-text)] opacity-0 group-hover:opacity-100 transition-opacity">
                         <FaChevronRight />
                     </button>
                 </>
@@ -187,20 +187,20 @@ userList.sort((a, b) => {
             <div ref={scrollRef} className="flex gap-2.5 overflow-x-auto no-scrollbar py-2 px-2 scroll-smooth">
 
                 {/* CREATE STORY */}
-                <div className="w-40 h-62 flex-shrink-0 bg-[#242526] rounded-xl overflow-hidden shadow-lg border border-[#3e4042] group cursor-pointer relative">
+                <div className="w-40 h-62 flex-shrink-0 bg-bg rounded-xl overflow-hidden shadow-lg border border-border group cursor-pointer relative">
                     <img
                         src={resolveUrl(user?.avatarUrl)}
                         alt="my avatar"
                         className="w-full h-40 object-cover group-hover:scale-110 transition"
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-[#242526] pt-1 pb-3 text-center">
+                    <div className="absolute inset-x-0 bottom-0 bg-bg pt-1 pb-3 text-center">
                         <div
-                            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-[#1877f2] rounded-full flex items-center justify-center ring-4 ring-[#242526] cursor-pointer"
+                            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-bg rounded-full flex items-center justify-center ring-4 ring-[#242526] cursor-pointer"
                             onClick={() => setShowCreate(true)}
                         >
-                            <FaPlus className="text-white text-xl" />
+                            <FaPlus className="text-[var(--color-text)] text-xl" />
                         </div>
-                        <p className="text-white text-sm font-bold mt-6 px-1 truncate">Tạo tin</p>
+                        <p className="text-[var(--color-text)] text-sm font-bold mt-6 px-1 truncate">Tạo tin</p>
                     </div>
                 </div>
 
@@ -213,27 +213,27 @@ userList.sort((a, b) => {
                     >
                         <img src={getFullUrl(group.items[0].MediaUrl)} className="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="story" />
                         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
-                        <div className="absolute top-3 left-3 w-10 h-10 rounded-full border-[3px] border-blue-600 p-[2px] bg-[#242526]">
+                        <div className="absolute top-3 left-3 w-10 h-10 rounded-full border-[3px] border-blue-600 p-[2px] bg-bg">
                             <img src={resolveUrl(group.profilePicture)} className="w-full h-full rounded-full object-cover" alt="avatar" />
                         </div>
-                        <p className="absolute bottom-3 left-3 right-3 text-white text-[12px] font-semibold truncate">{group.userName}</p>
+                        <p className="absolute bottom-3 left-3 right-3 text-[var(--color-text)] text-[12px] font-semibold truncate">{group.userName}</p>
                     </div>
                 ))}
             </div>
 
             {/* VIEWER */}
             {viewingUserIndex !== null && (
-                <div className="fixed inset-0 z-[1000] bg-[#18191a] flex items-center justify-center">
-                    <button onClick={closeViewer} className="absolute top-5 right-5 text-white/70 hover:text-white text-4xl z-[1010]">&times;</button>
-                    <button onClick={handlePrev} className="absolute left-4 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center z-[1010]"><FaChevronLeft /></button>
-                    <button onClick={handleNext} className="absolute right-4 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center z-[1010]"><FaChevronRight /></button>
+                <div className="fixed inset-0 z-[1000] bg-[var(--color-bg)] flex items-center justify-center">
+                    <button onClick={closeViewer} className="absolute top-5 right-5 text-[var(--color-text)]/70 hover:text-[var(--color-hover1)] text-4xl z-[1010]">&times;</button>
+                    <button onClick={handlePrev} className="absolute left-4 w-12 h-12 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] flex items-center justify-center z-[1010]"><FaChevronLeft /></button>
+                    <button onClick={handleNext} className="absolute right-4 w-12 h-12 rounded-full bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] flex items-center justify-center z-[1010]"><FaChevronRight /></button>
 
-                    <div className="relative w-full max-w-[420px] h-[95vh] bg-black shadow-2xl flex flex-col overflow-hidden rounded-lg">
+                    <div className="relative w-full max-w-[420px] h-[95vh] bg-[var(--color-bg)] shadow-2xl flex flex-col overflow-hidden rounded-lg">
                         {/* Progress bar */}
                         <div className="absolute top-4 left-4 right-4 flex gap-1 z-[1020]">
                             {userList[viewingUserIndex].items.map((_, i) => (
-                                <div key={i} className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
-                                    <div className={`h-full bg-white transition-all ${i <= activeStoryIndex ? "w-full" : "w-0"}`} />
+                                <div key={i} className="h-1 flex-1 bg-[var(--color-text)]/20 rounded-full overflow-hidden">
+                                    <div className={`h-full bg-[var(--color-text)] transition-all ${i <= activeStoryIndex ? "w-full" : "w-0"}`} />
                                 </div>
                             ))}
                         </div>
@@ -243,13 +243,13 @@ userList.sort((a, b) => {
                             <div className="flex items-center gap-3">
                                 <img
                                     src={getFullUrl(userList[viewingUserIndex].profilePicture)}
-                                    className="w-10 h-10 rounded-full border border-white/50 object-cover"
+                                    className="w-10 h-10 rounded-full border-2 border-[var(--color-border)] object-cover"
                                     alt="avatar"
                                 />
-                                <span className="text-white font-bold text-sm">
+                                <span className="text-[var(--color-text)] font-bold text-sm">
                                     {userList[viewingUserIndex].userName}
                                 </span>
-                                <span className="text-white/70 text-[11px]">
+                                <span className="text-[var(--color-text)]/70 text-[11px]">
                 {getTimeAgo(userList[viewingUserIndex].items[activeStoryIndex].CreatedAt)} trước
             </span>
                             </div>
@@ -260,7 +260,7 @@ userList.sort((a, b) => {
                                         e.stopPropagation();
                                         handleDelete(userList[viewingUserIndex].items[activeStoryIndex].Id);
                                     }}
-                                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-xs font-bold"
+                                    className="bg-[var(--color-hover)] hover:bg-[var(--color-hover1)] text-[var(--color-text)] px-4 py-1.5 rounded-md text-xs font-bold"
                                 >
                                     Xóa tin
                                 </button>
@@ -268,7 +268,7 @@ userList.sort((a, b) => {
                         </div>
 
                         {/* Media */}
-                        <div className="flex-1 flex items-center justify-center bg-zinc-900">
+                        <div className="flex-1 flex items-center justify-center bg-[var(--color-bg)]">
                             {userList[viewingUserIndex].items[activeStoryIndex].MediaUrl?.toLowerCase().match(/\.(mp4|mov|avi)$/) ? (
                                 <video
                                     src={getFullUrl(userList[viewingUserIndex].items[activeStoryIndex].MediaUrl)}
@@ -286,8 +286,8 @@ userList.sort((a, b) => {
 
                         {/* Content */}
                         {userList[viewingUserIndex].items[activeStoryIndex].Content && (
-                            <div className="absolute bottom-12 left-0 right-0 px-6 py-4 bg-gradient-to-t from-black/80 to-transparent text-center">
-                                <p className="text-white text-base font-medium">
+                            <div className="absolute bottom-12 left-0 right-0 px-6 py-4 bg-[var(--color-hover)] from-black/80 to-transparent text-center">
+                                <p className="text-[var(--color-text)] text-base font-medium">
                                     {userList[viewingUserIndex].items[activeStoryIndex].Content}
                                 </p>
                             </div>
@@ -299,20 +299,20 @@ userList.sort((a, b) => {
             {/* MODAL TẠO TIN */}
             {showCreate && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-[#242526] w-full max-w-md rounded-xl shadow-2xl overflow-hidden border border-gray-700">
+                    <div className="bg-[var(--color-bg)] w-full max-w-md rounded-xl shadow-2xl overflow-hidden border border-gray-700">
                         <div className="p-4 border-b border-gray-700 flex justify-between items-center">
-                            <h3 className="text-white text-xl font-bold text-center w-full">Tạo tin</h3>
-                            <button onClick={handleCancel} className="text-gray-400 hover:text-white text-3xl">&times;</button>
+                            <h3 className="text-[var(--color-text)] text-xl font-bold text-center w-full">Tạo tin</h3>
+                            <button onClick={handleCancel} className="text-gray-400 hover:text-[var(--color-text)] text-3xl">&times;</button>
                         </div>
                         <div className="p-4">
                             <textarea
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 placeholder="Bạn đang nghĩ gì?"
-                                className="w-full bg-[#3a3b3c] text-white rounded-lg p-3 outline-none h-32 mb-4"
+                                className="w-full bg-[var(--color-bg)] text-[var(--color-text)] rounded-lg p-3 outline-none h-32 mb-4"
                             />
                             <input type="file" id="file-upload" hidden onChange={handleFileChange} accept="image/*,video/*" />
-                            <label htmlFor="file-upload" className="block w-full text-center py-3 bg-[#3a3b3c] text-blue-500 rounded-lg cursor-pointer font-semibold border border-gray-600">
+                            <label htmlFor="file-upload" className="block w-full text-center py-3 bg-[var(--color-bg)] text-blue-500 rounded-lg cursor-pointer font-semibold border border-gray-600">
                                 {file ? `📂 ${file.name}` : "🖼️ Thêm ảnh hoặc video"}
                             </label>
                             {preview && (
@@ -322,8 +322,8 @@ userList.sort((a, b) => {
                             )}
                         </div>
                         <div className="p-4 flex gap-3">
-                            <button onClick={handleCancel} className="flex-1 py-2 bg-gray-700 text-white rounded-lg font-bold">Hủy</button>
-                            <button onClick={handleCreateStory} className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold">Chia sẻ</button>
+                            <button onClick={handleCancel} className="flex-1 py-2 bg-gray-700 text-[var(--color-text)] rounded-lg font-bold">Hủy</button>
+                            <button onClick={handleCreateStory} className="flex-1 py-2 bg-blue-600 text-[var(--color-text)] rounded-lg font-bold">Chia sẻ</button>
                         </div>
                     </div>
                 </div>

@@ -62,8 +62,8 @@ const FriendList = () => {
     return <div className="p-4 text-gray-500 text-sm">Vui lòng đăng nhập</div>;
   }
   return (
-    <div className="flex flex-col h-full bg-[#18191a] text-white">
-      <div className="p-4 sticky top-0 bg-[#18191a] z-10">
+    <div className="flex flex-col h-full bg-bg text-[var(--color-text)]">
+      <div className="p-4 sticky top-0 bg-bg z-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest">
             Người liên hệ
@@ -78,7 +78,7 @@ const FriendList = () => {
             placeholder="Tìm kiếm bạn bè..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="w-full bg-[#3a3b3c] py-2 pl-10 pr-4 rounded-full text-sm outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+            className="w-full bg-bg py-2 pl-10 pr-4 rounded-full text-sm outline-none focus:ring-1 focus:ring-blue-500 transition-all"
           />
           <span className="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
         </div>
@@ -88,8 +88,8 @@ const FriendList = () => {
         {loading ? (
           [1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-3 p-2 animate-pulse">
-              <div className="w-10 h-10 bg-[#3a3b3c] rounded-full" />
-              <div className="h-3 bg-[#3a3b3c] rounded w-24" />
+              <div className="w-10 h-10 bg-bg rounded-full" />
+              <div className="h-3 bg-bg rounded w-24" />
             </div>
           ))
         ) : filteredFriends.length > 0 ? (

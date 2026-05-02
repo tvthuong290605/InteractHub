@@ -89,30 +89,30 @@ const markAsRead = async (id: number, link?: string) => {
     if (actorsCount > 1) {
       return (
         <span>
-          <strong className="text-white font-semibold">{lastActorName}</strong> và{" "}
-          <strong className="text-white font-semibold">{actorsCount - 1} người khác</strong> {message}
+          <strong className="text-[var(--color-text)] font-semibold">{lastActorName}</strong> và{" "}
+          <strong className="text-[var(--color-text)] font-semibold">{actorsCount - 1} người khác</strong> {message}
         </span>
       );
     }
 
     return (
       <span>
-        <strong className="text-white font-semibold">{lastActorName}</strong> {message}
+        <strong className="text-[var(--color-text)] font-semibold">{lastActorName}</strong> {message}
       </span>
     );
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#18191a]">
+    <div className="flex flex-col h-full bg-bg">
       {/* HEADER */}
-      <div className="sticky top-0 z-10 flex-shrink-0 bg-[#18191a]
-                      flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-800">
+      <div className="sticky top-0 z-10 flex-shrink-0 bg-[var(--color-bg)]
+                      flex items-center justify-between px-4 pt-4 pb-3 border-1 border-[var(--color-border)]">
         <div className="flex items-center gap-2">
-          <h2 className="text-[17px] font-bold text-gray-200 uppercase tracking-wider">
+          <h2 className="text-[17px] font-bold text-[var(--color-text)] uppercase tracking-wider ">
             Thông báo
           </h2>
           {unreadCount > 0 && !loading && (
-            <span className="bg-red-500 text-white text-[11px] font-bold
+            <span className="bg-[#ff0000] text-[var(--color-text)] text-[11px] font-bold
                              px-1.5 py-0.5 rounded-full leading-none">
               {unreadCount}
             </span>
@@ -141,11 +141,11 @@ const markAsRead = async (id: number, link?: string) => {
 
         {!loading && notifications.length === 0 && (
           <div className="py-10 text-center px-4">
-            <div className="mx-auto w-16 h-16 bg-gray-800 rounded-full
+            <div className="mx-auto w-16 h-16 bg-[var(--color-hover)] rounded-full
                             flex items-center justify-center mb-4 text-2xl">
               🔔
             </div>
-            <p className="text-gray-400 text-sm">Bạn chưa có thông báo nào</p>
+            <p className="text-[var(--color-text)] text-sm">Bạn chưa có thông báo nào</p>
           </div>
         )}
 
@@ -158,8 +158,8 @@ const markAsRead = async (id: number, link?: string) => {
                 className={`flex items-start gap-3 px-3 py-3 rounded-xl cursor-pointer
                             transition-all group relative
                             ${notif.isRead
-                              ? "hover:bg-[#3a3b3c]"
-                              : "bg-[#263248] hover:bg-[#2d3a52] border-l-4 border-blue-500 rounded-l-none"
+                              ? "hover:bg-[var(--color-bg)]"
+                              : "bg-[var(--color-bg)] hover:bg-[var(--color-hover)] border-l-4 border-[var(--color-border)] rounded-l-none"
                             }`}
               >
                 <div className="relative flex-shrink-0">
@@ -167,26 +167,26 @@ const markAsRead = async (id: number, link?: string) => {
                     <img 
                       src={`https://localhost:7069${notif.lastActorAvatar}`}
                       alt={notif.lastActorName}
-                      className="w-12 h-12 rounded-full object-cover border border-gray-700"
+                      className="w-12 h-12 rounded-full object-cover border border-[var(--color-border)]"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-[#3a3b3c] 
-                                    flex items-center justify-center text-xl border border-gray-700">
+                    <div className="w-12 h-12 rounded-full bg-[var(--color-bg)] 
+                                    flex items-center justify-center text-xl border border-[var(--color-border)]">
                       {getTypeIcon(notif.type)}
                     </div>
                   )}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#242526] 
-                                  flex items-center justify-center text-[12px] border border-gray-800">
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-bg)] 
+                                  flex items-center justify-center text-[12px] border border-[var(--color-border)]">
                     {getTypeIcon(notif.type)}
                   </div>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] text-gray-300 leading-snug">
+                  <div className="text-[14px] text-[var(--color-text)] leading-snug">
                     {renderNotifyMessage(notif)}
                   </div>
                   <p className={`text-[12px] mt-1 ${
-                    notif.isRead ? "text-gray-500" : "text-blue-400 font-semibold"
+                    notif.isRead ? "text-[var(--color-text)]" : "text-[var(--color-hover)] font-semibold"
                   }`}>
                     {/* ✅ Gọi hàm format đã sửa */}
                     {getTimeAgo(notif.createdAt)}

@@ -20,7 +20,7 @@ const Friend: React.FC<FriendProps> = ({ friend }) => {
   return (
     <div
       onClick={handleGoToProfile}
-      className="group flex items-center gap-3 p-2 hover:bg-[#3a3b3c] 
+      className="group flex items-center gap-3 p-2 hover:bg-bg 
                  rounded-xl transition-all duration-200 cursor-pointer"
     >
       {/* Avatar Section */}
@@ -38,7 +38,7 @@ const Friend: React.FC<FriendProps> = ({ friend }) => {
 
       {/* Info Section */}
       <div className="flex-1 min-w-0">
-        <p className="text-[16px] font-medium text-white truncate">
+        <p className="text-[16px] font-medium text-[var(--color-text)] truncate">
           {friend.fullName}
         </p>
         <p className="text-[14px] text-gray-400">Bạn bè</p>
@@ -52,8 +52,8 @@ const Friend: React.FC<FriendProps> = ({ friend }) => {
             e.stopPropagation();
             // Logic mở chat box của bạn ở đây
           }}
-          className="w-10 h-10 flex items-center justify-center bg-[#4e4f50] 
-                     hover:bg-[#5e5f61] text-white rounded-full transition-colors"
+          className="w-10 h-10 flex items-center justify-center bg-bg 
+                     hover:bg-bg text-[var(--color-text)] rounded-full transition-colors"
         >
           <FaMessage size={12} />
         </button>

@@ -16,4 +16,13 @@ public interface IUserService
 
     // lấy tổng số lượng, số lượng từng tháng
     Task<Result<UserDashboardDTO>> GetUsersCountAsync();
+
+
+
+
+
+
+    Task<Result<IEnumerable<UserSearchDto>>> SearchUsersAsync(string keyword, string? currentUserId);
+
+
 }

@@ -17,6 +17,59 @@ public class CommentService : ICommentService
         _notificationService = notificationService;
     }
 
+    // public async Task<Result<CommentResponseDTO>> AddAsync(string userId, CommentRequestDTO request)
+    // {
+    //     if (string.IsNullOrWhiteSpace(request.Content))
+    //         return Result<CommentResponseDTO>.BadRequest("Nội dung bình luận không được trống.");
+
+    //     if (!await _commentRepo.PostExistsAsync(request.PostId))
+    //         return Result<CommentResponseDTO>.NotFound("Bài viết không tồn tại.");
+
+    //     var comment = new Comment
+    //     {
+    //         UserId = userId,
+    //         PostId = request.PostId,
+    //         Content = request.Content.Trim(),
+    //         ParentId = request.ParentId,
+    //         CreatedAt = DateTime.UtcNow,
+    //         Status = 1
+    //     };
+
+    //     await _commentRepo.AddAsync(comment);
+    //     await _commentRepo.SaveChangesAsync();
+
+    //     var saved = await _commentRepo.GetByIdWithUserAsync(comment.Id);
+
+    //     string? parentName = null;
+    //     if (request.ParentId.HasValue)
+    //     {
+    //         var parent = await _commentRepo.GetByIdWithUserAsync(request.ParentId.Value);
+    //         parentName = parent?.User?.FullName;
+
+    //         // ✅ Gửi thông báo cho người được reply
+    //         // Chỉ gửi nếu người reply khác người được reply
+    //         if (parent != null
+    //  && !string.IsNullOrEmpty(parent.UserId)
+    //  && parent.UserId != userId)
+    //         {
+    //             var uniqueRepliersCount = await _commentRepo.CountUniqueRepliersAsync(request.ParentId.Value);
+
+    //             await _notificationService.CreateOrUpdateInteractionNotificationAsync(
+    //                 parent.UserId,                                        // người nhận
+    //                 userId,                                               // người reply
+    //                 "COMMENT_REPLY",                                      // type
+    //                 $"/post/{request.PostId}#comment-{comment.Id}",       // link
+    //                 "đã trả lời bình luận của bạn.",                      // message
+    //                 uniqueRepliersCount                                            // tổng số reply
+    //             );
+    //         }
+    //     }
+
+    //     return saved == null
+    //         ? Result<CommentResponseDTO>.ServerError("Không thể tạo bình luận.")
+    //         : Result<CommentResponseDTO>.Ok(MapToResponseSingle(saved, userId, parentName), "Comment created successfully");
+    // }
+
     public async Task<Result<CommentResponseDTO>> AddAsync(string userId, CommentRequestDTO request)
     {
         if (string.IsNullOrWhiteSpace(request.Content))
@@ -41,26 +94,47 @@ public class CommentService : ICommentService
         var saved = await _commentRepo.GetByIdWithUserAsync(comment.Id);
 
         string? parentName = null;
+
         if (request.ParentId.HasValue)
         {
+            // ── Thông báo cho người được REPLY ──────────────────────────
             var parent = await _commentRepo.GetByIdWithUserAsync(request.ParentId.Value);
             parentName = parent?.User?.FullName;
 
-            // ✅ Gửi thông báo cho người được reply
-            // Chỉ gửi nếu người reply khác người được reply
             if (parent != null
-     && !string.IsNullOrEmpty(parent.UserId)
-     && parent.UserId != userId)
+                && !string.IsNullOrEmpty(parent.UserId)
+                && parent.UserId != userId)
             {
                 var uniqueRepliersCount = await _commentRepo.CountUniqueRepliersAsync(request.ParentId.Value);
 
                 await _notificationService.CreateOrUpdateInteractionNotificationAsync(
-                    parent.UserId,                                        // người nhận
-                    userId,                                               // người reply
-                    "COMMENT_REPLY",                                      // type
-                    $"/post/{request.PostId}#comment-{comment.Id}",       // link
-                    "đã trả lời bình luận của bạn.",                      // message
-                    uniqueRepliersCount                                            // tổng số reply
+                    parent.UserId,                                       // người nhận
+                    userId,                                              // người reply
+                    "COMMENT_REPLY",                                     // type
+                    $"/post/{request.PostId}#comment-{comment.Id}",      // link
+                    "đã trả lời bình luận của bạn.",                     // message
+                    uniqueRepliersCount                                  // tổng số reply
+                );
+            }
+        }
+        else
+        {
+            // ── Thông báo cho chủ BÀI VIẾT khi có người COMMENT ────────
+            var post = await _commentRepo.GetPostWithOwnerAsync(request.PostId);
+
+            if (post != null
+                && !string.IsNullOrEmpty(post.UserId)
+                && post.UserId != userId)
+            {
+                var uniqueCommentersCount = await _commentRepo.CountUniqueCommentersAsync(request.PostId);
+
+                await _notificationService.CreateOrUpdateInteractionNotificationAsync(
+                    post.UserId,                                         // người nhận (chủ bài)
+                    userId,                                              // người comment
+                    "POST_COMMENT",                                      // type
+                    $"/post/{request.PostId}#comment-{comment.Id}",      // link
+                    "đã bình luận bài viết của bạn.",                    // message
+                    uniqueCommentersCount                                // tổng số người comment
                 );
             }
         }

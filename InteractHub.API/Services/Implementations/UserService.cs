@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.Data;
 using Microsoft.EntityFrameworkCore;
+using static InteractHub.API.DTOs.User.UserDto;
 
 namespace InteractHub.API.Services.Implementations;
 
@@ -226,4 +227,19 @@ public class UserService : IUserService
             return Result<UserDashboardDTO>.ServerError($"Lỗi khi lấy dữ liệu cho dashboard admin {ex.Message}");
         }
     }
+
+    public async Task<Result<IEnumerable<UserSearchDto>>> SearchUsersAsync(
+        string keyword,
+        string? currentUserId)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+            return Result<IEnumerable<UserSearchDto>>.Ok(Enumerable.Empty<UserSearchDto>());
+
+        var result = await _userRepository.SearchUsersAsync(keyword, currentUserId);
+        return Result<IEnumerable<UserSearchDto>>.Ok(result);
+    }
+
+
+
+
 }

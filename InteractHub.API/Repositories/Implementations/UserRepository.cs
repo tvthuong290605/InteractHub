@@ -3,6 +3,7 @@ using InteractHub.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.DTOs.User;
+using static InteractHub.API.DTOs.User.UserDto;
 
 
 namespace InteractHub.API.Repositories.Implementations;
@@ -84,6 +85,111 @@ public class UserRepository : IUserRepository
             TotalUsers = totalUsers,
             Growth = growth
         };
+    }
+    public async Task<IEnumerable<UserSearchDto>> SearchUsersAsync(string keyword, string? currentUserId)
+    {
+        var lower = keyword.ToLower();
+
+        // ── 1. Lấy danh sách user khớp keyword ───────────────────────────
+        var users = await _db.Users
+            .Where(u =>
+                (currentUserId == null || u.Id != currentUserId) &&
+                u.Status == 1 &&
+                (
+                    (u.FullName != null && EF.Functions.Like(u.FullName.ToLower(), $"%{lower}%")) ||
+                    (u.UserName != null && EF.Functions.Like(u.UserName.ToLower(), $"%{lower}%"))
+                )
+            )
+            .Take(20)
+            .ToListAsync();
+
+        if (!users.Any())
+            return Enumerable.Empty<UserSearchDto>();
+
+        var userIds = users.Select(u => u.Id).ToList();
+
+        // ── 2. Lấy tất cả friendship liên quan đến currentUser ───────────
+        //    (chỉ cần khi có currentUserId)
+        Dictionary<string, Friendship> friendshipMap = new();
+
+        if (currentUserId != null)
+        {
+            var friendships = await _db.Friendships
+                .Where(f =>
+                    (f.RequesterId == currentUserId && userIds.Contains(f.ReceiverId!)) ||
+                    (f.ReceiverId == currentUserId && userIds.Contains(f.RequesterId!))
+                )
+                .ToListAsync();
+
+            foreach (var f in friendships)
+            {
+                // key = Id của user kia (không phải currentUser)
+                var otherId = f.RequesterId == currentUserId ? f.ReceiverId! : f.RequesterId!;
+                friendshipMap[otherId] = f;
+            }
+        }
+
+        // ── 3. Tính MutualFriends: bạn bè chung của currentUser và từng user ──
+        //    Bạn bè chung = Accepted với cả hai
+        Dictionary<string, int> mutualMap = new();
+
+        if (currentUserId != null)
+        {
+            // Tập bạn bè của currentUser (Status == 1 = Accepted)
+            var myFriendIds = await _db.Friendships
+                .Where(f =>
+                    f.Status == 1 &&
+                    (f.RequesterId == currentUserId || f.ReceiverId == currentUserId)
+                )
+                .Select(f => f.RequesterId == currentUserId ? f.ReceiverId! : f.RequesterId!)
+                .ToListAsync();
+
+            var myFriendSet = myFriendIds.ToHashSet();
+
+            foreach (var targetId in userIds)
+            {
+                // Tập bạn bè của targetUser
+                var targetFriendIds = await _db.Friendships
+                    .Where(f =>
+                        f.Status == 1 &&
+                        (f.RequesterId == targetId || f.ReceiverId == targetId)
+                    )
+                    .Select(f => f.RequesterId == targetId ? f.ReceiverId! : f.RequesterId!)
+                    .ToListAsync();
+
+                // Giao của hai tập
+                var mutual = targetFriendIds.Count(id => myFriendSet.Contains(id));
+                mutualMap[targetId] = mutual;
+            }
+        }
+
+        // ── 4. Map sang DTO ───────────────────────────────────────────────
+        return users.Select(u =>
+        {
+            var status = "None";
+
+            if (currentUserId != null && friendshipMap.TryGetValue(u.Id, out var f))
+            {
+                status = f.Status switch
+                {
+                    0 when f.RequesterId == currentUserId => "Pending",   // mình đã gửi
+                    0 when f.ReceiverId == currentUserId => "Received",  // người kia gửi mình
+                    1 => "Friend",
+                    2 => "Blocked",
+                    _ => "None"
+                };
+            }
+
+            return new UserSearchDto
+            {
+                Id = u.Id,
+                Username = u.UserName ?? "",
+                FullName = u.FullName,
+                AvatarUrl = u.ProfilePicture,
+                FriendshipStatus = status,
+                MutualFriends = mutualMap.TryGetValue(u.Id, out var m) ? m : 0
+            };
+        });
     }
 }
 

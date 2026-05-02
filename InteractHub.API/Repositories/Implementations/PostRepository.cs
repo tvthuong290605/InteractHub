@@ -6,19 +6,21 @@ using Microsoft.EntityFrameworkCore;
 using InteractHub.API.DTOs.Posts;
 using LikeAdminDTO = InteractHub.API.DTOs.Like.LikeAdminDTO;
 using CommentAdminDTO = InteractHub.API.DTOs.Comments.CommentAdminDTO;
+
 namespace InteractHub.API.Repositories.Implementations;
-
-
 
 public class PostRepository : IPostRepository
 {
-    // Đổi ApplicationDbContext thành AppDbContext cho khớp với Program.cs
     private readonly AppDbContext _context;
 
     public PostRepository(AppDbContext context)
     {
         _context = context;
     }
+
+    // =====================================================
+    // BASIC CRUD
+    // =====================================================
 
     public async Task AddAsync(Post post)
     {
@@ -40,71 +42,345 @@ public class PostRepository : IPostRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
+    // =====================================================
+    // GET BY ID
+    // =====================================================
+
     public async Task<Post?> GetByIdAsync(int id)
     {
-        return await _context.Posts.FindAsync(id);
+        return await _context.Posts
+
+            .Include(p => p.User)
+
+            .Include(p => p.PostMedias)
+
+            .Include(p => p.Likes)
+
+            .Include(p => p.Comments)
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
+            .AsSplitQuery()
+
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
+
+    // =====================================================
+    // GET ALL POSTS
+    // =====================================================
 
     public async Task<IEnumerable<Post>> GetPostsWithDetailsAsync()
     {
         return await _context.Posts
+
+            .Where(p => p.Status == 1)
+
             .Include(p => p.User)
-            .Include(p => p.PostMedias) // Đảm bảo trong Entity Post có property này
+
+            .Include(p => p.PostMedias)
+
+            .Include(p => p.Likes)
+
+            .Include(p => p.Comments)
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
             .OrderByDescending(p => p.CreatedAt)
+
+            .AsSplitQuery()
+
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(string userId)
+    // =====================================================
+    // GET POSTS BY USER
+    // =====================================================
+
+    public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(
+        string userId)
     {
         return await _context.Posts
-            .Where(p => p.UserId == userId)
+
+            .Where(p => p.UserId == userId &&
+                p.Status != -1
+            )
+
             .Include(p => p.User)
+
             .Include(p => p.PostMedias)
+
+            .Include(p => p.Likes)
+
+            .Include(p => p.Comments)
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
             .OrderByDescending(p => p.CreatedAt)
+
+            .AsSplitQuery()
+
             .ToListAsync();
     }
+
+    // =====================================================
+    // GET POST DETAILS
+    // =====================================================
 
     public async Task<Post?> GetPostDetailsByIdAsync(int id)
     {
         return await _context.Posts
+
             .Include(p => p.User)
+
             .Include(p => p.PostMedias)
-            // Nếu Entity chưa có Likes/Comments thì tạm thời comment lại để không lỗi build
-            // .Include(p => p.Likes)
-            // .Include(p => p.Comments)
+
+            .Include(p => p.Likes)
+
+            .Include(p => p.Comments)
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
+            .AsSplitQuery()
+
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    // ------------Admin-------------
-    public async Task<IEnumerable<PostAdminDTO>> GetAllPostsForAdminAsync()
+    // =====================================================
+    // HOME FEED
+    // =====================================================
+
+    public async Task<
+        (IEnumerable<Post> Posts, int TotalCount)
+    > GetHomeFeedPagedAsync(
+        string currentUserId,
+        IEnumerable<string> friendIds,
+        int page,
+        int pageSize)
     {
-        // ── 1. Lấy raw data từ DB ──────────────────────────────────────────────
-        // Dùng ToListAsync() + map trong memory để tránh lỗi EF không translate
-        // được các hàm C# phức tạp (FirstOrDefault lồng trong Select).
-        var posts = await _context.Posts
-            .OrderByDescending(p => p.CreatedAt)
+        var friendIdSet = friendIds.ToHashSet();
+
+        var query = _context.Posts
+
             .Include(p => p.User)
+
             .Include(p => p.PostMedias)
+
             .Include(p => p.Likes)
-                .ThenInclude(l => l.User)
+
             .Include(p => p.Comments)
-                .ThenInclude(c => c.User)
-            .AsSplitQuery()   // tránh cartesian explosion khi nhiều collection Include
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
+            .Where(p =>
+
+                // Public
+                p.Status == 1
+
+                ||
+
+                // Friend
+                (
+                    p.Status == 2
+                    &&
+                    (
+                        friendIdSet.Contains(p.UserId!)
+                        || p.UserId == currentUserId
+                    )
+                )
+
+                ||
+
+                // Private
+                (
+                    p.Status == 3
+                    &&
+                    p.UserId == currentUserId
+                )
+            )
+
+            .OrderByDescending(p => p.CreatedAt)
+
+            .AsSplitQuery();
+
+        var totalCount = await query.CountAsync();
+
+        var posts = await query
+
+            .Skip((page - 1) * pageSize)
+
+            .Take(pageSize)
+
             .ToListAsync();
 
-        // ── 2. Map sang DTO ────────────────────────────────────────────────────
+        return (posts, totalCount);
+    }
+
+    // =====================================================
+    // SEARCH POSTS
+    // =====================================================
+
+    public async Task<IEnumerable<Post>> SearchPostsAsync(
+        string keyword)
+    {
+        keyword = keyword.Trim();
+
+        return await _context.Posts
+
+            .Where(p =>
+
+                p.Status == 1
+
+                &&
+
+                (
+                    (
+                        p.Content != null
+                        &&
+                        EF.Functions.Like(
+                            p.Content,
+                            $"%{keyword}%"
+                        )
+                    )
+
+                    ||
+
+                    (
+                        p.Title != null
+                        &&
+                        EF.Functions.Like(
+                            p.Title,
+                            $"%{keyword}%"
+                        )
+                    )
+                )
+            )
+
+            .Include(p => p.User)
+
+            .Include(p => p.PostMedias)
+
+            .Include(p => p.Likes)
+
+            .Include(p => p.Comments)
+
+            // Share
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.User)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.PostMedias)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Likes)
+
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op!.Comments)
+
+            .OrderByDescending(p => p.CreatedAt)
+
+            .Take(50)
+
+            .AsSplitQuery()
+
+            .ToListAsync();
+    }
+
+    // =====================================================
+    // ADMIN
+    // =====================================================
+
+    public async Task<IEnumerable<PostAdminDTO>> GetAllPostsForAdminAsync()
+    {
+        var posts = await _context.Posts
+            .OrderByDescending(p => p.CreatedAt)
+
+            .Include(p => p.User)
+
+            .Include(p => p.PostMedias)
+
+            .Include(p => p.Likes)
+                .ThenInclude(l => l.User)
+
+            .Include(p => p.Comments)
+                .ThenInclude(c => c.User)
+
+            .AsSplitQuery()
+
+            .ToListAsync();
+
         return posts.Select(p =>
         {
-            // Bước 2a: Flat map tất cả comments → DTO (chưa có Replies)
-            var allCommentDtos = p.Comments?
+            var allCommentDtos = p.Comments
                 .Select(c => new CommentAdminDTO
                 {
                     Id = c.Id,
+
                     Content = c.Content ?? "",
+
                     UserId = c.UserId ?? "",
+
                     UserName = c.User?.UserName ?? "",
-                    UserAvatar = c.User?.ProfilePicture,
+
+                    UserAvatar =
+                        c.User?.ProfilePicture,
+
                     PostId = c.PostId,
+
                     ParentId = c.ParentId,
 
                     // Tra tên người được reply dựa vào ParentId
@@ -115,21 +391,33 @@ public class PostRepository : IPostRepository
                         : null,
 
                     Status = c.Status,
+
                     CreatedAt = c.CreatedAt,
-                    LikeCount = 0,               // mở rộng sau nếu có bảng CommentLike
-                    IsLikedByCurrentUser = false, // mở rộng khi truyền currentUserId
-                    Replies = new List<CommentAdminDTO>()
+
+                    LikeCount = 0,
+
+                    IsLikedByCurrentUser = false,
+
+                    Replies =
+                        new List<CommentAdminDTO>()
                 })
                 .ToList();
 
-            // Bước 2b: Build tree — gắn reply vào đúng parent
-            var commentMap = allCommentDtos.ToDictionary(c => c.Id);
-            var rootComments = new List<CommentAdminDTO>();
+            var commentMap =
+                allCommentDtos.ToDictionary(c => c.Id);
+
+            var rootComments =
+                new List<CommentAdminDTO>();
 
             foreach (var dto in allCommentDtos)
             {
-                if (dto.ParentId.HasValue
-                    && commentMap.TryGetValue(dto.ParentId.Value, out var parentDto))
+                if (
+                    dto.ParentId.HasValue
+                    &&
+                    commentMap.TryGetValue(
+                        dto.ParentId.Value,
+                        out var parentDto)
+                )
                 {
                     parentDto.Replies.Add(dto);
                 }
@@ -139,47 +427,67 @@ public class PostRepository : IPostRepository
                 }
             }
 
-            // Bước 2c: Map Post → DTO, Comments chỉ chứa root (replies đã lồng vào trong)
             return new PostAdminDTO
             {
                 Id = p.Id,
+
                 Title = p.Title,
+
                 Content = p.Content,
+
                 UserId = p.UserId,
+
                 Status = p.Status,
                 AuthorName = p.User?.FullName ?? "User",
                 AuthorAvatar = p.User?.ProfilePicture ?? "",
                 CreatedAt = p.CreatedAt,
 
-                MediaUrls = p.PostMedias?
-                    .Select(m => m.Url)
-                    .ToList() ?? new List<string>(),
+                MediaUrls =
+                    p.PostMedias?
+                        .Select(m => m.Url)
+                        .ToList()
 
-                LikeCount = p.Likes?.Count(l => l.Status == 1) ?? 0,
+                    ?? new List<string>(),
+
+                LikeCount =
+                    p.Likes.Count(l => l.Status == 1),
 
                 UserLike = (p.Likes ?? Enumerable.Empty<Like>())
                     .Where(l => l.Status == 1)
                     .Select(l => new LikeAdminDTO
                     {
                         UserId = l.UserId,
-                        UserName = l.User?.UserName ?? "",
-                        Avatar = l.User?.ProfilePicture ?? "",
+
+                        UserName =
+                            l.User?.UserName ?? "",
+
+                        Avatar =
+                            l.User?.ProfilePicture ?? "",
+
                         Type = l.Type.ToString()
-                    }).ToList(),
+                    })
+                    .ToList(),
 
                 CommentCount = p.Comments?.Count?? 0,
 
-                // ✅ Chỉ trả về root comments — replies đã lồng vào Replies bên trong
                 Comments = rootComments
             };
         });
     }
-    public async Task<bool> UpdateStatusPostForAdminAsync(int postId, int status)
+
+    public async Task<bool> UpdateStatusPostForAdminAsync(
+        int postId,
+        int status)
     {
         var rows = await _context.Posts
+
             .Where(p => p.Id == postId)
+
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(p => p.Status, status)
+                s.SetProperty(
+                    p => p.Status,
+                    status
+                )
             );
 
         return rows > 0;
@@ -187,58 +495,47 @@ public class PostRepository : IPostRepository
 
     public async Task<PostDashboardDTO> GetPostsCountAsync()
     {
-        // Tổng bài viết
-        var totalPosts = await _context.Posts.CountAsync();
+        var totalPosts =
+            await _context.Posts.CountAsync();
 
-        // Group theo tháng
         var activity = await _context.Posts
-            .Where(p => p.CreatedAt.HasValue) // ✅ lọc null
+
+            .Where(p => p.CreatedAt.HasValue)
+
             .Include(p => p.Comments)
+
             .Include(p => p.Likes)
+
             .GroupBy(p => new
             {
-                p.CreatedAt.Value.Year,
-                p.CreatedAt.Value.Month
+                p.CreatedAt!.Value.Year,
+                p.CreatedAt!.Value.Month
             })
+
             .Select(g => new PostActivityStatDTO
             {
                 Month = g.Key.Month.ToString(),
+
                 Posts = g.Count(),
-                Comments = g.SelectMany(p => p.Comments).Count(),
-                Likes = g.SelectMany(p => p.Likes).Count(l => l.Status == 1)
+
+                Comments = g
+                    .SelectMany(p => p.Comments)
+                    .Count(),
+
+                Likes = g
+                    .SelectMany(p => p.Likes)
+                    .Count(l => l.Status == 1)
             })
+
             .OrderBy(x => x.Month)
+
             .ToListAsync();
+
         return new PostDashboardDTO
         {
             TotalPosts = totalPosts,
+
             Activity = activity
         };
-    }
-    public async Task<(IEnumerable<Post> Posts, int TotalCount)> GetHomeFeedPagedAsync(
-    string currentUserId,
-    IEnumerable<string> friendIds,
-    int page,
-    int pageSize)
-    {
-        var friendIdSet = friendIds.ToHashSet();
-
-        var query = _context.Posts
-            .Include(p => p.User)
-            .Include(p => p.PostMedias)
-            .Where(p =>
-                (p.Status == 1) ||
-                (p.Status == 2 && friendIdSet.Contains(p.UserId!))
-            )
-            .OrderByDescending(p => p.CreatedAt);
-
-        var totalCount = await query.CountAsync();
-
-        var posts = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return (posts, totalCount);
     }
 }

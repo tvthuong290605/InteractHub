@@ -1,10 +1,857 @@
-import { get } from "react-hook-form";
+// import axiosInstance from "./axiosInstance";
+
+// // =====================================================
+// // API RESPONSE
+// // =====================================================
+
+// type ApiRes<T> = {
+//   Success: boolean;
+//   Message: string;
+//   Data: T;
+// };
+
+// // =====================================================
+// // BACKEND DTOs (PascalCase)
+// // =====================================================
+
+// interface SharedPostDto {
+//   Id: number;
+
+//   Title?: string;
+//   Content?: string;
+
+//   UserId?: string;
+
+//   Status?: number;
+
+//   AuthorName?: string;
+//   AuthorAvatar?: string;
+
+//   CreatedAt?: string;
+
+//   MediaUrls?: string[];
+// }
+
+// interface PostResponseDto {
+//   Id: number;
+
+//   Title?: string;
+//   Content?: string;
+
+//   UserId?: string;
+
+//   Status?: number;
+
+//   AuthorName?: string;
+//   AuthorAvatar?: string;
+
+//   CreatedAt?: string;
+//   UpdatedAt?: string;
+
+//   // Share
+//   OriginalPostId?: number;
+//   OriginalPost?: SharedPostDto | null;
+
+//   ShareCount?: number;
+
+//   // Count
+//   LikeCount?: number;
+//   CommentCount?: number;
+
+//   MediaUrls?: string[];
+// }
+
+// interface PostSearchResponseDto {
+//   Id: number;
+
+//   Title?: string;
+//   Content?: string;
+
+//   AuthorName: string;
+//   AuthorAvatar: string;
+//   AuthorId: string;
+
+//   CreatedAt: string;
+
+//   LikeCount?: number;
+//   CommentCount?: number;
+
+//   MediaUrls?: string[];
+// }
+
+// interface CommentDto {
+//   Id: number;
+
+//   Content: string;
+
+//   UserId: string;
+//   UserName: string;
+
+//   UserAvatar?: string | null;
+
+//   PostId: number;
+
+//   ParentId?: number | null;
+//   ParentUserName?: string | null;
+
+//   Status?: number | null;
+
+//   CreatedAt?: string | null;
+
+//   LikeCount: number;
+//   IsLikedByCurrentUser: boolean;
+
+//   Replies: CommentDto[];
+// }
+
+// interface PostAdminDto {
+//   Id: number;
+
+//   Title?: string;
+//   Content?: string;
+
+//   UserId?: string;
+
+//   Status?: number;
+
+//   AuthorName?: string;
+//   AuthorAvatar?: string;
+
+//   CreatedAt?: string;
+
+//   LikeCount: number;
+
+//   UserLike: {
+//     UserId: string;
+//     UserName: string;
+//     Avatar?: string;
+//     Type?: string;
+//   }[];
+
+//   CommentCount: number;
+
+//   Comments: CommentDto[];
+
+//   MediaUrls?: string[];
+// }
+// interface PostReportAdminDTO {
+//   Id: number;
+//   PostId: number;
+//   UserId: string;
+//   UserName: string;
+//   Type: string;
+//   Content: string;
+//   Status: number;
+//   CreatedAt: string;
+//   ResolvedAt: string;
+//   AdminNote: string;
+//   Post: PostAdminDto;
+
+// }
+
+// interface PostActivityStatDto {
+//   Month: string;
+//   Posts: number;
+//   Comments: number;
+//   Likes: number;
+// }
+
+// interface PostDashboardDto {
+//   TotalPosts: number;
+//   Activity: PostActivityStatDto[];
+// }
+// interface PostReportDTO {
+//   Reason: string
+//   Count: number
+// }
+
+// interface PostReportDashboardDTO {
+//   TotalReport: number
+//   PostReports: PostReportDTO[]
+// }
+
+// // =====================================================
+// // FRONTEND TYPES (camelCase)
+// // =====================================================
+
+// export interface SharedPostItem {
+//   id: number;
+
+//   title?: string;
+//   content?: string;
+
+//   userId?: string;
+
+//   status?: number;
+
+//   authorName?: string;
+//   authorAvatar?: string;
+
+//   createdAt?: string;
+
+//   mediaUrls: string[];
+// }
+
+// export interface PostItem {
+//   id: number;
+
+//   title?: string;
+//   content?: string;
+
+//   userId?: string;
+
+//   status?: number;
+
+//   authorName?: string;
+//   authorAvatar?: string;
+
+//   createdAt?: string;
+//   updatedAt?: string;
+
+//   // Share
+//   originalPostId?: number;
+//   originalPost?: SharedPostItem | null;
+
+//   shareCount: number;
+
+//   // Count
+//   likeCount: number;
+//   commentCount: number;
+
+//   mediaUrls: string[];
+// }
+
+// export interface PostSearchItem {
+//   id: number;
+
+//   title?: string;
+//   content?: string;
+
+//   authorName: string;
+//   authorAvatar: string;
+//   authorId: string;
+
+//   createdAt: string;
+
+//   likeCount: number;
+//   commentCount: number;
+
+//   mediaUrls: string[];
+// }
+
+// export interface PostReportItem {
+//   id: number;
+
+//   postId: number;
+
+//   userId: string;
+//   userName: string;
+
+//   reason: string;
+
+//   status: number;
+
+//   createdAt: string;
+// }
+
+// export interface PostReportRequest {
+//   postId: number;
+//   reason: string;
+// }
+
+// export interface PostAdminItem {
+//   id: number;
+
+//   author: string;
+//   authorAvatar?: string;
+
+//   title?: string;
+//   content?: string;
+
+//   countLike: number;
+
+//   likes: {
+//     userId: string;
+//     userName: string;
+//   }[];
+
+//   countComment: number;
+
+//   comments: {
+//     id: number;
+//     author: string;
+//     content: string;
+//     createdAt: string;
+//   }[];
+
+//   status:
+//     | "public"
+//     | "friend"
+//     | "private"
+//     | "hidden"
+//     | "delete";
+
+//   createdAt?: string;
+
+//   mediaUrls: string[];
+// }
+
+// // ── 4. Map BE → FE ──────────────────────────────────────────────
+// // const mapPost = (p: PostResponseDto): PostItem => ({
+// //   id: p.Id,
+// //   title: p.Title,
+// //   content: p.Content,
+// //   userId: p.UserId,
+// //   status: p.Status,
+// //   authorName: p.AuthorName,
+// //   authorAvatar: p.AuthorAvatar,
+// //   createdAt: p.CreatedAt,
+// //   mediaUrls: p.MediaUrls || [],
+// // });
+
+// const mapPost = (
+//   post: PostResponseDto
+// ): PostItem => ({
+//   id: post.Id,
+
+//   title: post.Title,
+//   content: post.Content,
+
+//   userId: post.UserId,
+
+//   status: post.Status,
+
+//   authorName: post.AuthorName,
+//   authorAvatar: post.AuthorAvatar,
+
+//   createdAt: post.CreatedAt,
+//   updatedAt: post.UpdatedAt,
+
+//   // Share
+//   originalPostId: post.OriginalPostId,
+
+//   originalPost: post.OriginalPost
+//     ? mapSharedPost(post.OriginalPost)
+//     : null,
+
+//   shareCount: post.ShareCount || 0,
+
+//   // Count
+//   likeCount: post.LikeCount || 0,
+//   commentCount: post.CommentCount || 0,
+
+//   mediaUrls: post.MediaUrls || [],
+// });
+
+// // const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
+// //   id: p.Id,
+// //   author: p.AuthorName || "",
+// //   authorAvatar: p.AuthorAvatar,
+// //   title: p.Title,
+// //   content: p.Content,
+
+// //   countLike: p.LikeCount,
+// //   likes: p.UserLike.map(u => ({
+// //     userId: u.UserId,
+// //     userName: u.UserName
+// //   })),
+
+// //   countComment: p.CommentCount,
+// //   comments: p.Comments.map(c => ({
+// //     id: c.Id,
+// //     author: c.UserName,
+// //     content: c.Content,
+// //     createdAt: c.CreatedAt || ""
+// //   })),
+
+// //   status:
+// //     p.Status === 1 ? 'public' :
+// //       p.Status === 2 ? 'friend' :
+// //         p.Status === 3 ? 'private' :
+// //           p.Status === 0 ? 'hidden' : 'delete',
+
+// //   createdAt: p.CreatedAt,
+// //   mediaUrls: p.MediaUrls || [],
+// // });
+
+// export interface PagedPostResponse {
+//   posts: PostItem[];
+//   totalCount: number;
+//   hasMore: boolean;
+// }
+
+// export interface SharePostRequest {
+//   content?: string;
+
+//   originalPostId: number;
+
+//   status?: number;
+// }
+
+// export interface CreatePostRequest {
+//   title?: string;
+//   content?: string;
+//   status?: number;
+//   mediaFiles?: File[];
+//   originalPostId?: number;
+// }
+
+// // =====================================================
+// // MAPPERS
+// // =====================================================
+
+// const mapSharedPost = (
+//   post: SharedPostDto
+// ): SharedPostItem => ({
+//   id: post.Id,
+
+//   title: post.Title,
+//   content: post.Content,
+
+//   userId: post.UserId,
+
+//   status: post.Status,
+
+//   authorName: post.AuthorName,
+//   authorAvatar: post.AuthorAvatar,
+
+//   createdAt: post.CreatedAt,
+
+//   mediaUrls: post.MediaUrls || [],
+// });
+
+// getPostReportCount: async () => {
+//     const res = await axiosInstance.get<ApiRes<PostReportDashboardDTO>>(
+//       'api/post-reports/admin/dashboard'
+//     )
+//     return res.data.Data;
+//   },
+
+// getAllPostReportsAdmin: async () => {
+//     const res = await axiosInstance.get<ApiRes<PostReportAdminDTO[]>>(
+//       'api/post-reports/admin/all'
+//     )
+//     return res.data.Data;
+//   },
+
+//   updateStatusReport: async (
+//     reportId: number,
+//     payload: {
+//       adminNote: string;
+//       status: number;
+//       userNameAuthor : string;
+//     }
+//   ) => {
+//     const res = await axiosInstance.put<ApiRes<boolean>>(
+//       `/api/post-reports/admin/handle/${reportId}`,
+//       payload
+//     );
+
+//     return res.data.Data;
+//   },
+
+//   // -------Admin API----------
+//   getAllPostsAdmin: () =>
+//     axiosInstance
+//       .get<{ Success: boolean; Message: string; Data: PostAdminDto[] }>(
+//         "/api/post/admin/all")
+//       .then((res) => ({
+//         ...res,
+//         data: res.data.Data
+//       })),
+
+// const mapPost = (
+//   post: PostResponseDto
+// ): PostItem => ({
+//   id: post.Id,
+
+//   title: post.Title,
+//   content: post.Content,
+
+//   userId: post.UserId,
+
+//   status: post.Status,
+
+//   authorName: post.AuthorName,
+//   authorAvatar: post.AuthorAvatar,
+
+//   createdAt: post.CreatedAt,
+//   updatedAt: post.UpdatedAt,
+
+//   // Share
+//   originalPostId: post.OriginalPostId,
+
+//   originalPost: post.OriginalPost
+//     ? mapSharedPost(post.OriginalPost)
+//     : null,
+
+//   shareCount: post.ShareCount || 0,
+
+//   // Count
+//   likeCount: post.LikeCount || 0,
+//   commentCount: post.CommentCount || 0,
+
+//   mediaUrls: post.MediaUrls || [],
+// });
+
+// const mapPostSearch = (
+//   post: PostSearchResponseDto
+// ): PostSearchItem => ({
+//   id: post.Id,
+
+//   title: post.Title,
+//   content: post.Content,
+
+//   authorName: post.AuthorName,
+//   authorAvatar: post.AuthorAvatar,
+//   authorId: post.AuthorId,
+
+//   createdAt: post.CreatedAt,
+
+//   likeCount: post.LikeCount || 0,
+//   commentCount: post.CommentCount || 0,
+
+//   mediaUrls: post.MediaUrls || [],
+// });
+
+// // =====================================================
+// // HELPERS
+// // =====================================================
+
+// const buildPostFormData = (
+//   data: CreatePostRequest
+// ) => {
+//   const formData = new FormData();
+
+//   if (data.title) {
+//     formData.append("title", data.title);
+//   }
+
+//   if (data.content) {
+//     formData.append("content", data.content);
+//   }
+
+//   if (typeof data.status === "number") {
+//     formData.append(
+//       "status",
+//       data.status.toString()
+//     );
+//   }
+
+//   if (data.mediaFiles?.length) {
+//     data.mediaFiles.forEach((file) => {
+//       formData.append("mediaFiles", file);
+//     });
+//   }
+
+//   return formData;
+// };
+
+// // =====================================================
+// // POST SERVICE
+// // =====================================================
+
+// export const postService = {
+//   // =====================================================
+//   // CREATE POST
+//   // =====================================================
+
+//   createPost: async (
+//     data: CreatePostRequest | FormData
+//   ) => {
+//     const formData =
+//       data instanceof FormData
+//         ? data
+//         : buildPostFormData(data);
+
+//     const res =
+//       await axiosInstance.post<
+//         ApiResponse<PostResponseDto>
+//       >("/api/post/create", formData, {
+//         headers: {
+//           "Content-Type":
+//             "multipart/form-data",
+//         },
+//       });
+
+//     return {
+//       ...res,
+//       data: mapPost(res.data.Data),
+//     };
+//   },
+
+//   // =====================================================
+//   // SHARE POST
+//   // =====================================================
+
+//   sharePost: async (
+//     request: SharePostRequest
+//   ) => {
+//     const res =
+//       await axiosInstance.post<
+//         ApiResponse<PostResponseDto>
+//       >("/api/post/share", request);
+
+//     return {
+//       ...res,
+//       data: mapPost(res.data.Data),
+//     };
+//   },
+
+//   // =====================================================
+//   // GET ALL POSTS
+//   // =====================================================
+
+//   getAllPosts: async () => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostResponseDto[]>
+//       >("/api/post/all");
+
+//     return {
+//       ...res,
+//       data: (res.data.Data || []).map(mapPost),
+//     };
+//   },
+
+//   // =====================================================
+//   // GET POSTS BY USER
+//   // =====================================================
+
+//   getPostsByUserId: async (
+//     userId: string
+//   ) => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostResponseDto[]>
+//       >(`/api/post/user/${userId}`);
+
+//     return {
+//       ...res,
+//       data: (res.data.Data || []).map(mapPost),
+//     };
+//   },
+
+//   // =====================================================
+//   // GET POST BY ID
+//   // =====================================================
+
+//   getPostById: async (postId: number) => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostResponseDto>
+//       >(`/api/post/${postId}`);
+
+//     return {
+//       ...res,
+//       data: mapPost(res.data.Data),
+//     };
+//   },
+
+//   // =====================================================
+//   // UPDATE POST
+//   // =====================================================
+
+//   updatePost: async (
+//     postId: number,
+//     data: CreatePostRequest | FormData
+//   ) => {
+//     const formData =
+//       data instanceof FormData
+//         ? data
+//         : buildPostFormData(data);
+
+//     const res =
+//       await axiosInstance.put<
+//         ApiResponse<PostResponseDto>
+//       >(`/api/post/update/${postId}`, formData, {
+//         headers: {
+//           "Content-Type":
+//             "multipart/form-data",
+//         },
+//       });
+
+//     return {
+//       ...res,
+//       data: mapPost(res.data.Data),
+//     };
+//   },
+
+//   // =====================================================
+//   // DELETE POST
+//   // =====================================================
+
+//   deletePost: async (postId: number) => {
+//     const res =
+//       await axiosInstance.delete<
+//         ApiResponse<null>
+//       >(`/api/post/delete/${postId}`);
+
+//     return {
+//       success: res.data.Success,
+//       message: res.data.Message,
+//     };
+//   },
+
+//   // =====================================================
+//   // REPORT POST
+//   // =====================================================
+
+//   reportPost: async (
+//     request: PostReportRequest
+//   ) => {
+//     const res =
+//       await axiosInstance.post<
+//         ApiResponse<null>
+//       >("/api/post-reports", request);
+
+//     return {
+//       success: res.data.Success,
+//       message: res.data.Message,
+//     };
+//   },
+
+//   // =====================================================
+//   // HOME FEED
+//   // =====================================================
+
+//   getHomeFeed: async (
+//     page = 1,
+//     pageSize = 10
+//   ) => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<{
+//           Posts: PostResponseDto[];
+//           TotalCount: number;
+//           HasMore: boolean;
+//         }>
+//       >(
+//         `/api/post/feed?page=${page}&pageSize=${pageSize}`
+//       );
+
+//     return {
+//       ...res,
+
+//       data: {
+//         posts: (
+//           res.data.Data.Posts || []
+//         ).map(mapPost),
+
+//         totalCount:
+//           res.data.Data.TotalCount || 0,
+
+//         hasMore:
+//           res.data.Data.HasMore || false,
+//       } as PagedPostResponse,
+//     };
+//   },
+
+//   // =====================================================
+//   // SEARCH POSTS
+//   // =====================================================
+
+//   searchPosts: async (
+//     keyword: string
+//   ): Promise<PostSearchItem[]> => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostSearchResponseDto[]>
+//       >("/api/post/search", {
+//         params: { keyword },
+//       });
+
+//     const list = Array.isArray(res.data)
+//       ? res.data
+//       : (res.data.Data ?? []);
+
+//     return list.map(mapPostSearch);
+//   },
+
+//   // =====================================================
+//   // ADMIN
+//   // =====================================================
+
+//   getAllPostsAdmin: async () => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostAdminDto[]>
+//       >("/api/post/admin/all");
+
+//     return {
+//       ...res,
+//       data: res.data.Data,
+//     };
+//   },
+
+//   updateStatusPost: async (
+//     postId: number,
+//     status: number
+//   ) => {
+//     const res =
+//       await axiosInstance.put<
+//         ApiResponse<string>
+//       >(`/api/post/${postId}/status`, {
+//         status,
+//       });
+
+//     return res.data.Message;
+//   },
+
+//   getPostCount: async () => {
+//     const res =
+//       await axiosInstance.get<
+//         ApiResponse<PostDashboardDto>
+//       >("/api/post/admin/dashboard");
+
+//     return res.data.Data;
+//   },
+
+//   getHomeFeed: (page: number = 1, pageSize: number = 10) =>
+//     axiosInstance
+//       .get<{ Success: boolean; Data: { Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean } }>(
+//         `/api/post/feed?page=${page}&pageSize=${pageSize}`
+//       )
+//       .then((res) => ({
+//         ...res,
+//         data: {
+//           posts: res.data.Data.Posts.map(mapPost),
+//           totalCount: res.data.Data.TotalCount,
+//           hasMore: res.data.Data.HasMore,
+//         } as PagedPostResponse,
+//       })),
+// };
+
 import axiosInstance from "./axiosInstance";
 
-// ── 1. Interface BE (PascalCase - Khớp với C# PostResponseDto) ──
+// =====================================================
+// API RESPONSE
+// =====================================================
 
-// dùng generic để format dữ liệu API trả về, tái sử dụng cho nhiều kiểu trả về T
-type ApiRes<T> = { Success: boolean; Message: string; Data: T };
+type ApiRes<T> = {
+  Success: boolean;
+  Message: string;
+  Data: T;
+};
+
+// Alias để tương thích với cả hai cách dùng trong codebase
+type ApiResponse<T> = ApiRes<T>;
+
+// =====================================================
+// BACKEND DTOs (PascalCase)
+// =====================================================
+
+interface SharedPostDto {
+  Id: number;
+  Title?: string;
+  Content?: string;
+  UserId?: string;
+  Status?: number;
+  AuthorName?: string;
+  AuthorAvatar?: string;
+  CreatedAt?: string;
+  MediaUrls?: string[];
+}
 
 interface PostResponseDto {
   Id: number;
@@ -15,9 +862,31 @@ interface PostResponseDto {
   AuthorName?: string;
   AuthorAvatar?: string;
   CreatedAt?: string;
-  MediaUrls: string[];
+  UpdatedAt?: string;
+  // Share
+  OriginalPostId?: number;
+  OriginalPost?: SharedPostDto | null;
+  ShareCount?: number;
+  // Count
+  LikeCount?: number;
+  CommentCount?: number;
+  MediaUrls?: string[];
 }
-interface CommentDTO {
+
+interface PostSearchResponseDto {
+  Id: number;
+  Title?: string;
+  Content?: string;
+  AuthorName: string;
+  AuthorAvatar: string;
+  AuthorId: string;
+  CreatedAt: string;
+  LikeCount?: number;
+  CommentCount?: number;
+  MediaUrls?: string[];
+}
+
+interface CommentDto {
   Id: number;
   Content: string;
   UserId: string;
@@ -30,7 +899,7 @@ interface CommentDTO {
   CreatedAt?: string | null;
   LikeCount: number;
   IsLikedByCurrentUser: boolean;
-  Replies: CommentDTO[];
+  Replies: CommentDto[];
 }
 
 interface PostAdminDto {
@@ -39,24 +908,21 @@ interface PostAdminDto {
   Content?: string;
   UserId?: string;
   Status?: number;
-
   AuthorName?: string;
   AuthorAvatar?: string;
   CreatedAt?: string;
-
   LikeCount: number;
   UserLike: {
     UserId: string;
     UserName: string;
-    Avatar: string;
+    Avatar?: string;
     Type?: string;
   }[];
-
   CommentCount: number;
-  Comments: CommentDTO[];
-
-  MediaUrls: string[];
+  Comments: CommentDto[];
+  MediaUrls?: string[];
 }
+
 interface PostReportAdminDTO {
   Id: number;
   PostId: number;
@@ -69,32 +935,46 @@ interface PostReportAdminDTO {
   ResolvedAt: string;
   AdminNote: string;
   Post: PostAdminDto;
-
 }
 
-interface PostActivityStatDTO {
+interface PostActivityStatDto {
   Month: string;
-  Posts: number
-  Comments: number
-  Likes: number
+  Posts: number;
+  Comments: number;
+  Likes: number;
 }
 
-interface PostDashboardDTO {
-  TotalPosts: number
-  Activity: PostActivityStatDTO[]
-
+interface PostDashboardDto {
+  TotalPosts: number;
+  Activity: PostActivityStatDto[];
 }
 
 interface PostReportDTO {
-  Reason: string
-  Count: number
+  Reason: string;
+  Count: number;
 }
 
 interface PostReportDashboardDTO {
-  TotalReport: number
-  PostReports: PostReportDTO[]
+  TotalReport: number;
+  PostReports: PostReportDTO[];
 }
-// ── 3. Interface FE (camelCase) ──────────────────────────────────
+
+// =====================================================
+// FRONTEND TYPES (camelCase)
+// =====================================================
+
+export interface SharedPostItem {
+  id: number;
+  title?: string;
+  content?: string;
+  userId?: string;
+  status?: number;
+  authorName?: string;
+  authorAvatar?: string;
+  createdAt?: string;
+  mediaUrls: string[];
+}
+
 export interface PostItem {
   id: number;
   title?: string;
@@ -103,6 +983,50 @@ export interface PostItem {
   status?: number;
   authorName?: string;
   authorAvatar?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  // Share
+  originalPostId?: number;
+  originalPost?: SharedPostItem | null;
+  shareCount: number;
+  // Count
+  likeCount: number;
+  commentCount: number;
+  mediaUrls: string[];
+}
+
+export interface PostSearchItem {
+  id: number;
+  title?: string;
+  content?: string;
+  authorName: string;
+  authorAvatar: string;
+  authorId: string;
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
+  mediaUrls: string[];
+}
+
+export interface PostAdminItem {
+  id: number;
+  author: string;
+  authorAvatar?: string;
+  title?: string;
+  content?: string;
+  countLike: number;
+  likes: {
+    userId: string;
+    userName: string;
+  }[];
+  countComment: number;
+  comments: {
+    id: number;
+    author: string;
+    content: string;
+    createdAt: string;
+  }[];
+  status: "public" | "friend" | "private" | "hidden" | "delete";
   createdAt?: string;
   mediaUrls: string[];
 }
@@ -121,72 +1045,6 @@ export interface PostReportRequest {
   postId: number;
   reason: string;
 }
-export interface PostAdminItem {
-  id: number;
-  author: string;
-  authorAvatar?: string;
-  title?: string;
-  content?: string;
-
-  countLike: number;
-  likes: { userId: string; userName: string }[];
-
-  countComment: number;
-  comments: {
-    id: number;
-    author: string;
-    content: string;
-    createdAt: string;
-  }[];
-
-  status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
-  createdAt?: string;
-  mediaUrls: string[];
-}
-
-// ── 4. Map BE → FE ──────────────────────────────────────────────
-const mapPost = (p: PostResponseDto): PostItem => ({
-  id: p.Id,
-  title: p.Title,
-  content: p.Content,
-  userId: p.UserId,
-  status: p.Status,
-  authorName: p.AuthorName,
-  authorAvatar: p.AuthorAvatar,
-  createdAt: p.CreatedAt,
-  mediaUrls: p.MediaUrls || [],
-});
-
-// const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
-//   id: p.Id,
-//   author: p.AuthorName || "",
-//   authorAvatar: p.AuthorAvatar,
-//   title: p.Title,
-//   content: p.Content,
-
-//   countLike: p.LikeCount,
-//   likes: p.UserLike.map(u => ({
-//     userId: u.UserId,
-//     userName: u.UserName
-//   })),
-
-//   countComment: p.CommentCount,
-//   comments: p.Comments.map(c => ({
-//     id: c.Id,
-//     author: c.UserName,
-//     content: c.Content,
-//     createdAt: c.CreatedAt || ""
-//   })),
-
-//   status:
-//     p.Status === 1 ? 'public' :
-//       p.Status === 2 ? 'friend' :
-//         p.Status === 3 ? 'private' :
-//           p.Status === 0 ? 'hidden' : 'delete',
-
-//   createdAt: p.CreatedAt,
-//   mediaUrls: p.MediaUrls || [],
-// });
 
 export interface PagedPostResponse {
   posts: PostItem[];
@@ -194,124 +1052,296 @@ export interface PagedPostResponse {
   hasMore: boolean;
 }
 
+export interface SharePostRequest {
+  content?: string;
+  originalPostId: number;
+  status?: number;
+}
 
-// ── 5. Export Service ───────────────────────────────────────────
+export interface CreatePostRequest {
+  title?: string;
+  content?: string;
+  status?: number;
+  mediaFiles?: File[];
+  originalPostId?: number;
+}
+
+// =====================================================
+// MAPPERS
+// =====================================================
+
+const mapSharedPost = (post: SharedPostDto): SharedPostItem => ({
+  id: post.Id,
+  title: post.Title,
+  content: post.Content,
+  userId: post.UserId,
+  status: post.Status,
+  authorName: post.AuthorName,
+  authorAvatar: post.AuthorAvatar,
+  createdAt: post.CreatedAt,
+  mediaUrls: post.MediaUrls || [],
+});
+
+const mapPost = (post: PostResponseDto): PostItem => ({
+  id: post.Id,
+  title: post.Title,
+  content: post.Content,
+  userId: post.UserId,
+  status: post.Status,
+  authorName: post.AuthorName,
+  authorAvatar: post.AuthorAvatar,
+  createdAt: post.CreatedAt,
+  updatedAt: post.UpdatedAt,
+  // Share
+  originalPostId: post.OriginalPostId,
+  originalPost: post.OriginalPost ? mapSharedPost(post.OriginalPost) : null,
+  shareCount: post.ShareCount || 0,
+  // Count
+  likeCount: post.LikeCount || 0,
+  commentCount: post.CommentCount || 0,
+  mediaUrls: post.MediaUrls || [],
+});
+
+const mapPostSearch = (post: PostSearchResponseDto): PostSearchItem => ({
+  id: post.Id,
+  title: post.Title,
+  content: post.Content,
+  authorName: post.AuthorName,
+  authorAvatar: post.AuthorAvatar,
+  authorId: post.AuthorId,
+  createdAt: post.CreatedAt,
+  likeCount: post.LikeCount || 0,
+  commentCount: post.CommentCount || 0,
+  mediaUrls: post.MediaUrls || [],
+});
+
+// =====================================================
+// HELPERS
+// =====================================================
+
+const buildPostFormData = (data: CreatePostRequest): FormData => {
+  const formData = new FormData();
+
+  if (data.title) formData.append("title", data.title);
+  if (data.content) formData.append("content", data.content);
+  if (typeof data.status === "number") formData.append("status", data.status.toString());
+  if (data.mediaFiles?.length) {
+    data.mediaFiles.forEach((file) => formData.append("mediaFiles", file));
+  }
+
+  return formData;
+};
+
+// =====================================================
+// POST SERVICE
+// =====================================================
+
 export const postService = {
-  createPost: (formData: FormData) =>
-    axiosInstance
-      .post<{ Success: boolean; Message: string; Data: PostResponseDto }>("/api/post/create", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
+  // ─── CREATE POST ───────────────────────────────────
 
-  getAllPosts: () =>
-    axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto[] }>("/api/post/all")
-      .then((res) => ({ ...res, data: res.data.Data.map(mapPost) })),
+  // createPost: async (data: CreatePostRequest | FormData) => {
+  //   const formData = data instanceof FormData ? data : buildPostFormData(data);
 
+  //   const res = await axiosInstance.post<ApiResponse<PostResponseDto>>(
+  //     "/api/post/create",
+  //     formData,
+  //     { headers: { "Content-Type": "multipart/form-data" } }
+  //   );
 
-  getPostsByUserId: (userId: string) =>
-    axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto[] }>(`/api/post/user/${userId}`)
-      .then((res) => ({ ...res, data: res.data.Data.map(mapPost) })),
+  //   return { ...res, data: mapPost(res.data.Data) };
+  // },
 
-  getPostById: (postId: number) =>
-    axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostResponseDto }>(
-        `/api/post/${postId}`
-      )
-      .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
+  createPost: async (
+    data: CreatePostRequest | FormData
+  ) => {
+    const formData =
+      data instanceof FormData
+        ? data
+        : buildPostFormData(data);
 
-  deletePost: (postId: number) =>
-    axiosInstance
-      .delete<{ Success: boolean; Message: string }>(
-        `/api/post/delete/${postId}`
-      )
-      .then((res) => ({
-        success: res.data.Success,
-        message: res.data.Message,
-      })),
+    const res =
+      await axiosInstance.post<
+        ApiResponse<PostResponseDto>
+      >("/api/post/create", formData, {
+        headers: {
+          "Content-Type":
+            "multipart/form-data",
+        },
+      });
 
-  updatePost: (postId: number, formData: FormData) =>
-    axiosInstance
-      .put<{ Success: boolean; Message: string; Data: PostResponseDto }>(`/api/post/update/${postId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
+    return {
+      ...res,
+      data: mapPost(res.data.Data),
+    };
+  },
 
-  // -------reportPost--------
+  // ─── SHARE POST ────────────────────────────────────
 
-  reportPost: (request: PostReportRequest) =>
-    axiosInstance
-      .post<{ Success: boolean; Message: string }>("/api/post-reports", request),
+  sharePost: async (request: SharePostRequest) => {
+    const res = await axiosInstance.post<ApiResponse<PostResponseDto>>(
+      "/api/post/share",
+      request
+    );
+
+    return { ...res, data: mapPost(res.data.Data) };
+  },
+
+  // ─── GET ALL POSTS ─────────────────────────────────
+
+  getAllPosts: async () => {
+    const res = await axiosInstance.get<ApiResponse<PostResponseDto[]>>(
+      "/api/post/all"
+    );
+
+    return { ...res, data: (res.data.Data || []).map(mapPost) };
+  },
+
+  // ─── GET POSTS BY USER ─────────────────────────────
+
+  getPostsByUserId: async (userId: string) => {
+    const res = await axiosInstance.get<ApiResponse<PostResponseDto[]>>(
+      `/api/post/user/${userId}`
+    );
+
+    return { ...res, data: (res.data.Data || []).map(mapPost) };
+  },
+
+  // ─── GET POST BY ID ────────────────────────────────
+
+  getPostById: async (postId: number) => {
+    const res = await axiosInstance.get<ApiResponse<PostResponseDto>>(
+      `/api/post/${postId}`
+    );
+
+    return { ...res, data: mapPost(res.data.Data) };
+  },
+
+  // ─── UPDATE POST ───────────────────────────────────
+
+  updatePost: async (postId: number, data: CreatePostRequest | FormData) => {
+    const formData = data instanceof FormData ? data : buildPostFormData(data);
+
+    const res = await axiosInstance.put<ApiResponse<PostResponseDto>>(
+      `/api/post/update/${postId}`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    return { ...res, data: mapPost(res.data.Data) };
+  },
+
+  // ─── DELETE POST ───────────────────────────────────
+
+  deletePost: async (postId: number) => {
+    const res = await axiosInstance.delete<ApiResponse<null>>(
+      `/api/post/delete/${postId}`
+    );
+
+    return { success: res.data.Success, message: res.data.Message };
+  },
+
+  // ─── REPORT POST ───────────────────────────────────
+
+  reportPost: async (request: PostReportRequest) => {
+    const res = await axiosInstance.post<ApiResponse<null>>(
+      "/api/post-reports",
+      request
+    );
+
+    return { success: res.data.Success, message: res.data.Message };
+  },
+
+  // ─── HOME FEED ─────────────────────────────────────
+
+  getHomeFeed: async (page = 1, pageSize = 10) => {
+    const res = await axiosInstance.get<
+      ApiResponse<{
+        Posts: PostResponseDto[];
+        TotalCount: number;
+        HasMore: boolean;
+      }>
+    >(`/api/post/feed?page=${page}&pageSize=${pageSize}`);
+
+    return {
+      ...res,
+      data: {
+        posts: (res.data.Data.Posts || []).map(mapPost),
+        totalCount: res.data.Data.TotalCount || 0,
+        hasMore: res.data.Data.HasMore || false,
+      } as PagedPostResponse,
+    };
+  },
+
+  // ─── SEARCH POSTS ──────────────────────────────────
+
+  searchPosts: async (keyword: string): Promise<PostSearchItem[]> => {
+    const res = await axiosInstance.get<ApiResponse<PostSearchResponseDto[]>>(
+      "/api/post/search",
+      { params: { keyword } }
+    );
+
+    const list = Array.isArray(res.data) ? res.data : (res.data.Data ?? []);
+    return list.map(mapPostSearch);
+  },
+
+  // ─── ADMIN: POSTS ──────────────────────────────────
+
+  getAllPostsAdmin: async () => {
+    const res = await axiosInstance.get<ApiResponse<PostAdminDto[]>>(
+      "/api/post/admin/all"
+    );
+
+    return { ...res, data: res.data.Data };
+  },
+
+  updateStatusPost: async (postId: number, status: number) => {
+    const res = await axiosInstance.put<ApiResponse<string>>(
+      `/api/post/${postId}/status`,
+      { status }
+    );
+
+    return res.data.Message;
+  },
+
+  getPostCount: async () => {
+    const res = await axiosInstance.get<ApiResponse<PostDashboardDto>>(
+      "/api/post/admin/dashboard"
+    );
+
+    return res.data.Data;
+  },
+
+  // ─── ADMIN: REPORTS ────────────────────────────────
 
   getPostReportCount: async () => {
-    const res = await axiosInstance.get<ApiRes<PostReportDashboardDTO>>(
-      'api/post-reports/admin/dashboard'
-    )
+    const res = await axiosInstance.get<ApiResponse<PostReportDashboardDTO>>(
+      "/api/post-reports/admin/dashboard"
+    );
+
     return res.data.Data;
   },
 
   getAllPostReportsAdmin: async () => {
-    const res = await axiosInstance.get<ApiRes<PostReportAdminDTO[]>>(
-      'api/post-reports/admin/all'
-    )
+    const res = await axiosInstance.get<ApiResponse<PostReportAdminDTO[]>>(
+      "/api/post-reports/admin/all"
+    );
+
     return res.data.Data;
   },
-  
+
   updateStatusReport: async (
     reportId: number,
     payload: {
       adminNote: string;
       status: number;
-      userNameAuthor : string;
+      userNameAuthor: string;
     }
   ) => {
-    const res = await axiosInstance.put<ApiRes<boolean>>(
+    const res = await axiosInstance.put<ApiResponse<boolean>>(
       `/api/post-reports/admin/handle/${reportId}`,
       payload
     );
 
     return res.data.Data;
   },
-
-  // -------Admin API----------
-  getAllPostsAdmin: () =>
-    axiosInstance
-      .get<{ Success: boolean; Message: string; Data: PostAdminDto[] }>(
-        "/api/post/admin/all")
-      .then((res) => ({
-        ...res,
-        data: res.data.Data
-      })),
-
-
-  updateStatusPost: async (postId: number, status: number) => {
-    const res = await axiosInstance.put<ApiRes<string>>(
-      `/api/post/${postId}/status`,
-      { status }
-    );
-    return res.data.Message;
-  },
-
-  getPostCount: async () => {
-    const res = await axiosInstance.get<ApiRes<PostDashboardDTO>>(
-      '/api/post/admin/dashboard',
-    )
-    return res.data.Data;
-  },
-
-  getHomeFeed: (page: number = 1, pageSize: number = 10) =>
-    axiosInstance
-      .get<{ Success: boolean; Data: { Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean } }>(
-        `/api/post/feed?page=${page}&pageSize=${pageSize}`
-      )
-      .then((res) => ({
-        ...res,
-        data: {
-          posts: res.data.Data.Posts.map(mapPost),
-          totalCount: res.data.Data.TotalCount,
-          hasMore: res.data.Data.HasMore,
-        } as PagedPostResponse,
-      })),
 };

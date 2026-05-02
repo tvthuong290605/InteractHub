@@ -153,7 +153,7 @@ const FormRegister: React.FC<FormRegisterProps> = ({
           type="submit"
           disabled={isLoading}
           className="w-full py-4 bg-green-600 hover:bg-green-700 active:bg-green-800
-                     text-white font-semibold text-lg rounded-2xl transition-all duration-200
+                     text-[var(--color-text)] font-semibold text-lg rounded-2xl transition-all duration-200
                      hover:scale-[1.02] shadow-lg hover:shadow-xl active:scale-[0.98]
                      disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
         >

@@ -89,11 +89,11 @@ const LoginPage = () => {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24">
 
           {/* CỘT TRÁI */}
-          <div className="flex-1 max-w-[520px] text-white text-center lg:text-left">
-            <h1 className="text-7xl font-bold tracking-tight mb-4 text-white drop-shadow-lg">
+          <div className="flex-1 max-w-[520px] text-[var(--color-text)] text-center lg:text-left">
+            <h1 className="text-7xl font-bold tracking-tight mb-4 text-[var(--color-text)] drop-shadow-lg">
               interacthub
             </h1>
-            <p className="text-2xl leading-relaxed text-white/90">
+            <p className="text-2xl leading-relaxed text-[var(--color-text)]/90">
               {authMode === "register"
                 ? "Join millions of people sharing moments that matter."
                 : "Interacthub helps you connect and share with the people in your life."}
