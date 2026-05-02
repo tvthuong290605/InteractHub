@@ -2,6 +2,7 @@ using InteractHub.API.Data;
 using InteractHub.API.Entities;
 using InteractHub.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using InteractHub.API.DTOs.PostHashtag;
 
 namespace InteractHub.API.Repositories.Implementations;
 
@@ -66,4 +67,20 @@ public class HashtagRepository : IHashtagRepository
     {
         return await _context.Hashtags.CountAsync();
     }
+
+    public async Task<List<HashtagUsageDTO>> GetHashtagUsageAsync()
+{
+    return await _context.Hashtags
+        .Select(h => new HashtagUsageDTO
+        {
+            Name = h.Tag!, // tên hashtag
+            Count = _context.PostHashtags
+                .Where(ph => ph.HashtagId == h.Id)
+                .Select(ph => ph.PostId)
+                .Distinct()
+                .Count()
+        })
+        .OrderByDescending(x => x.Count)
+        .ToListAsync();
+}
 }

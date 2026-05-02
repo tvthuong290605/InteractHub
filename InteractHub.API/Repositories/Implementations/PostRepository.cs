@@ -96,7 +96,7 @@ public class PostRepository : IPostRepository
         return posts.Select(p =>
         {
             // Bước 2a: Flat map tất cả comments → DTO (chưa có Replies)
-            var allCommentDtos = p.Comments
+            var allCommentDtos = p.Comments?
                 .Select(c => new CommentAdminDTO
                 {
                     Id = c.Id,
@@ -109,7 +109,7 @@ public class PostRepository : IPostRepository
 
                     // Tra tên người được reply dựa vào ParentId
                     ParentUserName = c.ParentId.HasValue
-                        ? p.Comments
+                        ? p.Comments?
                             .FirstOrDefault(parent => parent.Id == c.ParentId.Value)
                             ?.User?.UserName
                         : null,
@@ -147,7 +147,7 @@ public class PostRepository : IPostRepository
                 Content = p.Content,
                 UserId = p.UserId,
                 Status = p.Status,
-                AuthorName = p.User?.UserName ?? "User",
+                AuthorName = p.User?.FullName ?? "User",
                 AuthorAvatar = p.User?.ProfilePicture ?? "",
                 CreatedAt = p.CreatedAt,
 
@@ -155,9 +155,9 @@ public class PostRepository : IPostRepository
                     .Select(m => m.Url)
                     .ToList() ?? new List<string>(),
 
-                LikeCount = p.Likes.Count(l => l.Status == 1),
+                LikeCount = p.Likes?.Count(l => l.Status == 1) ?? 0,
 
-                UserLike = p.Likes
+                UserLike = (p.Likes ?? Enumerable.Empty<Like>())
                     .Where(l => l.Status == 1)
                     .Select(l => new LikeAdminDTO
                     {
@@ -167,7 +167,7 @@ public class PostRepository : IPostRepository
                         Type = l.Type.ToString()
                     }).ToList(),
 
-                CommentCount = p.Comments.Count,
+                CommentCount = p.Comments?.Count?? 0,
 
                 // ✅ Chỉ trả về root comments — replies đã lồng vào Replies bên trong
                 Comments = rootComments

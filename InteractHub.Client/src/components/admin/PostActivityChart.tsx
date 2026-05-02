@@ -27,7 +27,7 @@ interface PostActivityChartProps {
 const PostActivityChart: React.FC<PostActivityChartProps> = ({ data }) => {
     return (
         <div className="bg-white p-6 rounded-lg border">
-            <h3 className="font-semibold mb-4">Hoạt động bài viết</h3>
+            <h3 className="font-semibold mb-4">Hoạt động bài viết trong năm</h3>
 
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data}>

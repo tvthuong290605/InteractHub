@@ -79,19 +79,6 @@ const Sidebar: React.FC = () => {
                     })}
                 </ul>
             </nav>
-
-            {/* Footer - Thông tin admin */}
-            <div className="p-4 border-t border-gray-300 mt-auto">
-                <div className="flex items-center gap-3 px-4 py-3 bg-gray-200 rounded-xl">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-lg">
-                        A
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-                        <p className="text-xs text-gray-500 truncate">admin@example.com</p>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

@@ -1,12 +1,22 @@
-import React from "react";
-import { Bell, Search, Settings, LogOut } from "lucide-react";
+import { UserPlus, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import RegisterModal from "../admin/RegisterModal";
 
 const Header: React.FC = () => {
     const location = useLocation();
-    const navigate = useNavigate(); // 👈 thêm
+    const [user, setUser] = useState<any>(null);
+    const navigate = useNavigate();
+    const [openRegister, setOpenRegister] = useState(false);
 
+    const BASE_URL = "https://localhost:7069";
+
+    useEffect(() => {
+        const data = localStorage.getItem("interact_hub_user");
+        if (data) {
+            setUser(JSON.parse(data));
+        }
+    }, []);
     const getTitle = () => {
         // localtion.pathname sẽ trả về đường dẫn hiện tại, ví dụ: "/admin/dashboard"
         switch (location.pathname) {
@@ -25,11 +35,11 @@ const Header: React.FC = () => {
         }
     };
 
-    // 🔥 LOGOUT
+    // LOGOUT
     const handleLogout = () => {
         localStorage.removeItem("interact_hub_user");
         localStorage.removeItem("interact_hub_token");
-        window.location.href = "/login"; // 🔥 reload full trang
+        window.location.href = "/login";
 
     };
 
@@ -43,24 +53,9 @@ const Header: React.FC = () => {
                     className="text-3xl font-bold text-gray-900 cursor-default hover:text-blue-600 transition-colors">
                     {getTitle()}
                 </h3>
-
-                {/* Thanh tìm kiếm */}
-                {/* <div className="flex-1 max-w-xl ml-6">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm..."
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl 
-                                text-gray-900 placeholder-gray-500 focus:outline-none 
-                                focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        />
-                    </div>
-                </div> */}
-
                 {/* Các nút bên phải */}
                 <div className="flex items-center gap-2">
-                    {/* 🔥 LOGOUT */}
+                    {/* LOGOUT */}
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-1 px-3 py-2 hover:bg-red-50 text-red-500 rounded-xl transition"
@@ -69,22 +64,32 @@ const Header: React.FC = () => {
                         <span className="text-sm font-medium">Đăng xuất</span>
                     </button>
 
-                    <button className="relative p-3 hover:bg-gray-100 rounded-xl">
-                        <Bell className="w-5 h-5 text-gray-600" />
+                    <button
+                        onClick={() => setOpenRegister(true)}
+                        className="p-3 hover:bg-gray-100 rounded-xl">
+                        <UserPlus className="w-5 h-5 text-gray-600" />
                     </button>
 
-
-                    <button className="p-3 hover:bg-gray-100 rounded-xl">
-                        <Settings className="w-5 h-5 text-gray-600" />
-                    </button>
-
-                    <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                        A
-                    </div>
+                    <img
+                        src={
+                            user?.AvatarUrl
+                                ? (user.AvatarUrl.startsWith("http")
+                                    ? user.AvatarUrl
+                                    : BASE_URL + user.AvatarUrl)
+                                : "/default-avatar.png"
+                        }
+                        alt="avatar"
+                        className="w-9 h-9 rounded-full object-cover"
+                    />
                 </div>
             </div>
+            <RegisterModal
+                open={openRegister}
+                onClose={() => setOpenRegister(false)}
+            />
         </header>
     );
+
 };
 
 export default Header;

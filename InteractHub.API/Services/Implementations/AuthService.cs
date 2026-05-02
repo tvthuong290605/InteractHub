@@ -35,11 +35,11 @@ public class AuthService : IAuthService
 
         var user = new User
         {
-            FullName       = request.FullName,
-            Email          = request.Email,
-            UserName       = request.Email,
-            Status         = 1,
-            CreatedAt      = DateTime.UtcNow,
+            FullName = request.FullName,
+            Email = request.Email,
+            UserName = request.Email,
+            Status = 1,
+            CreatedAt = DateTime.UtcNow,
             ProfilePicture = "/images/avatars/default-avatar.png"
         };
 
@@ -50,6 +50,34 @@ public class AuthService : IAuthService
             );
 
         await _userManager.AddToRoleAsync(user, "User");
+
+        var token = await GenerateJwtToken(user);
+        return Result<AuthResponse>.Ok(await BuildAuthResponse(user, token), "Đăng ký thành công.");
+    }
+
+    public async Task<Result<AuthResponse>> RegisterAdminAsync(RegisterRequest request)
+    {
+        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        if (existingUser != null)
+            return Result<AuthResponse>.Conflict("Email đã được sử dụng.");
+
+        var user = new User
+        {
+            FullName = request.FullName,
+            Email = request.Email,
+            UserName = request.Email,
+            Status = 1,
+            CreatedAt = DateTime.UtcNow,
+            ProfilePicture = "/images/avatars/default-avatar.png"
+        };
+
+        var result = await _userManager.CreateAsync(user, request.Password);
+        if (!result.Succeeded)
+            return Result<AuthResponse>.BadRequest(
+                string.Join(", ", result.Errors.Select(e => e.Description))
+            );
+
+        await _userManager.AddToRoleAsync(user, "Admin");
 
         var token = await GenerateJwtToken(user);
         return Result<AuthResponse>.Ok(await BuildAuthResponse(user, token), "Đăng ký thành công.");

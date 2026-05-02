@@ -44,13 +44,12 @@ const ReportFilters: React.FC<ReportFilters> = ({
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                         <option value="all">Tất cả loại</option>
-                        <option value="spam">Spam</option>
-                        <option value="harassment">Quấy rối</option>
-                        <option value="inappropriate">Nội dung xấu</option>
-                        <option value="misinformation">Thông tin sai</option>
-                        <option value="copyright">Bản quyền</option>
-                        <option value="hate_speech">Ngôn từ thù hận</option>
-                        <option value="other">Khác</option>
+                        <option value="Spam">Spam</option>
+                        <option value="Quấy rối">Quấy rối</option>
+                        <option value="Ảnh nhạy cảm">Ảnh nhạy cảm</option>
+                        <option value="Bạo lực">Bạo lực</option>
+                        <option value="Ngôn từ thù ghét">Ngôn từ thù ghét</option>
+                        <option value="Vấn đề khác">Khác</option>
                     </select>
 
                     <select
@@ -60,9 +59,8 @@ const ReportFilters: React.FC<ReportFilters> = ({
                     >
                         <option value="all">Tất cả trạng thái</option>
                         <option value="pending">Chờ xử lý</option>
-                        <option value="investigating">Đang điều tra</option>
-                        <option value="resolved">Đã giải quyết</option>
-                        <option value="rejected">Đã từ chối</option>
+                        <option value="finished">Đã xử lý</option>
+                        <option value="refuse">Đã từ chối</option>
                     </select>
                 </div>
 

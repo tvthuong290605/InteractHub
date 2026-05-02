@@ -1,4 +1,6 @@
 using InteractHub.API.Entities;
+using InteractHub.API.DTOs.PostHashtag;
+
 
 namespace InteractHub.API.Repositories.Interfaces;
 
@@ -16,4 +18,7 @@ public interface IHashtagRepository
 
     // lấy số lượng hashtag
     Task<int> GetHashtagsCountAsync();
+
+    Task<List<HashtagUsageDTO>> GetHashtagUsageAsync();
+
 }

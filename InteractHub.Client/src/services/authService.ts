@@ -23,3 +23,8 @@ export const registerAPI = (data: Omit<RegisterFormData, "confirmPassword">) =>
   axiosInstance
     .post<ApiRes<AuthResponse>>("/api/auth/register", data)
     .then((res) => ({ ...res, data: res.data.Data }));
+
+export const registerAdmin = (data: Omit<RegisterFormData, "confirmPassword">) =>
+  axiosInstance
+    .post<ApiRes<AuthResponse>>("/api/auth/registerAdmin", data)
+    .then((res) => ({ ...res, data: res.data.Data }));

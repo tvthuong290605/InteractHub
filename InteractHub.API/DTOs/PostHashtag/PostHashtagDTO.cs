@@ -11,3 +11,9 @@ public class PostHashtagResponseDto
     public int HashtagId { get; set; }
     public string Tag { get; set; } = null!;
 }
+
+public class HashtagUsageDTO
+{
+    public string Name { get; set; } = string.Empty;
+    public int Count { get; set; }
+}

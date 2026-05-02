@@ -253,16 +253,8 @@ const PostsAdminPage: React.FC = () => {
                         {/* LIST */}
                         <div className="divide-y">
                             {filteredPosts.map((post) => (
-                                // <PostCard
-                                //     key={post.id}
-                                //     post={post}
-                                //     onHide={handleApprove}
-                                //     onRestore={handleRestore}
-                                //     onDelete={handleDelete}
-                                //     onViewDetail={handleViewDetail}
-                                // />
-
                                 <PostCard
+                                    key={post.id}  
                                     post={post}
                                     onHide={(id) => handleChangeStatus(id, "hidden")}
                                     onRestore={(id) => handleChangeStatus(id, "private")}

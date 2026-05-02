@@ -1,5 +1,6 @@
 using InteractHub.API.Entities;
 
+
 namespace InteractHub.API.Repositories.Interfaces;
 
 public interface IPostHashtagRepository
@@ -12,4 +13,5 @@ public interface IPostHashtagRepository
     Task DeleteByPostIdAsync(int postId);
 
     Task<bool> SaveChangesAsync();
+
 }

@@ -38,11 +38,31 @@ public class PostReportsController : ControllerBase
 
 
     // lấy số lượng report
-    [HttpGet ("admin/count")]
-    [Authorize (Roles = "Admin")]
+    [HttpGet("admin/dashboard")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetReportsCountAsync()
     {
         var result = await _reportService.GetReportsCountAsync();
+        return result.ToActionResult(this);
+    }
+
+    // Toàn bộ report
+    [HttpGet("admin/all")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAllReports()
+    {
+        var result = await _reportService.GetAllPostReportsAdminAsync();
+        return result.ToActionResult(this);
+    }
+
+    // câp nhật status
+    [HttpPut("admin/handle/{reportId}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateStatusAsync(
+    int reportId,
+    [FromBody] UpdateReportRequest request)
+    {
+        var result = await _reportService.UpdateStatusAsync(reportId, request.AdminNote, request.status, request.userNameAuthor!);
         return result.ToActionResult(this);
     }
 }

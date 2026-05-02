@@ -247,6 +247,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 // ── 12. Authentication & Authorization ───────────────────────────
 app.UseAuthentication();
+app.UseMiddleware<CheckUserStatusMiddleware>(); // logout khi load trang vì TK đã bị ban bới admin
 app.UseAuthorization();
 
 // ── 13. Map Controllers & Hubs ───────────────────────────────────

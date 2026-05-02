@@ -21,7 +21,7 @@ public class PostReport
 
     public string? AdminNote { get; set; } // Ghi chú của Admin sau khi xem xét
 
-    public int Status { get; set; } = 0; // 0: Chờ xử lý, 1: Đã xử lý (Giữ bài), 2: Đã xử lý (Xóa bài)
+    public int Status { get; set; } = 0; // 0: Chờ xử lý, 1: Đã xử lý (Xóa bài, từ chối),
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

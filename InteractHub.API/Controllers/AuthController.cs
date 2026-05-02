@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
         _userManager = userManager;
-        _config      = config;
+        _config = config;
     }
 
     [HttpPost("register")]
@@ -39,6 +39,15 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var result = await _authService.RegisterAsync(request);
+        return result.ToActionResult(this);
+    }
+
+    [HttpPost("registerAdmin")]
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var result = await _authService.RegisterAdminAsync(request);
         return result.ToActionResult(this);
     }
 
@@ -69,9 +78,9 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
             return Redirect("http://localhost:5173/login?error=google_failed");
 
-        var email    = result.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
+        var email = result.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
         var fullName = result.Principal.FindFirstValue(ClaimTypes.Name) ?? "";
-        var avatar   = result.Principal.FindFirstValue("picture") ??
+        var avatar = result.Principal.FindFirstValue("picture") ??
                        result.Principal.FindFirstValue("urn:google:picture") ?? "";
 
         return await HandleOAuthLogin(email, fullName, avatar);
@@ -96,10 +105,10 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
             return Redirect("http://localhost:5173/login?error=github_failed");
 
-        var email    = result.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
+        var email = result.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
         var fullName = result.Principal.FindFirstValue(ClaimTypes.Name) ??
                        result.Principal.FindFirstValue("login") ?? "";
-        var avatar   = result.Principal.FindFirstValue("urn:github:avatar_url") ??
+        var avatar = result.Principal.FindFirstValue("urn:github:avatar_url") ??
                        result.Principal.FindFirstValue("avatar_url") ?? "";
 
         return await HandleOAuthLogin(email, fullName, avatar);
@@ -116,11 +125,11 @@ public class AuthController : ControllerBase
         {
             user = new UserEntity
             {
-                Email          = email,
-                UserName       = email,
-                FullName       = fullName,
+                Email = email,
+                UserName = email,
+                FullName = fullName,
                 ProfilePicture = avatar,
-                Status         = 1
+                Status = 1
             };
 
             var createResult = await _userManager.CreateAsync(user);
@@ -135,11 +144,11 @@ public class AuthController : ControllerBase
 
         var userDto = new UserDto
         {
-            Id       = user.Id,
+            Id = user.Id,
             Username = user.FullName ?? user.UserName ?? "User",
-            Email    = user.Email ?? "",
+            Email = user.Email ?? "",
             AvatarUrl = user.ProfilePicture,
-            Roles    = roles.ToList()
+            Roles = roles.ToList()
         };
 
         var userJson = Uri.EscapeDataString(
@@ -152,7 +161,7 @@ public class AuthController : ControllerBase
     private string GenerateJwtToken(UserEntity user, IList<string> roles)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
-        var secretKey   = jwtSettings["SecretKey"]!;
+        var secretKey = jwtSettings["SecretKey"]!;
 
         var claims = new List<Claim>
         {
@@ -164,14 +173,14 @@ public class AuthController : ControllerBase
         foreach (var role in roles)
             claims.Add(new Claim(ClaimTypes.Role, role));
 
-        var key   = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer:             jwtSettings["Issuer"],
-            audience:           jwtSettings["Audience"],
-            claims:             claims,
-            expires:            DateTime.UtcNow.AddHours(24),
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddHours(24),
             signingCredentials: creds
         );
 

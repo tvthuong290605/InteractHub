@@ -57,6 +57,20 @@ interface PostAdminDto {
 
   MediaUrls: string[];
 }
+interface PostReportAdminDTO {
+  Id: number;
+  PostId: number;
+  UserId: string;
+  UserName: string;
+  Type: string;
+  Content: string;
+  Status: number;
+  CreatedAt: string;
+  ResolvedAt: string;
+  AdminNote: string;
+  Post: PostAdminDto;
+
+}
 
 interface PostActivityStatDTO {
   Month: string;
@@ -67,8 +81,18 @@ interface PostActivityStatDTO {
 
 interface PostDashboardDTO {
   TotalPosts: number
-  Activity: PostActivityStatDTO[];
+  Activity: PostActivityStatDTO[]
 
+}
+
+interface PostReportDTO {
+  Reason: string
+  Count: number
+}
+
+interface PostReportDashboardDTO {
+  TotalReport: number
+  PostReports: PostReportDTO[]
 }
 // ── 3. Interface FE (camelCase) ──────────────────────────────────
 export interface PostItem {
@@ -133,36 +157,36 @@ const mapPost = (p: PostResponseDto): PostItem => ({
   mediaUrls: p.MediaUrls || [],
 });
 
-const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
-  id: p.Id,
-  author: p.AuthorName || "",
-  authorAvatar: p.AuthorAvatar,
-  title: p.Title,
-  content: p.Content,
+// const mapPostAdmin = (p: PostAdminDto): PostAdminItem => ({
+//   id: p.Id,
+//   author: p.AuthorName || "",
+//   authorAvatar: p.AuthorAvatar,
+//   title: p.Title,
+//   content: p.Content,
 
-  countLike: p.LikeCount,
-  likes: p.UserLike.map(u => ({
-    userId: u.UserId,
-    userName: u.UserName
-  })),
+//   countLike: p.LikeCount,
+//   likes: p.UserLike.map(u => ({
+//     userId: u.UserId,
+//     userName: u.UserName
+//   })),
 
-  countComment: p.CommentCount,
-  comments: p.Comments.map(c => ({
-    id: c.Id,
-    author: c.UserName,
-    content: c.Content,
-    createdAt: c.CreatedAt || ""
-  })),
+//   countComment: p.CommentCount,
+//   comments: p.Comments.map(c => ({
+//     id: c.Id,
+//     author: c.UserName,
+//     content: c.Content,
+//     createdAt: c.CreatedAt || ""
+//   })),
 
-  status:
-    p.Status === 1 ? 'public' :
-      p.Status === 2 ? 'friend' :
-        p.Status === 3 ? 'private' :
-          p.Status === 0 ? 'hidden' : 'delete',
+//   status:
+//     p.Status === 1 ? 'public' :
+//       p.Status === 2 ? 'friend' :
+//         p.Status === 3 ? 'private' :
+//           p.Status === 0 ? 'hidden' : 'delete',
 
-  createdAt: p.CreatedAt,
-  mediaUrls: p.MediaUrls || [],
-});
+//   createdAt: p.CreatedAt,
+//   mediaUrls: p.MediaUrls || [],
+// });
 
 export interface PagedPostResponse {
   posts: PostItem[];
@@ -215,13 +239,43 @@ export const postService = {
       })
       .then((res) => ({ ...res, data: mapPost(res.data.Data) })),
 
+  // -------reportPost--------
 
   reportPost: (request: PostReportRequest) =>
     axiosInstance
       .post<{ Success: boolean; Message: string }>("/api/post-reports", request),
 
+  getPostReportCount: async () => {
+    const res = await axiosInstance.get<ApiRes<PostReportDashboardDTO>>(
+      'api/post-reports/admin/dashboard'
+    )
+    return res.data.Data;
+  },
 
-  // Admin API
+  getAllPostReportsAdmin: async () => {
+    const res = await axiosInstance.get<ApiRes<PostReportAdminDTO[]>>(
+      'api/post-reports/admin/all'
+    )
+    return res.data.Data;
+  },
+  
+  updateStatusReport: async (
+    reportId: number,
+    payload: {
+      adminNote: string;
+      status: number;
+      userNameAuthor : string;
+    }
+  ) => {
+    const res = await axiosInstance.put<ApiRes<boolean>>(
+      `/api/post-reports/admin/handle/${reportId}`,
+      payload
+    );
+
+    return res.data.Data;
+  },
+
+  // -------Admin API----------
   getAllPostsAdmin: () =>
     axiosInstance
       .get<{ Success: boolean; Message: string; Data: PostAdminDto[] }>(
@@ -248,16 +302,16 @@ export const postService = {
   },
 
   getHomeFeed: (page: number = 1, pageSize: number = 10) =>
-  axiosInstance
-    .get<{ Success: boolean; Data: { Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean } }>(
-      `/api/post/feed?page=${page}&pageSize=${pageSize}`
-    )
-    .then((res) => ({
-      ...res,
-      data: {
-        posts: res.data.Data.Posts.map(mapPost),
-        totalCount: res.data.Data.TotalCount,
-        hasMore: res.data.Data.HasMore,
-      } as PagedPostResponse,
-    })),
+    axiosInstance
+      .get<{ Success: boolean; Data: { Posts: PostResponseDto[]; TotalCount: number; HasMore: boolean } }>(
+        `/api/post/feed?page=${page}&pageSize=${pageSize}`
+      )
+      .then((res) => ({
+        ...res,
+        data: {
+          posts: res.data.Data.Posts.map(mapPost),
+          totalCount: res.data.Data.TotalCount,
+          hasMore: res.data.Data.HasMore,
+        } as PagedPostResponse,
+      })),
 };

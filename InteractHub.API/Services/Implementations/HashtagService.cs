@@ -4,6 +4,8 @@ using InteractHub.API.DTOs.Hashtag;
 using InteractHub.API.Entities;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.Services.Interfaces;
+using InteractHub.API.DTOs.PostHashtag;
+
 
 namespace InteractHub.API.Services.Implementations;
 
@@ -85,9 +87,25 @@ public class HashtagService : IHashtagService
             var result = await _hashtagRepo.GetHashtagsCountAsync();
             return Result<int>.Ok(result);
         }
-        catch( Exception ex)
+        catch (Exception ex)
         {
             return Result<int>.ServerError($"Lỗi khi lấy số lượng hashtag: {ex.Message}");
         }
     }
+
+    public async Task<Result<List<HashtagUsageDTO>>> GetHashtagUsageAsync()
+    {
+        try
+        {
+            var data = await _hashtagRepo.GetHashtagUsageAsync();
+            return Result<List<HashtagUsageDTO>>.Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<HashtagUsageDTO>>.ServerError($"Lỗi khi lấy danh sách hashtag : {ex.Message}");
+        }
+
+
+    }
+
 }

@@ -38,4 +38,13 @@ public class HashtagsController : ControllerBase
         var result = await _hashtagService.GetHashtagsCountAsync();
         return result.ToActionResult(this);
     }
+
+    [HttpGet("admin/hashtags")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetHashtagUsageAsync()
+    {
+        var result = await _hashtagService.GetHashtagUsageAsync();
+        return result.ToActionResult(this);
+    }
+
 }

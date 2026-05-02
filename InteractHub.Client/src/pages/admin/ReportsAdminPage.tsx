@@ -1,379 +1,12 @@
-// import { useState } from 'react';
-// import { Search, AlertCircle, Eye, CheckCircle, X, ExternalLink, Clock } from 'lucide-react';
-
-// export function ReportsAdminPage() {
-//     const [searchQuery, setSearchQuery] = useState('');
-//     const [filterStatus, setFilterStatus] = useState('all');
-//     const [filterType, setFilterType] = useState('all');
-
-//     const reports = [
-//         {
-//             id: 1,
-//             type: 'spam',
-//             reportedBy: 'Nguyễn Văn A',
-//             reportedUser: 'Lê Văn C',
-//             reportedContent: 'Bài viết chứa nhiều link spam và quảng cáo',
-//             contentType: 'post',
-//             reason: 'Spam và quảng cáo',
-//             description: 'Bài viết này chứa quá nhiều link affiliate và nội dung quảng cáo không phù hợp',
-//             status: 'pending',
-//             priority: 'high',
-//             createdAt: '30 phút trước',
-//             evidence: true,
-//         },
-//         {
-//             id: 2,
-//             type: 'harassment',
-//             reportedBy: 'Trần Thị B',
-//             reportedUser: 'Hoàng Văn E',
-//             reportedContent: 'Bình luận xúc phạm và quấy rối',
-//             contentType: 'comment',
-//             reason: 'Quấy rối và xúc phạm',
-//             description: 'Người dùng này liên tục để lại các bình luận xúc phạm dưới bài viết của tôi',
-//             status: 'pending',
-//             priority: 'high',
-//             createdAt: '1 giờ trước',
-//             evidence: true,
-//         },
-//         {
-//             id: 3,
-//             type: 'inappropriate',
-//             reportedBy: 'Phạm Thị D',
-//             reportedUser: 'Bùi Thị H',
-//             reportedContent: 'Hình ảnh không phù hợp',
-//             contentType: 'post',
-//             reason: 'Nội dung không phù hợp',
-//             description: 'Bài viết chứa hình ảnh và nội dung không phù hợp với cộng đồng',
-//             status: 'resolved',
-//             priority: 'medium',
-//             createdAt: '3 giờ trước',
-//             evidence: false,
-//             resolution: 'Đã xóa bài viết và cảnh báo người dùng',
-//         },
-//         {
-//             id: 4,
-//             type: 'misinformation',
-//             reportedBy: 'Vũ Thị F',
-//             reportedUser: 'Đặng Văn G',
-//             reportedContent: 'Thông tin sai sự thật về sức khỏe',
-//             contentType: 'post',
-//             reason: 'Thông tin sai lệch',
-//             description: 'Bài viết đăng thông tin y tế sai sự thật có thể gây nguy hiểm',
-//             status: 'pending',
-//             priority: 'high',
-//             createdAt: '2 giờ trước',
-//             evidence: true,
-//         },
-//         {
-//             id: 5,
-//             type: 'copyright',
-//             reportedBy: 'Hoàng Văn E',
-//             reportedUser: 'Lê Văn C',
-//             reportedContent: 'Sử dụng hình ảnh không có bản quyền',
-//             contentType: 'post',
-//             reason: 'Vi phạm bản quyền',
-//             description: 'Bài viết sử dụng hình ảnh của tôi mà không xin phép',
-//             status: 'investigating',
-//             priority: 'medium',
-//             createdAt: '5 giờ trước',
-//             evidence: true,
-//         },
-//         {
-//             id: 6,
-//             type: 'spam',
-//             reportedBy: 'Nguyễn Văn A',
-//             reportedUser: 'Phạm Thị D',
-//             reportedContent: 'Spam comments',
-//             contentType: 'comment',
-//             reason: 'Spam bình luận',
-//             description: 'Người dùng spam cùng một bình luận nhiều lần',
-//             status: 'resolved',
-//             priority: 'low',
-//             createdAt: '1 ngày trước',
-//             evidence: false,
-//             resolution: 'Đã xóa các bình luận spam',
-//         },
-//         {
-//             id: 7,
-//             type: 'hate_speech',
-//             reportedBy: 'Trần Thị B',
-//             reportedUser: 'Vũ Thị F',
-//             reportedContent: 'Phát ngôn kích động thù hận',
-//             contentType: 'post',
-//             reason: 'Ngôn từ thù hận',
-//             description: 'Bài viết chứa ngôn từ kích động thù hận đối với một nhóm người',
-//             status: 'pending',
-//             priority: 'high',
-//             createdAt: '45 phút trước',
-//             evidence: true,
-//         },
-//         {
-//             id: 8,
-//             type: 'other',
-//             reportedBy: 'Lê Văn C',
-//             reportedUser: 'Nguyễn Văn A',
-//             reportedContent: 'Vi phạm khác',
-//             contentType: 'post',
-//             reason: 'Vi phạm quy tắc cộng đồng',
-//             description: 'Nội dung không phù hợp với quy định của cộng đồng',
-//             status: 'rejected',
-//             priority: 'low',
-//             createdAt: '2 ngày trước',
-//             evidence: false,
-//             resolution: 'Không tìm thấy vi phạm',
-//         },
-//     ];
-
-//     const getStatusBadge = (status: string) => {
-//         const styles = {
-//             pending: 'bg-yellow-100 text-yellow-700',
-//             investigating: 'bg-blue-100 text-blue-700',
-//             resolved: 'bg-green-100 text-green-700',
-//             rejected: 'bg-gray-100 text-gray-700',
-//         };
-//         const labels = {
-//             pending: 'Chờ xử lý',
-//             investigating: 'Đang điều tra',
-//             resolved: 'Đã giải quyết',
-//             rejected: 'Đã từ chối',
-//         };
-//         return (
-//             <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]}`}>
-//                 {labels[status as keyof typeof labels]}
-//             </span>
-//         );
-//     };
-
-//     const getPriorityBadge = (priority: string) => {
-//         const styles = {
-//             high: 'bg-red-100 text-red-700',
-//             medium: 'bg-orange-100 text-orange-700',
-//             low: 'bg-blue-100 text-blue-700',
-//         };
-//         const labels = {
-//             high: 'Cao',
-//             medium: 'Trung bình',
-//             low: 'Thấp',
-//         };
-//         return (
-//             <span className={`px-2 py-1 rounded text-xs font-medium ${styles[priority as keyof typeof styles]}`}>
-//                 {labels[priority as keyof typeof labels]}
-//             </span>
-//         );
-//     };
-
-//     const getTypeLabel = (type: string) => {
-//         const labels: Record<string, string> = {
-//             spam: 'Spam',
-//             harassment: 'Quấy rối',
-//             inappropriate: 'Nội dung xấu',
-//             misinformation: 'Thông tin sai',
-//             copyright: 'Bản quyền',
-//             hate_speech: 'Ngôn từ thù hận',
-//             other: 'Khác',
-//         };
-//         return labels[type] || type;
-//     };
-
-//     return (
-//         <div className="space-y-6">
-//             <div className="flex items-center justify-between">
-//                 <div>
-//                     <h2 className="text-2xl font-bold text-gray-900">Quản lý Reports</h2>
-//                     <p className="text-gray-600 mt-1">Xử lý các báo cáo vi phạm từ người dùng</p>
-//                 </div>
-//                 <div className="flex items-center gap-3">
-//                     <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-//                         Xuất báo cáo
-//                     </button>
-//                 </div>
-//             </div>
-
-//             <div className="bg-white rounded-lg border border-gray-200">
-//                 <div className="p-6 border-b border-gray-200">
-//                     <div className="flex flex-col gap-4">
-//                         <div className="flex flex-col sm:flex-row gap-4">
-//                             <div className="flex-1 relative">
-//                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-//                                 <input
-//                                     type="text"
-//                                     placeholder="Tìm kiếm reports..."
-//                                     value={searchQuery}
-//                                     onChange={(e) => setSearchQuery(e.target.value)}
-//                                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//                                 />
-//                             </div>
-//                             <select
-//                                 value={filterType}
-//                                 onChange={(e) => setFilterType(e.target.value)}
-//                                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//                             >
-//                                 <option value="all">Tất cả loại</option>
-//                                 <option value="spam">Spam</option>
-//                                 <option value="harassment">Quấy rối</option>
-//                                 <option value="inappropriate">Nội dung xấu</option>
-//                                 <option value="misinformation">Thông tin sai</option>
-//                                 <option value="copyright">Bản quyền</option>
-//                                 <option value="hate_speech">Ngôn từ thù hận</option>
-//                             </select>
-//                             <select
-//                                 value={filterStatus}
-//                                 onChange={(e) => setFilterStatus(e.target.value)}
-//                                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//                             >
-//                                 <option value="all">Tất cả trạng thái</option>
-//                                 <option value="pending">Chờ xử lý</option>
-//                                 <option value="investigating">Đang điều tra</option>
-//                                 <option value="resolved">Đã giải quyết</option>
-//                                 <option value="rejected">Đã từ chối</option>
-//                             </select>
-//                         </div>
-
-//                         <div className="flex items-center gap-6">
-//                             <div className="flex items-center gap-2 text-sm text-gray-600">
-//                                 <span className="font-medium">Tổng:</span>
-//                                 <span>{reports.length} reports</span>
-//                             </div>
-//                             <div className="flex items-center gap-2 text-sm text-gray-600">
-//                                 <span className="font-medium">Chờ xử lý:</span>
-//                                 <span className="text-yellow-600 font-semibold">{reports.filter(r => r.status === 'pending').length}</span>
-//                             </div>
-//                             <div className="flex items-center gap-2 text-sm text-gray-600">
-//                                 <span className="font-medium">Ưu tiên cao:</span>
-//                                 <span className="text-red-600 font-semibold">{reports.filter(r => r.priority === 'high').length}</span>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-
-//                 <div className="divide-y divide-gray-200">
-//                     {reports.map((report) => (
-//                         <div key={report.id} className="p-6 hover:bg-gray-50 transition-colors">
-//                             <div className="flex gap-4">
-//                                 <div className="flex-shrink-0">
-//                                     <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-//                                         <AlertCircle className="w-6 h-6 text-red-600" />
-//                                     </div>
-//                                 </div>
-
-//                                 <div className="flex-1 min-w-0">
-//                                     <div className="flex items-start justify-between gap-4 mb-3">
-//                                         <div className="flex-1">
-//                                             <div className="flex items-center gap-2 mb-2">
-//                                                 <h3 className="font-semibold text-gray-900">{report.reportedContent}</h3>
-//                                                 {report.evidence && (
-//                                                     <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-//                                                         Có chứng cứ
-//                                                     </span>
-//                                                 )}
-//                                             </div>
-//                                             <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-2">
-//                                                 <span className="flex items-center gap-1">
-//                                                     <Clock className="w-4 h-4" />
-//                                                     {report.createdAt}
-//                                                 </span>
-//                                                 <span>•</span>
-//                                                 <span>Loại: <strong>{getTypeLabel(report.type)}</strong></span>
-//                                                 <span>•</span>
-//                                                 <span>Người báo cáo: <strong>{report.reportedBy}</strong></span>
-//                                                 <span>•</span>
-//                                                 <span>Bị báo cáo: <strong className="text-red-600">{report.reportedUser}</strong></span>
-//                                             </div>
-//                                             <div className="flex items-center gap-2 mb-3">
-//                                                 {getStatusBadge(report.status)}
-//                                                 {getPriorityBadge(report.priority)}
-//                                                 <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-//                                                     {report.contentType === 'post' ? 'Bài viết' : 'Bình luận'}
-//                                                 </span>
-//                                             </div>
-//                                         </div>
-//                                     </div>
-
-//                                     <div className="bg-gray-50 rounded-lg p-3 mb-4">
-//                                         <p className="text-sm font-medium text-gray-900 mb-1">Lý do báo cáo:</p>
-//                                         <p className="text-sm text-gray-700 mb-2">{report.reason}</p>
-//                                         <p className="text-sm text-gray-600">{report.description}</p>
-//                                     </div>
-
-//                                     {report.resolution && (
-//                                         <div className="bg-green-50 rounded-lg p-3 mb-4">
-//                                             <p className="text-sm font-medium text-green-900 mb-1">Kết quả xử lý:</p>
-//                                             <p className="text-sm text-green-700">{report.resolution}</p>
-//                                         </div>
-//                                     )}
-
-//                                     <div className="flex items-center justify-between">
-//                                         <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
-//                                             <ExternalLink className="w-4 h-4" />
-//                                             Xem nội dung gốc
-//                                         </button>
-
-//                                         {report.status === 'pending' && (
-//                                             <div className="flex items-center gap-2">
-//                                                 <button className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1">
-//                                                     <Eye className="w-4 h-4" />
-//                                                     Điều tra
-//                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
-//                                                     <CheckCircle className="w-4 h-4" />
-//                                                     Xác nhận vi phạm
-//                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
-//                                                     <X className="w-4 h-4" />
-//                                                     Từ chối
-//                                                 </button>
-//                                             </div>
-//                                         )}
-
-//                                         {report.status === 'investigating' && (
-//                                             <div className="flex items-center gap-2">
-//                                                 <button className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-1">
-//                                                     <CheckCircle className="w-4 h-4" />
-//                                                     Giải quyết
-//                                                 </button>
-//                                                 <button className="px-3 py-1.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-1">
-//                                                     <X className="w-4 h-4" />
-//                                                     Từ chối
-//                                                 </button>
-//                                             </div>
-//                                         )}
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     ))}
-//                 </div>
-
-//                 <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-//                     <div className="text-sm text-gray-600">
-//                         Hiển thị 1-{reports.length} trong tổng số {reports.length} reports
-//                     </div>
-//                     <div className="flex items-center gap-2">
-//                         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-//                             Trước
-//                         </button>
-//                         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm">
-//                             1
-//                         </button>
-//                         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-//                             2
-//                         </button>
-//                         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-//                             Sau
-//                         </button>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-// export default ReportsAdminPage;
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../../components/layout/Header';
 import Sidebar from '../../components/layout/Sidebar';
 import ReportCard from '../../components/admin/ReportCard';
 import ReportFilters from '../../components/admin/ReportFilters';
+import PostDetail from '../../components/admin/PostDetail';
+import { postService } from '../../services/postService';
+import ReportHandleModal from '../../components/admin/ReportHandleModal';
+
 
 interface Report {
     id: number;
@@ -386,145 +19,235 @@ interface Report {
     description: string;
     status: string;
     createdAt: string;
+    resolvedAt: string;
+    adminNote: string;
     evidence: boolean;
     resolution?: string;
+
+    post: any;
 }
+
+interface CommentDTO {
+    Id: number;
+    Content: string;
+    UserId: string;
+    UserName: string;
+    UserAvatar?: string | null;
+    PostId: number;
+    ParentId?: number | null;
+    ParentUserName?: string | null;
+    Status?: number | null;
+    CreatedAt?: string | null;
+    LikeCount: number;
+    IsLikedByCurrentUser: boolean;
+    Replies: CommentDTO[];
+}
+interface Post {
+    id: string;
+    author: string;
+    authorAvatar: string;
+    title: string;
+    content: string;
+    countLike: number;
+    likes: { UserId: string; UserName: string; Avatar: string; Type?: string }[];
+    countComment: number;
+    comments: CommentDTO[];
+    status: 'public' | 'friend' | 'private' | 'hidden' | 'delete';
+    createdAt: string;
+    mediaUrls?: string[];
+}
+
+const BASE_URL = "https://localhost:7069";
+
 
 const ReportsAdminPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterType, setFilterType] = useState('all');
+    const [reports, setReports] = useState<Report[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [mode, setMode] = useState<'resolve' | 'reject' | null>(null);
+    const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
-    const initialReports: Report[] = [
-        {
-            id: 1,
-            type: 'spam',
-            reportedBy: 'Nguyễn Văn A',
-            reportedUser: 'Lê Văn C',
-            reportedContent: 'Bài viết chứa nhiều link spam và quảng cáo',
-            contentType: 'post',
-            reason: 'Spam và quảng cáo',
-            description: 'Bài viết này chứa quá nhiều link affiliate và nội dung quảng cáo không phù hợp',
-            status: 'pending',
-            createdAt: '30 phút trước',
-            evidence: true,
-        },
-        {
-            id: 2,
-            type: 'harassment',
-            reportedBy: 'Trần Thị B',
-            reportedUser: 'Hoàng Văn E',
-            reportedContent: 'Bình luận xúc phạm và quấy rối',
-            contentType: 'comment',
-            reason: 'Quấy rối và xúc phạm',
-            description: 'Người dùng này liên tục để lại các bình luận xúc phạm dưới bài viết của tôi',
-            status: 'pending',
-            createdAt: '1 giờ trước',
-            evidence: true,
-        },
-        {
-            id: 3,
-            type: 'inappropriate',
-            reportedBy: 'Phạm Thị D',
-            reportedUser: 'Bùi Thị H',
-            reportedContent: 'Hình ảnh không phù hợp',
-            contentType: 'post',
-            reason: 'Nội dung không phù hợp',
-            description: 'Bài viết chứa hình ảnh và nội dung không phù hợp với cộng đồng',
-            status: 'resolved',
-            createdAt: '3 giờ trước',
-            evidence: false,
-            resolution: 'Đã xóa bài viết và cảnh báo người dùng',
-        },
-        {
-            id: 4,
-            type: 'misinformation',
-            reportedBy: 'Vũ Thị F',
-            reportedUser: 'Đặng Văn G',
-            reportedContent: 'Thông tin sai sự thật về sức khỏe',
-            contentType: 'post',
-            reason: 'Thông tin sai lệch',
-            description: 'Bài viết đăng thông tin y tế sai sự thật có thể gây nguy hiểm',
-            status: 'pending',
-            createdAt: '2 giờ trước',
-            evidence: true,
-        },
-        {
-            id: 5,
-            type: 'copyright',
-            reportedBy: 'Hoàng Văn E',
-            reportedUser: 'Lê Văn C',
-            reportedContent: 'Sử dụng hình ảnh không có bản quyền',
-            contentType: 'post',
-            reason: 'Vi phạm bản quyền',
-            description: 'Bài viết sử dụng hình ảnh của tôi mà không xin phép',
-            status: 'investigating',
-            createdAt: '5 giờ trước',
-            evidence: true,
-        },
-        {
-            id: 6,
-            type: 'spam',
-            reportedBy: 'Nguyễn Văn A',
-            reportedUser: 'Phạm Thị D',
-            reportedContent: 'Spam comments',
-            contentType: 'comment',
-            reason: 'Spam bình luận',
-            description: 'Người dùng spam cùng một bình luận nhiều lần',
-            status: 'resolved',
-            createdAt: '1 ngày trước',
-            evidence: false,
-            resolution: 'Đã xóa các bình luận spam',
-        },
-        {
-            id: 7,
-            type: 'hate_speech',
-            reportedBy: 'Trần Thị B',
-            reportedUser: 'Vũ Thị F',
-            reportedContent: 'Phát ngôn kích động thù hận',
-            contentType: 'post',
-            reason: 'Ngôn từ thù hận',
-            description: 'Bài viết chứa ngôn từ kích động thù hận đối với một nhóm người',
-            status: 'pending',
-            createdAt: '45 phút trước',
-            evidence: true,
-        },
-        {
-            id: 8,
-            type: 'other',
-            reportedBy: 'Lê Văn C',
-            reportedUser: 'Nguyễn Văn A',
-            reportedContent: 'Vi phạm khác',
-            contentType: 'post',
-            reason: 'Vi phạm quy tắc cộng đồng',
-            description: 'Nội dung không phù hợp với quy định của cộng đồng',
-            status: 'rejected',
-            createdAt: '2 ngày trước',
-            evidence: false,
-            resolution: 'Không tìm thấy vi phạm',
-        },
-    ];
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                setLoading(true);
+                const data = await postService.getAllPostReportsAdmin();
+
+                const normalizeType = (type: string) => {
+                    const t = (type || "").toLowerCase();
+
+                    if (t.includes("spam")) return "Spam";
+                    if (t.includes("bạo lực")) return "Bạo lực";
+                    if (t.includes("ngôn ngữ gây thù ghét")) return "Ngôn từ thù ghét";
+                    if (t.includes("ảnh khỏa thân")) return "Ảnh nhạy cảm";
+                    if (t.includes("quấy rối")) return "Quấy rối";
+                    if (t.includes("vấn đề khác")) return "Vấn đề khác";
+                    return "other";
+                };
+
+                // map BE → FE
+                const mapped: Report[] = data.map((r: any) => ({
+                    id: r.Id,
+                    type: normalizeType(r.Type),
+                    reportedBy: r.UserName || "",
+                    reportedUser: r.Post?.AuthorName || "Unknown",
+                    reportedContent: r.Content || r.Post?.Content || "",
+                    contentType: 'post',
+                    reason: r.Type,
+                    description: r.Content,
+                    status:
+                        r.Status === 0 ? 'pending' :
+                            r.Status === 1 ? 'finished' : 'refuse',
+                    createdAt: r.CreatedAt
+                        ? new Date(r.CreatedAt).toLocaleString('vi-VN')
+                        : "",
+                    resolvedAt: r.ResolvedAt
+                        ? new Date(r.ResolvedAt).toLocaleString('vi-VN')
+                        : "",
+                    adminNote: r.AdminNote,
+                    evidence: false,
+                    post: r.Post
+                }));
+
+                setReports(mapped);
+            } catch (err) {
+                console.error("Lỗi load report:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReports();
+    }, []);
 
     const filteredReports = useMemo(() => {
-        return initialReports.filter((report) => {
+        return reports.filter((report) => {
             const matchSearch =
-                report.reportedContent.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                report.reportedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                report.reportedUser.toLowerCase().includes(searchQuery.toLowerCase());
+                (report.reportedContent || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (report.reportedBy || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (report.reportedUser || '').toLowerCase().includes(searchQuery.toLowerCase());
 
             const matchType = filterType === 'all' || report.type === filterType;
             const matchStatus = filterStatus === 'all' || report.status === filterStatus;
 
             return matchSearch && matchType && matchStatus;
         });
-    }, [searchQuery, filterType, filterStatus]);
+    }, [reports, searchQuery, filterType, filterStatus]);
 
-    const pendingCount = initialReports.filter(r => r.status === 'pending').length;
+    const pendingCount = reports.filter(r => r.status === 'pending').length;
 
-    const handleInvestigate = (id: number) => console.log('Điều tra report ID:', id);
-    const handleResolve = (id: number) => console.log('Giải quyết report ID:', id);
-    const handleReject = (id: number) => console.log('Từ chối report ID:', id);
-    const handleViewOriginal = (id: number) => console.log('Xem nội dung gốc ID:', id);
+
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+    const mapComment = (c: CommentDTO): CommentDTO => ({
+        Id: c.Id,
+        Content: c.Content,
+        UserId: c.UserId,
+        UserName: c.UserName,
+        UserAvatar: c.UserAvatar,
+        PostId: c.PostId,
+        ParentId: c.ParentId,
+        ParentUserName: c.ParentUserName,
+        Status: c.Status,
+        CreatedAt: c.CreatedAt,
+        LikeCount: c.LikeCount,
+        IsLikedByCurrentUser: c.IsLikedByCurrentUser,
+
+        // 🔥 QUAN TRỌNG
+        Replies: (c.Replies || []).map(mapComment)
+    });
+
+    const handleOpenResolve = (id: number) => {
+        const r = reports.find(x => x.id === id);
+        if (!r) return;
+
+        setSelectedReport(r);
+        setMode('resolve');
+        setOpenModal(true);
+    };
+
+    const handleOpenReject = (id: number) => {
+        const r = reports.find(x => x.id === id);
+        if (!r) return;
+
+        setSelectedReport(r);
+        setMode('reject');
+        setOpenModal(true);
+    };
+
+    const handleViewPost = (id: number) => {
+        const report = reports.find(r => r.id === id);
+        if (!report || !report.post) return;
+
+        const p = report.post;
+
+        const mappedPost: Post = {
+            id: p.Id?.toString() || "",
+            author: p.AuthorName || "Ẩn danh",
+            authorAvatar: p.AuthorAvatar
+                ? (p.AuthorAvatar.startsWith("http")
+                    ? p.AuthorAvatar
+                    : BASE_URL + p.AuthorAvatar)
+                : "",
+            title: p.Title || "",
+            content: p.Content || "",
+            countLike: p.LikeCount || 0,
+
+            likes: (p.UserLike || []).map((like: any) => ({
+                UserId: like.UserId,
+                UserName: like.UserName,
+                Avatar: like.Avatar,
+                Type: like.Type
+            })),
+
+            countComment: p.CommentCount || 0,
+
+            // ✅ FIX CHUẨN
+            comments: (p.Comments || []).map(mapComment),
+
+            status:
+                p.Status === -1
+                    ? 'delete'
+                    : p.Status === 0
+                        ? 'hidden'
+                        : p.Status === 1
+                            ? 'public'
+                            : p.Status === 2
+                                ? 'friend'
+                                : 'private',
+
+            createdAt: p.CreatedAt
+                ? new Date(p.CreatedAt).toLocaleString('vi-VN')
+                : "",
+
+            mediaUrls: p.MediaUrls?.map((url: string) =>
+                url.startsWith("http") ? url : BASE_URL + url
+            ) || []
+        };
+
+        setSelectedPost(mappedPost);
+    };
+    const updateReportStatus = (
+        reportId: number,
+        action: 'hide' | 'delete' | 'reject',
+        message: string
+    ) => {
+        setReports(prev =>
+            prev.map(r => {
+                if (r.id !== reportId) return r;
+
+                return {
+                    ...r,
+                    status: action === 'reject' ? 'refuse' : 'finished',
+                    adminNote: message,
+                    resolvedAt: new Date().toLocaleString('vi-VN')
+                };
+            })
+        );
+    };
 
     return (
         <div className="space-y-6">
@@ -541,7 +264,7 @@ const ReportsAdminPage: React.FC = () => {
                             setFilterType={setFilterType}
                             filterStatus={filterStatus}
                             setFilterStatus={setFilterStatus}
-                            totalReports={initialReports.length}
+                            totalReports={reports.length}
                             pendingCount={pendingCount}
                         />
 
@@ -550,28 +273,38 @@ const ReportsAdminPage: React.FC = () => {
                                 <ReportCard
                                     key={report.id}
                                     report={report}
-                                    onInvestigate={handleInvestigate}
-                                    onResolve={handleResolve}
-                                    onReject={handleReject}
-                                    onViewOriginal={handleViewOriginal}
+                                    onInvestigate={handleOpenResolve}   //  mở modal resolve
+                                    onResolve={() => { }}                // không dùng
+                                    onReject={handleOpenReject}         //  mở modal reject
+                                    onViewOriginal={handleViewPost}
                                 />
                             ))}
-                        </div>
-
-                        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-600">
-                            <div>
-                                Hiển thị 1-{filteredReports.length} trong tổng số {initialReports.length} reports
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Trước</button>
-                                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
-                                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
-                                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Sau</button>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {selectedPost && (
+                <PostDetail
+                    post={selectedPost}
+                    onClose={() => setSelectedPost(null)}
+                />
+            )}
+            {openModal && selectedReport && mode && (
+                <ReportHandleModal
+                    report={selectedReport}
+                    mode={mode}
+                    onClose={() => setOpenModal(false)}
+                    onSubmit={(data) => {
+                        updateReportStatus(
+                            data.reportId,
+                            data.action,
+                            data.message
+                        );
+
+                        setOpenModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 };

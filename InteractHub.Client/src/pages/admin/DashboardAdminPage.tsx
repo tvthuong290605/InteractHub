@@ -6,18 +6,16 @@ import Sidebar from "../../components/layout/Sidebar";
 import Header from "../../components/layout/Header";
 import { postService } from "../../services/postService";
 import { userService } from "../../services/userService";
-//import {reportService} from "../../services/";
 import { hashtagService } from "../../services/hashtagService";
 
 import StatsCards from "../../components/admin/StatsCards";
 import UserGrowthChart from "../../components/admin/UserGrowthChart";
 import ReportPieChart from "../../components/admin/ReportPieChart";
 import PostActivityChart from "../../components/admin/PostActivityChart";
-import RecentUsers from "../../components/admin/RecentUsers";
-import PopularPosts from "../../components/admin/PopularPosts";
+import RecentHashtags from "../../components/admin/RecentHashtags";
 
 // Import icon
-import { Users, FileText, AlertCircle, Eye } from "lucide-react";
+import { Users, FileText, AlertCircle, Hash } from "lucide-react";
 
 // ==================== Interfaces ====================
 
@@ -26,6 +24,8 @@ interface StatItem {
     value: string | number;
     icon: React.ComponentType<{ className?: string }>;
     color: string;
+    path: string;
+
 }
 
 interface GrowthData {
@@ -47,18 +47,18 @@ interface PostActivityData {
     likes: number;
 }
 
-const Dashboard = () => {
-    // State quản lý dữ liệu
-    // const [postCount, setPostCount] = useState<number>(0);
-    // const [usercount, setUserCount] = useState<number>(0);
-    // const [reportCount, setReportCount] = useState<number>(0);
-    // const [hashtagCount, setHashtagCount] = useState<number>(0);
+interface HashtagItem {
+    Name: string;
+    Count: number;
+}
 
+const Dashboard = () => {
     const [stats, setStats] = useState<StatItem[]>([]);
     const [userGrowthData, setUserGrowthData] = useState<GrowthData[]>([]);
     const [reportData, setReportData] = useState<ReportData[]>([]);
     const [postActivityData, setPostActivityData] = useState<PostActivityData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [hashtags, setHashtags] = useState<HashtagItem[]>([]);
 
     useEffect(() => {
         //Gọi api
@@ -66,7 +66,7 @@ const Dashboard = () => {
             try {
                 setLoading(true);
 
-                /*----- nhận data user từ api -----*/
+                /*----- Nhận data user từ api -----*/
                 const dataUser = await userService.getUsersCount();
 
                 const userCount = dataUser.TotalUsers;
@@ -121,11 +121,28 @@ const Dashboard = () => {
                     }
                 });
 
+                /* ----------Nhận data report từ API */
+
+                const dataReport = await postService.getPostReportCount();
+
+                const reportCount = dataReport.TotalReport;
+                const colors = ["#ef4444", "#eab308", "#f97316", "#22c55e", "#3b82f6"];
+
+                const pieData: ReportData[] = (dataReport.PostReports || []).map(
+                    (item: any, index: number) => ({
+                        name: item.Reason,
+                        value: item.Count,
+                        color: colors[index % colors.length],
+                    }));
+
                 //count hashtag
                 const hashtagCount = await hashtagService.getHashtagCount();
 
-                // Giả lập thời gian tải dữ liệu
-                await new Promise(resolve => setTimeout(resolve, 800));
+                const hashtagData = await hashtagService.getHashtagWithCount();
+                const formattedHashtags = hashtagData.map((item: any) => ({
+                    Name: item.Name,
+                    Count: item.Count
+                }));
 
                 // Dữ liệu cho StatsCards
                 const statsData: StatItem[] = [
@@ -134,39 +151,35 @@ const Dashboard = () => {
                         value: userCount,
                         icon: Users,
                         color: "bg-blue-500",
+                        path: "/admin/users"
                     },
                     {
                         title: "Posts",
                         value: postCount,
                         icon: FileText,
                         color: "bg-green-500",
+                        path: "/admin/posts"
                     },
                     {
                         title: "Reports",
-                        value: "Chưa làm ",
+                        value: reportCount,
                         icon: AlertCircle,
                         color: "bg-red-500",
+                        path: "/admin/reports"
                     },
                     {
                         title: "Hastags",
                         value: hashtagCount,
-                        icon: Eye,
+                        icon: Hash,
                         color: "bg-purple-500",
+                        path: ""
                     },
                 ];
-
-                // Dữ liệu cho biểu đồ tròn Reports
-                const pieData: ReportData[] = [
-                    { name: "Spam", value: 45, color: "#ef4444" },
-                    { name: "Khiếu nại", value: 28, color: "#eab308" },
-                    { name: "Nội dung vi phạm", value: 35, color: "#f97316" },
-                    { name: "Hợp lệ", value: 92, color: "#22c55e" },
-                ];
-
                 setStats(statsData);
                 setUserGrowthData(fullMonthsUser);
                 setReportData(pieData);
                 setPostActivityData(fullMonths);
+                setHashtags(formattedHashtags);
             }
             catch (err) {
                 console.error("Lỗi dashboard:", err);
@@ -199,21 +212,15 @@ const Dashboard = () => {
                         {/* Thống kê tổng quan */}
                         <StatsCards stats={stats} />
 
-                        {/* Biểu đồ tăng trưởng và phân loại báo cáo */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <UserGrowthChart data={userGrowthData} />
-                            <ReportPieChart data={reportData} />
-                        </div>
+                        <UserGrowthChart data={userGrowthData} />
 
-                        {/* Hoạt động bài viết */}
                         <PostActivityChart data={postActivityData} />
 
-                        {/* Người dùng gần đây & Bài viết phổ biến */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <RecentUsers />
-
-                            <PopularPosts />
+                            <ReportPieChart data={reportData} />
+                            <RecentHashtags hashtags={hashtags} />
                         </div>
+
                     </div>
                 </div>
             </div>

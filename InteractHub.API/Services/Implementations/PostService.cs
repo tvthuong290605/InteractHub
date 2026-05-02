@@ -4,6 +4,7 @@ using InteractHub.API.Entities;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.Services.Interfaces;
 
+
 namespace InteractHub.API.Services.Implementations;
 
 public class PostService : IPostService
@@ -13,12 +14,14 @@ public class PostService : IPostService
     private readonly IHashtagService _hashtagService;
     private readonly IPostHashtagRepository _postHashtagRepo;
     private readonly IFriendshipRepository _friendshipRepo;
+    private readonly INotificationService _notificationService;
 
     public PostService(
         IPostRepository postRepo,
         IMediaService mediaService,
         IHashtagService hashtagService,
         IPostHashtagRepository postHashtagRepo,
+        INotificationService notificationService,
         IFriendshipRepository friendshipRepo)
     {
         _postRepo = postRepo;
@@ -26,6 +29,7 @@ public class PostService : IPostService
         _hashtagService = hashtagService;
         _postHashtagRepo = postHashtagRepo;
         _friendshipRepo = friendshipRepo;
+        _notificationService = notificationService;
     }
 
     public async Task<Result<PostResponseDto>> CreatePostAsync(string userId, PostCreateDto dto)
@@ -208,10 +212,39 @@ public class PostService : IPostService
         return Result<IEnumerable<PostAdminDTO>>.Ok(posts);
     }
 
-    public async Task<Result<string>> UpdateStatusPostForAdminAsync(int postId, int status)
-    {
+    // public async Task<Result<string>> UpdateStatusPostForAdminAsync(int postId, int status)
+    // {
 
-        // status: -1. xóa ; 0. ẩn ; 1. public ; 2. friend ; 3. private
+    //     // status: -1. xóa ; 0. ẩn ; 1. public ; 2. friend ; 3. private
+    //     if (status != 1 && status != 0 && status != -1 && status != 2 && status != 3)
+    //         return Result<string>.BadRequest("Trạng thái không hợp lệ.");
+
+    //     var post = await _postRepo.GetByIdAsync(postId);
+    //     if (post == null)
+    //         return Result<string>.NotFound("Bài đăng không tồn tại.");
+
+    //     var result = await _postRepo.UpdateStatusPostForAdminAsync(postId, status);
+
+    //     if (!result)
+    //         return Result<string>.ServerError("Không thể cập nhật trạng thái.");
+
+    //     //  Message theo status (UX tốt hơn)
+    //     string message = status switch
+    //     {
+    //         -1 => "Đã xóa bài đăng.",
+    //         0 => "Đã ẩn bài đăng.",
+    //         1 => "Chế độ công khai.",
+    //         2 => "Chế độ bạn bè",
+    //         3 => "Chế độ riêng tư",
+    //         _ => "Cập nhật trạng thái thành công."
+    //     };
+
+    //     return Result<string>.Ok(message: message);
+    // }
+
+    public async Task<Result<string>> UpdateStatusPostForAdminAsync(
+    int postId, int status)
+    {
         if (status != 1 && status != 0 && status != -1 && status != 2 && status != 3)
             return Result<string>.BadRequest("Trạng thái không hợp lệ.");
 
@@ -224,18 +257,27 @@ public class PostService : IPostService
         if (!result)
             return Result<string>.ServerError("Không thể cập nhật trạng thái.");
 
-        //  Message theo status (UX tốt hơn)
-        string message = status switch
+        // ✅ 👉 CHỖ GỌI NOTIFICATION
+        if (status == 0 || status == -1)
         {
-            -1 => "Đã xóa bài đăng.",
-            0 => "Đã ẩn bài đăng.",
-            1 => "Chế độ công khai.",
-            2 => "Chế độ bạn bè",
-            3 => "Chế độ riêng tư",
-            _ => "Cập nhật trạng thái thành công."
-        };
+            if (string.IsNullOrEmpty(post.UserId))
+                return Result<string>.ServerError("UserId không hợp lệ");
 
-        return Result<string>.Ok(message: message);
+            string message = status == 0
+                ? "Bài viết của bạn đã bị ẩn bởi quản trị viên."
+                : "Bài viết của bạn đã bị xóa bởi quản trị viên.";
+
+            string type = status == 0 ? "POST_HIDDEN" : "POST_DELETED";
+
+            await _notificationService.CreateNotificationAsync(
+                userId: post.UserId,
+                message: message,
+                type: type,
+                link: $"/post/{post.Id}"
+            );
+        }
+
+        return Result<string>.Ok("Cập nhật trạng thái thành công.");
     }
 
     public async Task<Result<PostDashboardDTO>> GetPostsCountAsync()

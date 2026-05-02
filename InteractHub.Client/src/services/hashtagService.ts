@@ -7,6 +7,11 @@ interface ApiResponse<T> {
   Data: T;
 }
 
+interface HashtagWithCount{
+  Name : string;
+  Count: number;
+}
+
 export interface HashtagItem {
   Id: number;
   Tag: string;
@@ -31,6 +36,13 @@ export const hashtagService = {
     )
     return res.data.Data;
 
+  },
+
+  getHashtagWithCount : async ()=>{
+    const res = await axiosInstance.get<ApiRes<HashtagWithCount[]>>(
+      'api/hashtags/admin/hashtags'
+    )
+    return res.data.Data;
   }
 
 };

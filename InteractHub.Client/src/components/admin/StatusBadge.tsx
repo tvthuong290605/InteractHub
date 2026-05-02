@@ -23,9 +23,7 @@ const userStatus = {
 
 const reportStatus = {
     pending: { label: 'Chờ xử lý', className: 'bg-yellow-100 text-yellow-700' },
-    investigating: { label: 'Đang điều tra', className: 'bg-blue-100 text-blue-700' },
-    resolved: { label: 'Đã giải quyết', className: 'bg-green-100 text-green-700' },
-    rejected: { label: 'Đã từ chối', className: 'bg-gray-100 text-gray-700' },
+    finished: { label: 'Đã xử lý', className: 'bg-green-100 text-green-700' },
 };
 
 const StatusBadge: React.FC<StatusBadge> = ({ status, type = 'post', className = '' }) => {
