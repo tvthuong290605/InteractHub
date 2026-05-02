@@ -1,133 +1,37 @@
-// using InteractHub.API.Common.Responses;
-// using InteractHub.API.DTOs.Notification;
-// using InteractHub.API.Entities;
-// using InteractHub.API.Repositories.Interfaces;
-// using InteractHub.API.Services.Interfaces;
-
-// namespace InteractHub.API.Services.Implementations;
-
-// public class NotificationService : INotificationService
-// {
-//     private readonly INotificationRepository _notificationRepo;
-
-//     public NotificationService(INotificationRepository notificationRepo)
-//     {
-//         _notificationRepo = notificationRepo;
-//     }
-
-//     public async Task<Result<IEnumerable<NotificationResponseDto>>> GetNotificationsByUserIdAsync(string userId)
-//     {
-//         var notifications = await _notificationRepo.GetByUserIdAsync(userId);
-//         return Result<IEnumerable<NotificationResponseDto>>.Ok(
-//             notifications.Select(n => new NotificationResponseDto
-//             {
-//                 Id = n.Id,
-//                 Message = n.Message,
-//                 Type = n.Type,
-//                 Link = n.Link,
-//                 IsRead = n.IsRead ?? false,
-//                 CreatedAt = n.CreatedAt
-//             })
-//         );
-//     }
-
-//     public async Task<Result<int>> GetUnreadCountAsync(string userId)
-//     {
-//         var count = await _notificationRepo.CountUnreadAsync(userId);
-//         return Result<int>.Ok(count);
-//     }
-
-//     public async Task<Result<string>> MarkAsReadAsync(int notificationId, string userId)
-//     {
-//         var notification = await _notificationRepo.GetByIdAsync(notificationId, userId);
-//         if (notification == null)
-//             return Result<string>.NotFound("Không tìm thấy thông báo hoặc bạn không có quyền.");
-
-//         notification.IsRead = true;
-//         _notificationRepo.Update(notification);
-//         await _notificationRepo.SaveChangesAsync();
-//         return Result<string>.Ok(message: "Đã đánh dấu thông báo là đã đọc.");
-//     }
-
-//     public async Task<Result<string>> MarkAllAsReadAsync(string userId)
-//     {
-//         var notifications = await _notificationRepo.GetByUserIdAsync(userId);
-//         var unreadOnes = notifications.Where(n => n.IsRead == false || n.IsRead == null).ToList();
-
-//         foreach (var n in unreadOnes)
-//         {
-//             n.IsRead = true;
-//             _notificationRepo.Update(n);
-//         }
-
-//         await _notificationRepo.SaveChangesAsync();
-//         return Result<string>.Ok(message: "Đã đánh dấu tất cả thông báo là đã đọc.");
-//     }
-
-//     public async Task<Result<string>> DeleteNotificationAsync(int notificationId, string userId)
-//     {
-//         var notification = await _notificationRepo.GetByIdAsync(notificationId, userId);
-//         if (notification == null)
-//             return Result<string>.NotFound("Không thể xóa thông báo.");
-
-//         _notificationRepo.Delete(notification);
-//         await _notificationRepo.SaveChangesAsync();
-//         return Result<string>.Ok(message: "Đã xóa thông báo thành công.");
-//     }
-
-//     // Không đổi vì được gọi nội bộ từ các Service khác
-//     public async Task CreateNotificationAsync(string userId, string message, string type, string? link)
-//     {
-//         var notification = new Notification
-//         {
-//             UserId = userId,
-//             Message = message,
-//             Type = type,
-//             Link = link,
-//             IsRead = false,
-//             CreatedAt = DateTime.Now
-//         };
-
-//         await _notificationRepo.AddAsync(notification);
-//         await _notificationRepo.SaveChangesAsync();
-//     }
-// }
 using InteractHub.API.Common.Responses;
 using InteractHub.API.DTOs.Notification;
 using InteractHub.API.Entities;
+using InteractHub.API.Hubs;
 using InteractHub.API.Repositories.Interfaces;
 using InteractHub.API.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace InteractHub.API.Services.Implementations;
 
 public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepo;
+    private readonly IHubContext<ChatHub> _hubContext; // ✅ thêm
 
-    public NotificationService(INotificationRepository notificationRepo)
+    public NotificationService(
+        INotificationRepository notificationRepo,
+        IHubContext<ChatHub> hubContext)               // ✅ thêm
     {
         _notificationRepo = notificationRepo;
+        _hubContext = hubContext;
     }
 
-    public async Task<Result<IEnumerable<NotificationResponseDto>>> GetNotificationsByUserIdAsync(string userId)
+    // ── Lấy danh sách thông báo ───────────────────────────────────
+    public async Task<Result<IEnumerable<NotificationResponseDto>>> GetNotificationsByUserIdAsync(
+        string userId)
     {
         var notifications = await _notificationRepo.GetByUserIdAsync(userId);
         return Result<IEnumerable<NotificationResponseDto>>.Ok(
-            notifications.Select(n => new NotificationResponseDto
-            {
-                Id = n.Id,
-                Message = n.Message,
-                Type = n.Type,
-                Link = n.Link,
-                IsRead = n.IsRead,
-                CreatedAt = n.UpdatedAt ?? n.CreatedAt, // Ưu tiên ngày cập nhật mới nhất
-                LastActorName = n.LastActor?.FullName ?? "Người dùng",
-                LastActorAvatar = n.LastActor?.ProfilePicture,
-                ActorsCount = n.ActorsCount
-            })
+            notifications.Select(MapToDto)
         );
     }
 
+    // ── Tạo hoặc cập nhật thông báo tương tác (like, comment...) ─
     public async Task CreateOrUpdateInteractionNotificationAsync(
         string receiverId,
         string actorId,
@@ -136,73 +40,86 @@ public class NotificationService : INotificationService
         string message,
         int currentCount)
     {
-        // 1. Xử lý UNLIKE: Nếu không còn ai tương tác, xóa thông báo
+        // Unlike / bỏ tương tác → xóa thông báo
         if (currentCount <= 0)
         {
-            var existingNotify = await _notificationRepo.GetExistingNotificationAsync(receiverId, type, link);
-            if (existingNotify != null)
+            var existing = await _notificationRepo.GetExistingNotificationAsync(
+                receiverId, type, link);
+            if (existing != null)
             {
-                _notificationRepo.Delete(existingNotify);
+                _notificationRepo.Delete(existing);
                 await _notificationRepo.SaveChangesAsync();
             }
             return;
         }
 
-        // 2. Tìm thông báo gom nhóm hiện có cho bài viết này
-        var notify = await _notificationRepo.GetExistingNotificationAsync(receiverId, type, link);
+        var notify = await _notificationRepo.GetExistingNotificationAsync(
+            receiverId, type, link);
 
         if (notify == null)
         {
-            await _notificationRepo.AddAsync(new Notification
+            notify = new Notification
             {
-                UserId = receiverId,
+                UserId      = receiverId,
                 LastActorId = actorId,
                 ActorsCount = currentCount,
-                Message = message, // Lưu ý: Message nên là phần thân (ví dụ: "đã thích bài viết")
-                Type = type,
-                Link = link,
-                IsRead = false,
-                CreatedAt = DateTime.UtcNow
-            });
+                Message     = message,
+                Type        = type,
+                Link        = link,
+                IsRead      = false,
+                CreatedAt   = DateTime.UtcNow,
+            };
+            await _notificationRepo.AddAsync(notify);
         }
         else
         {
-            // CẬP NHẬT: Nếu là thông báo cũ, đẩy nó lên đầu và cập nhật người gửi mới nhất
             notify.LastActorId = actorId;
             notify.ActorsCount = currentCount;
-            notify.IsRead = false;
-            notify.UpdatedAt = DateTime.UtcNow;
-            notify.Message = message; // Cập nhật lại nội dung nếu cần
+            notify.IsRead      = false;
+            notify.UpdatedAt   = DateTime.UtcNow;
+            notify.Message     = message;
             _notificationRepo.Update(notify);
         }
+
         await _notificationRepo.SaveChangesAsync();
+
+        // ✅ Push realtime sau khi lưu
+        await PushAsync(receiverId, notify);
     }
 
-    public async Task CreateNotificationAsync(string userId, string message, string type, string? link)
+    // ── Tạo thông báo đơn giản (system, friend request...) ───────
+    public async Task CreateNotificationAsync(
+        string userId, string message, string type, string? link)
     {
         var notification = new Notification
         {
-            UserId = userId,
-            Message = message,
-            Type = type,
-            Link = link,
-            IsRead = false,
-            CreatedAt = DateTime.UtcNow
+            UserId    = userId,
+            Message   = message,
+            Type      = type,
+            Link      = link,
+            IsRead    = false,
+            CreatedAt = DateTime.UtcNow,
         };
 
         await _notificationRepo.AddAsync(notification);
         await _notificationRepo.SaveChangesAsync();
+
+        // ✅ Push realtime sau khi lưu
+        await PushAsync(userId, notification);
     }
 
+    // ── Đếm chưa đọc ─────────────────────────────────────────────
     public async Task<Result<int>> GetUnreadCountAsync(string userId)
     {
         var count = await _notificationRepo.CountUnreadAsync(userId);
         return Result<int>.Ok(count);
     }
 
+    // ── Đánh dấu 1 thông báo đã đọc ──────────────────────────────
     public async Task<Result<string>> MarkAsReadAsync(int notificationId, string userId)
     {
-        var notification = await _notificationRepo.GetByIdAndUserAsync(notificationId, userId);
+        var notification = await _notificationRepo.GetByIdAndUserAsync(
+            notificationId, userId);
         if (notification == null)
             return Result<string>.NotFound("Không tìm thấy thông báo.");
 
@@ -212,6 +129,7 @@ public class NotificationService : INotificationService
         return Result<string>.Ok("Đã đánh dấu là đã đọc.");
     }
 
+    // ── Đánh dấu tất cả đã đọc ───────────────────────────────────
     public async Task<Result<string>> MarkAllAsReadAsync(string userId)
     {
         var notifications = await _notificationRepo.GetByUserIdAsync(userId);
@@ -224,9 +142,12 @@ public class NotificationService : INotificationService
         return Result<string>.Ok("Đã đọc tất cả.");
     }
 
-    public async Task<Result<string>> DeleteNotificationAsync(int notificationId, string userId)
+    // ── Xóa thông báo ─────────────────────────────────────────────
+    public async Task<Result<string>> DeleteNotificationAsync(
+        int notificationId, string userId)
     {
-        var notification = await _notificationRepo.GetByIdAndUserAsync(notificationId, userId);
+        var notification = await _notificationRepo.GetByIdAndUserAsync(
+            notificationId, userId);
         if (notification == null)
             return Result<string>.NotFound("Không thể xóa thông báo.");
 
@@ -234,15 +155,43 @@ public class NotificationService : INotificationService
         await _notificationRepo.SaveChangesAsync();
         return Result<string>.Ok("Đã xóa thông báo.");
     }
-    public async Task DeleteNotificationByLogicAsync(string receiverId, string type, string link)
-{
-    // Tìm thông báo cũ dựa trên các tiêu chí định danh
-    var existingNotify = await _notificationRepo.GetExistingNotificationAsync(receiverId, type, link);
-    
-    if (existingNotify != null)
+
+    // ── Xóa theo logic (không cần userId) ────────────────────────
+    public async Task DeleteNotificationByLogicAsync(
+        string receiverId, string type, string link)
     {
-        // Gọi hàm xóa của Repository (NotificationRepository kế thừa từ Repository<T>)
-        _notificationRepo.Delete(existingNotify);
+        var existing = await _notificationRepo.GetExistingNotificationAsync(
+            receiverId, type, link);
+        if (existing != null)
+            _notificationRepo.Delete(existing);
     }
-}
+
+    // ════════════════════════════════════════════════════════════════
+    // ── PRIVATE HELPERS ─────────────────────────────────────────────
+    // ════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Push thông báo realtime tới receiver qua SignalR.
+    /// Group = userId (được setup trong ChatHub.OnConnectedAsync)
+    /// </summary>
+    private async Task PushAsync(string receiverId, Notification notification)
+    {
+        var dto = MapToDto(notification);
+        await _hubContext.Clients
+            .Group(receiverId)
+            .SendAsync("ReceiveNotification", dto); // Khớp với FE: signalRService.onReceiveNotification
+    }
+
+    private static NotificationResponseDto MapToDto(Notification n) => new()
+    {
+        Id              = n.Id,
+        Message         = n.Message,
+        Type            = n.Type,
+        Link            = n.Link,
+        IsRead          = n.IsRead,
+        CreatedAt       = n.UpdatedAt ?? n.CreatedAt,
+        LastActorName   = n.LastActor?.FullName ?? n.LastActor?.UserName ?? "Người dùng",
+        LastActorAvatar = n.LastActor?.ProfilePicture,
+        ActorsCount     = n.ActorsCount,
+    };
 }

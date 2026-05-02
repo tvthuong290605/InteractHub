@@ -1,5 +1,6 @@
 import * as signalR from "@microsoft/signalr";
 import type { MessageItem } from "./messageService";
+import type { NotificationItem } from "./notificationService";
 
 const HUB_URL = "https://localhost:7069/hubs/chat";
 
@@ -46,7 +47,6 @@ class SignalRService {
     const handlerKey = `ReceiveMessage:${key}`;
     const existing = this._handlers.get(handlerKey);
     if (existing) this.connection?.off("ReceiveMessage", existing);
-
     const handler = callback as (...args: unknown[]) => void;
     this._handlers.set(handlerKey, handler);
     this.connection?.on("ReceiveMessage", handler);
@@ -69,7 +69,6 @@ class SignalRService {
     const handlerKey = `MessagesRead:${key}`;
     const existing = this._handlers.get(handlerKey);
     if (existing) this.connection?.off("MessagesRead", existing);
-
     const handler = callback as (...args: unknown[]) => void;
     this._handlers.set(handlerKey, handler);
     this.connection?.on("MessagesRead", handler);
@@ -92,7 +91,6 @@ class SignalRService {
     const handlerKey = `MessageDeleted:${key}`;
     const existing = this._handlers.get(handlerKey);
     if (existing) this.connection?.off("MessageDeleted", existing);
-
     const handler = callback as (...args: unknown[]) => void;
     this._handlers.set(handlerKey, handler);
     this.connection?.on("MessageDeleted", handler);
@@ -103,6 +101,28 @@ class SignalRService {
     const handler = this._handlers.get(handlerKey);
     if (handler) {
       this.connection?.off("MessageDeleted", handler);
+      this._handlers.delete(handlerKey);
+    }
+  }
+
+  // ── ReceiveNotification ───────────────────────────────────────
+  onReceiveNotification(
+    callback: (notification: NotificationItem) => void,
+    key = "__default__"
+  ) {
+    const handlerKey = `ReceiveNotification:${key}`;
+    const existing = this._handlers.get(handlerKey);
+    if (existing) this.connection?.off("ReceiveNotification", existing);
+    const handler = callback as (...args: unknown[]) => void;
+    this._handlers.set(handlerKey, handler);
+    this.connection?.on("ReceiveNotification", handler);
+  }
+
+  offReceiveNotification(key = "__default__") {
+    const handlerKey = `ReceiveNotification:${key}`;
+    const handler = this._handlers.get(handlerKey);
+    if (handler) {
+      this.connection?.off("ReceiveNotification", handler);
       this._handlers.delete(handlerKey);
     }
   }
@@ -124,7 +144,6 @@ class SignalRService {
     const handlerKey = `UserTyping:${key}`;
     const existing = this._handlers.get(handlerKey);
     if (existing) this.connection?.off("UserTyping", existing);
-
     const handler = callback as (...args: unknown[]) => void;
     this._handlers.set(handlerKey, handler);
     this.connection?.on("UserTyping", handler);
