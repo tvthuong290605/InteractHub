@@ -1,13 +1,19 @@
-# Build
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY . ./
-RUN dotnet restore
+# Copy file csproj trước để restore
+COPY InteractHub.API.csproj .
+RUN dotnet restore InteractHub.API.csproj
+
+# Copy toàn bộ source
+COPY . .
+
+# Build và publish
 RUN dotnet publish -c Release -o /app/publish
 
-# Run
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
 COPY --from=build /app/publish .

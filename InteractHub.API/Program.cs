@@ -259,5 +259,5 @@ app.UseAuthorization();
 // ── 13. Map Controllers & Hubs ───────────────────────────────────
 app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat"); // ✅ thêm
-
+app.MapGet("/", () => "InteractHub API is running...");
 app.Run();
