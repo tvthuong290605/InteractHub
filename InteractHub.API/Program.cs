@@ -169,6 +169,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+// ✅ thêm đoạn này NGAY SAU builder.Build()
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
+
+
 // ── 9. Seed Roles ─────────────────────────────────────────────────
 using (var scope = app.Services.CreateScope())
 {
